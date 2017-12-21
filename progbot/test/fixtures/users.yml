@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  email: MyString
+  join_reason: MyText
+  overview: MyText
+  location: MyString
+  anonymous: 
+  phone: MyString
+  slack_username: MyString
+  read_manifesto: 
+  read_code_of_conduct: 
+  referer: one
+
+two:
+  name: MyString
+  email: MyString
+  join_reason: MyText
+  overview: MyText
+  location: MyString
+  anonymous: 
+  phone: MyString
+  slack_username: MyString
+  read_manifesto: 
+  read_code_of_conduct: 
+  referer: two

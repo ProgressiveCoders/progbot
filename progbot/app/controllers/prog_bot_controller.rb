@@ -1,0 +1,2 @@
+class ProgBotController < ApplicationController
+end
