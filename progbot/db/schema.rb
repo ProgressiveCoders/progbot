@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171221041249) do
+ActiveRecord::Schema.define(version: 20171223183025) do
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
@@ -22,6 +22,20 @@ ActiveRecord::Schema.define(version: 20171221041249) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lead_id"], name: "index_projects_on_lead_id"
+  end
+
+  create_table "projects_skills", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "skill_id"
+    t.index ["project_id"], name: "index_projects_skills_on_project_id"
+    t.index ["skill_id"], name: "index_projects_skills_on_skill_id"
+  end
+
+  create_table "projects_volunteers", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "user_id"
+    t.index ["project_id"], name: "index_projects_volunteers_on_project_id"
+    t.index ["user_id"], name: "index_projects_volunteers_on_user_id"
   end
 
   create_table "skills", force: :cascade do |t|
@@ -45,6 +59,13 @@ ActiveRecord::Schema.define(version: 20171221041249) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["referer_id"], name: "index_users_on_referer_id"
+  end
+
+  create_table "users_skills", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "skill_id"
+    t.index ["skill_id"], name: "index_users_skills_on_skill_id"
+    t.index ["user_id"], name: "index_users_skills_on_user_id"
   end
 
 end
