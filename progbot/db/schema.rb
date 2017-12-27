@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171223202936) do
+ActiveRecord::Schema.define(version: 20171227214959) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -75,6 +75,13 @@ ActiveRecord::Schema.define(version: 20171223202936) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "skills_users", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "skill_id"
+    t.index ["skill_id"], name: "index_skills_users_on_skill_id"
+    t.index ["user_id"], name: "index_skills_users_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -89,14 +96,8 @@ ActiveRecord::Schema.define(version: 20171223202936) do
     t.integer "referer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "optin"
     t.index ["referer_id"], name: "index_users_on_referer_id"
-  end
-
-  create_table "users_skills", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "skill_id"
-    t.index ["skill_id"], name: "index_users_skills_on_skill_id"
-    t.index ["user_id"], name: "index_users_skills_on_user_id"
   end
 
 end

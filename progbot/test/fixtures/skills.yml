@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+c++:
+  name: C++
 
-two:
-  name: MyString
+java:
+  name: Java
