@@ -12,6 +12,7 @@ robert:
   read_manifesto:
   read_code_of_conduct:
   referer: one
+  optin: Yes
   skills: c++, java
 
 becca:
@@ -26,4 +27,20 @@ becca:
   read_manifesto:
   read_code_of_conduct:
   referer: two
+  optin: Yes
+  skills: java
+
+charlie:
+  name: Charlie
+  email: MyString
+  join_reason: MyText
+  overview: MyText
+  location: MyString
+  anonymous:
+  phone: MyString
+  slack_username: MyString
+  read_manifesto:
+  read_code_of_conduct:
+  referer: two
+  optin: No
   skills: java
