@@ -7,7 +7,7 @@ one:
   lead: one
   website: MyString
   slack_channel: MyString
-  skills: c++
+  skills: C++
 
 two:
   name: Project2

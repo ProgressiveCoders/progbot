@@ -1,8 +1,20 @@
-require 'users'
+require 'skill'
+require 'user'
 
 module ApplicationHelper
   def queryUsers(skillsList)
-    skillIds = Skills.where(name: skillsList)
-    return Users.where(skills: skillIds)
+    skillIds = Skill.where(name: skillsList).to_a
+    return User.
+      where(optin: true).
+      joins(:skills).
+      where(skills: { :id => skillIds })
+  end
+
+  def queryUsersForProject(project)
+    skills = project.skills
+    return User.
+      where(optin: true).
+      joins(:skills).
+      where(skills: { :id => skillIds })
   end
 end
