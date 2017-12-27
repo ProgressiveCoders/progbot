@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def queryUsersForProject(project)
-    skills = project.skills
+    skills = project.skills.to_a
     return User.
       where(optin: true).
       joins(:skills).
