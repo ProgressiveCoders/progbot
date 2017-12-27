@@ -15,6 +15,6 @@ module ApplicationHelper
     return User.
       where(optin: true).
       joins(:skills).
-      where(skills: { :id => skillIds })
+      where(skills: { :id => skills })
   end
 end
