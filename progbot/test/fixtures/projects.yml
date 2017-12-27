@@ -1,17 +1,28 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: Project1
   status: MyString
   description: MyText
   lead: one
   website: MyString
   slack_channel: MyString
+  skills: c++
 
 two:
-  name: MyString
+  name: Project2
   status: MyString
   description: MyText
   lead: two
   website: MyString
   slack_channel: MyString
+  skills:
+
+three:
+  name: Project3
+  status: MyString
+  description: requires nonexistent skill
+  lead: two
+  website: MyString
+  slack_channel: MyString
+  skills: rubyonrails

@@ -1,27 +1,29 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+robert:
+  name: Robert
   email: MyString
   join_reason: MyText
   overview: MyText
   location: MyString
-  anonymous: 
+  anonymous:
   phone: MyString
   slack_username: MyString
-  read_manifesto: 
-  read_code_of_conduct: 
+  read_manifesto:
+  read_code_of_conduct:
   referer: one
+  skills: c++, java
 
-two:
-  name: MyString
+becca:
+  name: Becca
   email: MyString
   join_reason: MyText
   overview: MyText
   location: MyString
-  anonymous: 
+  anonymous:
   phone: MyString
   slack_username: MyString
-  read_manifesto: 
-  read_code_of_conduct: 
+  read_manifesto:
+  read_code_of_conduct:
   referer: two
+  skills: java
