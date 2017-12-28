@@ -13,7 +13,7 @@ module ApplicationHelper
   def self.queryUsersForProject(project)
     skills = project.skills.to_a
     # remove users already involved with the project
-    affiliated_users = project.users.to_a
+    affiliated_users = project.volunteers.to_a
     affiliated_users.push(project.lead)
     return User.
       where(optin: true).
