@@ -8,7 +8,8 @@ class CreateUsers < ActiveRecord::Migration[5.1]
       t.string :location
       t.boolean :anonymous
       t.string :phone
-      t.string :slack_username
+      t.string :slack_username  # actually displayname, see https://api.slack.com/changelog/2017-09-the-one-about-usernames
+      t.string :slack_userid
       t.boolean :read_manifesto
       t.boolean :read_code_of_conduct
       t.references :referer, foreign_key: true
