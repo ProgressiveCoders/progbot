@@ -43,13 +43,6 @@ ActiveRecord::Schema.define(version: 20171227214959) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
-  create_table "non_tech_skills_users", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "skill_id"
-    t.index ["skill_id"], name: "index_non_tech_skills_users_on_skill_id"
-    t.index ["user_id"], name: "index_non_tech_skills_users_on_user_id"
-  end
-
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.string "status"
@@ -82,11 +75,11 @@ ActiveRecord::Schema.define(version: 20171227214959) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "tech_skills_users", id: false, force: :cascade do |t|
+  create_table "skills_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "skill_id"
-    t.index ["skill_id"], name: "index_tech_skills_users_on_skill_id"
-    t.index ["user_id"], name: "index_tech_skills_users_on_user_id"
+    t.index ["skill_id"], name: "index_skills_users_on_skill_id"
+    t.index ["user_id"], name: "index_skills_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
