@@ -5130,3 +5130,320 @@ Migrating to AddOptinToUsers (20171227214959)
             FROM sqlite_temp_master
             WHERE name='index_users_on_referer_id' AND type='index'
 [0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mAdminUser Exists (0.1ms)[0m  [1m[34mSELECT  1 AS one FROM "admin_users" WHERE "admin_users"."email" = ? LIMIT ?[0m  [["email", "admin@example.com"], ["LIMIT", 1]]
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "admin_users" ("email", "encrypted_password", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "admin@example.com"], ["encrypted_password", "$2a$11$rwIVatyGGRlC7px6Wxls0OAQCBnGF/176H4cI7MMiluYiY2urTzDy"], ["created_at", "2017-12-28 03:08:37.403334"], ["updated_at", "2017-12-28 03:08:37.403334"]]
+  [1m[35m (1.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", ".NET"], ["created_at", "2017-12-28 03:08:37.411616"], ["updated_at", "2017-12-28 03:08:37.411616"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Angular"], ["created_at", "2017-12-28 03:08:37.413914"], ["updated_at", "2017-12-28 03:08:37.413914"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "API"], ["created_at", "2017-12-28 03:08:37.416364"], ["updated_at", "2017-12-28 03:08:37.416364"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "App Development"], ["created_at", "2017-12-28 03:08:37.418514"], ["updated_at", "2017-12-28 03:08:37.418514"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "AWS"], ["created_at", "2017-12-28 03:08:37.420552"], ["updated_at", "2017-12-28 03:08:37.420552"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Back-End"], ["created_at", "2017-12-28 03:08:37.422609"], ["updated_at", "2017-12-28 03:08:37.422609"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Block-Chain Tech"], ["created_at", "2017-12-28 03:08:37.424909"], ["updated_at", "2017-12-28 03:08:37.424909"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "C"], ["created_at", "2017-12-28 03:08:37.427154"], ["updated_at", "2017-12-28 03:08:37.427154"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "C#"], ["created_at", "2017-12-28 03:08:37.429650"], ["updated_at", "2017-12-28 03:08:37.429650"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "C++"], ["created_at", "2017-12-28 03:08:37.432248"], ["updated_at", "2017-12-28 03:08:37.432248"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Clojure"], ["created_at", "2017-12-28 03:08:37.445330"], ["updated_at", "2017-12-28 03:08:37.445330"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Computer Hardware"], ["created_at", "2017-12-28 03:08:37.447816"], ["updated_at", "2017-12-28 03:08:37.447816"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "CSS"], ["created_at", "2017-12-28 03:08:37.450613"], ["updated_at", "2017-12-28 03:08:37.450613"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Data Analyst"], ["created_at", "2017-12-28 03:08:37.453491"], ["updated_at", "2017-12-28 03:08:37.453491"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.9ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Data Migration"], ["created_at", "2017-12-28 03:08:37.455795"], ["updated_at", "2017-12-28 03:08:37.455795"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Data Science"], ["created_at", "2017-12-28 03:08:37.458876"], ["updated_at", "2017-12-28 03:08:37.458876"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.9ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Dev Ops"], ["created_at", "2017-12-28 03:08:37.461566"], ["updated_at", "2017-12-28 03:08:37.461566"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Django"], ["created_at", "2017-12-28 03:08:37.464543"], ["updated_at", "2017-12-28 03:08:37.464543"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Docker"], ["created_at", "2017-12-28 03:08:37.467229"], ["updated_at", "2017-12-28 03:08:37.467229"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Droid"], ["created_at", "2017-12-28 03:08:37.469650"], ["updated_at", "2017-12-28 03:08:37.469650"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Drupal"], ["created_at", "2017-12-28 03:08:37.471829"], ["updated_at", "2017-12-28 03:08:37.471829"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "E-Mail"], ["created_at", "2017-12-28 03:08:37.473838"], ["updated_at", "2017-12-28 03:08:37.473838"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Elixir"], ["created_at", "2017-12-28 03:08:37.476047"], ["updated_at", "2017-12-28 03:08:37.476047"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Ember"], ["created_at", "2017-12-28 03:08:37.477834"], ["updated_at", "2017-12-28 03:08:37.477834"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Front-End"], ["created_at", "2017-12-28 03:08:37.479799"], ["updated_at", "2017-12-28 03:08:37.479799"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Full-Stack"], ["created_at", "2017-12-28 03:08:37.481608"], ["updated_at", "2017-12-28 03:08:37.481608"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Go"], ["created_at", "2017-12-28 03:08:37.483516"], ["updated_at", "2017-12-28 03:08:37.483516"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Hacker"], ["created_at", "2017-12-28 03:08:37.485185"], ["updated_at", "2017-12-28 03:08:37.485185"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Haskell"], ["created_at", "2017-12-28 03:08:37.486795"], ["updated_at", "2017-12-28 03:08:37.486795"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Heroku"], ["created_at", "2017-12-28 03:08:37.488360"], ["updated_at", "2017-12-28 03:08:37.488360"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Information Architecture"], ["created_at", "2017-12-28 03:08:37.490329"], ["updated_at", "2017-12-28 03:08:37.490329"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "iOS"], ["created_at", "2017-12-28 03:08:37.492204"], ["updated_at", "2017-12-28 03:08:37.492204"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Java"], ["created_at", "2017-12-28 03:08:37.494026"], ["updated_at", "2017-12-28 03:08:37.494026"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "JavaScript"], ["created_at", "2017-12-28 03:08:37.495761"], ["updated_at", "2017-12-28 03:08:37.495761"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "jQuery"], ["created_at", "2017-12-28 03:08:37.497623"], ["updated_at", "2017-12-28 03:08:37.497623"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Kuberneti"], ["created_at", "2017-12-28 03:08:37.499580"], ["updated_at", "2017-12-28 03:08:37.499580"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Machine Learning"], ["created_at", "2017-12-28 03:08:37.501213"], ["updated_at", "2017-12-28 03:08:37.501213"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Mobile Dev"], ["created_at", "2017-12-28 03:08:37.503104"], ["updated_at", "2017-12-28 03:08:37.503104"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Mongo DB"], ["created_at", "2017-12-28 03:08:37.504953"], ["updated_at", "2017-12-28 03:08:37.504953"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "My SQL"], ["created_at", "2017-12-28 03:08:37.507072"], ["updated_at", "2017-12-28 03:08:37.507072"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Network Admin"], ["created_at", "2017-12-28 03:08:37.509049"], ["updated_at", "2017-12-28 03:08:37.509049"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Node.JS"], ["created_at", "2017-12-28 03:08:37.511262"], ["updated_at", "2017-12-28 03:08:37.511262"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Objective-C"], ["created_at", "2017-12-28 03:08:37.513556"], ["updated_at", "2017-12-28 03:08:37.513556"]]
+  [1m[35m (4.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Oracle12c"], ["created_at", "2017-12-28 03:08:37.519594"], ["updated_at", "2017-12-28 03:08:37.519594"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Phoenix"], ["created_at", "2017-12-28 03:08:37.521542"], ["updated_at", "2017-12-28 03:08:37.521542"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "PHP"], ["created_at", "2017-12-28 03:08:37.523486"], ["updated_at", "2017-12-28 03:08:37.523486"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Pollster"], ["created_at", "2017-12-28 03:08:37.525365"], ["updated_at", "2017-12-28 03:08:37.525365"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Python"], ["created_at", "2017-12-28 03:08:37.527322"], ["updated_at", "2017-12-28 03:08:37.527322"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Rails"], ["created_at", "2017-12-28 03:08:37.528951"], ["updated_at", "2017-12-28 03:08:37.528951"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "React"], ["created_at", "2017-12-28 03:08:37.530718"], ["updated_at", "2017-12-28 03:08:37.530718"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Ruby"], ["created_at", "2017-12-28 03:08:37.532374"], ["updated_at", "2017-12-28 03:08:37.532374"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Rust"], ["created_at", "2017-12-28 03:08:37.533997"], ["updated_at", "2017-12-28 03:08:37.533997"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Social Media Management"], ["created_at", "2017-12-28 03:08:37.535877"], ["updated_at", "2017-12-28 03:08:37.535877"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "SQLite"], ["created_at", "2017-12-28 03:08:37.537873"], ["updated_at", "2017-12-28 03:08:37.537873"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Swift"], ["created_at", "2017-12-28 03:08:37.539897"], ["updated_at", "2017-12-28 03:08:37.539897"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Tech Support"], ["created_at", "2017-12-28 03:08:37.541751"], ["updated_at", "2017-12-28 03:08:37.541751"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Web Apps"], ["created_at", "2017-12-28 03:08:37.544004"], ["updated_at", "2017-12-28 03:08:37.544004"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Web Design"], ["created_at", "2017-12-28 03:08:37.546212"], ["updated_at", "2017-12-28 03:08:37.546212"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Web Development"], ["created_at", "2017-12-28 03:08:37.548397"], ["updated_at", "2017-12-28 03:08:37.548397"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.6ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Web Infrastructure"], ["created_at", "2017-12-28 03:08:37.550841"], ["updated_at", "2017-12-28 03:08:37.550841"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Web Scraping"], ["created_at", "2017-12-28 03:08:37.553492"], ["updated_at", "2017-12-28 03:08:37.553492"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Windows"], ["created_at", "2017-12-28 03:08:37.556066"], ["updated_at", "2017-12-28 03:08:37.556066"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Wordpress"], ["created_at", "2017-12-28 03:08:37.558127"], ["updated_at", "2017-12-28 03:08:37.558127"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Activist"], ["created_at", "2017-12-28 03:08:37.559972"], ["updated_at", "2017-12-28 03:08:37.559972"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Business Development"], ["created_at", "2017-12-28 03:08:37.562233"], ["updated_at", "2017-12-28 03:08:37.562233"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Campaign Experience"], ["created_at", "2017-12-28 03:08:37.564535"], ["updated_at", "2017-12-28 03:08:37.564535"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Canvassing"], ["created_at", "2017-12-28 03:08:37.566634"], ["updated_at", "2017-12-28 03:08:37.566634"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Community Engagement"], ["created_at", "2017-12-28 03:08:37.568490"], ["updated_at", "2017-12-28 03:08:37.568490"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Community Fundraising"], ["created_at", "2017-12-28 03:08:37.570863"], ["updated_at", "2017-12-28 03:08:37.570863"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Community Organizing"], ["created_at", "2017-12-28 03:08:37.572480"], ["updated_at", "2017-12-28 03:08:37.572480"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Creative Design"], ["created_at", "2017-12-28 03:08:37.574185"], ["updated_at", "2017-12-28 03:08:37.574185"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Creative Writing"], ["created_at", "2017-12-28 03:08:37.576173"], ["updated_at", "2017-12-28 03:08:37.576173"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Crisis Management"], ["created_at", "2017-12-28 03:08:37.578173"], ["updated_at", "2017-12-28 03:08:37.578173"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Customer Service"], ["created_at", "2017-12-28 03:08:37.580007"], ["updated_at", "2017-12-28 03:08:37.580007"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Education/Teaching"], ["created_at", "2017-12-28 03:08:37.582018"], ["updated_at", "2017-12-28 03:08:37.582018"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Elected Official"], ["created_at", "2017-12-28 03:08:37.583675"], ["updated_at", "2017-12-28 03:08:37.583675"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Event Planning"], ["created_at", "2017-12-28 03:08:37.585300"], ["updated_at", "2017-12-28 03:08:37.585300"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Fundraising"], ["created_at", "2017-12-28 03:08:37.586812"], ["updated_at", "2017-12-28 03:08:37.586812"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Graphic Design"], ["created_at", "2017-12-28 03:08:37.588352"], ["updated_at", "2017-12-28 03:08:37.588352"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Human Resources"], ["created_at", "2017-12-28 03:08:37.589866"], ["updated_at", "2017-12-28 03:08:37.589866"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Journalist"], ["created_at", "2017-12-28 03:08:37.591501"], ["updated_at", "2017-12-28 03:08:37.591501"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Legal"], ["created_at", "2017-12-28 03:08:37.593318"], ["updated_at", "2017-12-28 03:08:37.593318"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Logistics"], ["created_at", "2017-12-28 03:08:37.594987"], ["updated_at", "2017-12-28 03:08:37.594987"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Magical Powers"], ["created_at", "2017-12-28 03:08:37.596604"], ["updated_at", "2017-12-28 03:08:37.596604"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Marketing"], ["created_at", "2017-12-28 03:08:37.598171"], ["updated_at", "2017-12-28 03:08:37.598171"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Non-Profit Experience"], ["created_at", "2017-12-28 03:08:37.599872"], ["updated_at", "2017-12-28 03:08:37.599872"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Non-Profit Management"], ["created_at", "2017-12-28 03:08:37.601495"], ["updated_at", "2017-12-28 03:08:37.601495"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Phone-Banking"], ["created_at", "2017-12-28 03:08:37.603111"], ["updated_at", "2017-12-28 03:08:37.603111"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Political Operative"], ["created_at", "2017-12-28 03:08:37.605022"], ["updated_at", "2017-12-28 03:08:37.605022"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Poll-Worker"], ["created_at", "2017-12-28 03:08:37.607352"], ["updated_at", "2017-12-28 03:08:37.607352"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Poverty/Homelessness"], ["created_at", "2017-12-28 03:08:37.609241"], ["updated_at", "2017-12-28 03:08:37.609241"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Product Management"], ["created_at", "2017-12-28 03:08:37.610964"], ["updated_at", "2017-12-28 03:08:37.610964"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Project Management"], ["created_at", "2017-12-28 03:08:37.612983"], ["updated_at", "2017-12-28 03:08:37.612983"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Public Relations"], ["created_at", "2017-12-28 03:08:37.614852"], ["updated_at", "2017-12-28 03:08:37.614852"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Researcher"], ["created_at", "2017-12-28 03:08:37.623376"], ["updated_at", "2017-12-28 03:08:37.623376"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Social Media Expert"], ["created_at", "2017-12-28 03:08:37.625286"], ["updated_at", "2017-12-28 03:08:37.625286"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Volunteer Coordinating"], ["created_at", "2017-12-28 03:08:37.627090"], ["updated_at", "2017-12-28 03:08:37.627090"]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Volunteer Organizing"], ["created_at", "2017-12-28 03:08:37.629354"], ["updated_at", "2017-12-28 03:08:37.629354"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Well Connected"], ["created_at", "2017-12-28 03:08:37.631652"], ["updated_at", "2017-12-28 03:08:37.631652"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Editor"], ["created_at", "2017-12-28 03:08:37.633419"], ["updated_at", "2017-12-28 03:08:37.633419"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Writer"], ["created_at", "2017-12-28 03:08:37.635199"], ["updated_at", "2017-12-28 03:08:37.635199"]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Executive Leadership - Non-Profit"], ["created_at", "2017-12-28 03:08:37.636844"], ["updated_at", "2017-12-28 03:08:37.636844"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Executive\nLeadership - Private Sector"], ["created_at", "2017-12-28 03:08:37.638599"], ["updated_at", "2017-12-28 03:08:37.638599"]]
+  [1m[35m (0.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "skills" ("name", "created_at", "updated_at") VALUES (?, ?, ?)[0m  [["name", "Organization Building"], ["created_at", "2017-12-28 03:08:37.641316"], ["updated_at", "2017-12-28 03:08:37.641316"]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
