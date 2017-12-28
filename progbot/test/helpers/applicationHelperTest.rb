@@ -17,8 +17,11 @@ class ApplicationHelperTest < ActiveSupport::TestCase
     userList = ApplicationHelper.queryUsersForProject(proj)
     assert_not_empty(userList)
     userList.each do |user|
+      # didn't opt in
       assert_not_equal(user.name, "Charlie")
+      # lead for the project
       assert_not_equal(user.name, "Robert")
+      # volunteer for the project
       assert_not_equal(user.name, "Becca")
     end
   end
