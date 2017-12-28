@@ -4,16 +4,17 @@ one:
   name: Project1
   status: MyString
   description: MyText
-  lead: one
+  lead: robert
   website: MyString
   slack_channel: MyString
   skills: java
+  users: becca
 
 two:
   name: Project2
   status: MyString
   description: MyText
-  lead: two
+  lead: becca
   website: MyString
   slack_channel: MyString
   skills:
@@ -22,7 +23,7 @@ three:
   name: Project3
   status: MyString
   description: requires nonexistent skill
-  lead: two
+  lead: becca
   website: MyString
   slack_channel: MyString
   skills: rubyonrails
