@@ -8,7 +8,7 @@ one:
   website: MyString
   slack_channel: MyString
   skills: java
-  users: becca
+  volunteers: becca
 
 two:
   name: Project2
