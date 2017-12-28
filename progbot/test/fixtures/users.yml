@@ -11,7 +11,7 @@ robert:
   slack_username: MyString
   read_manifesto:
   read_code_of_conduct:
-  referer: one
+  referer:
   optin: Yes
   skills: c++, java
 
@@ -26,7 +26,7 @@ becca:
   slack_username: MyString
   read_manifesto:
   read_code_of_conduct:
-  referer: two
+  referer: robert
   optin: Yes
   skills: java
 
@@ -41,6 +41,21 @@ charlie:
   slack_username: MyString
   read_manifesto:
   read_code_of_conduct:
-  referer: two
+  referer: becca
   optin: No
+  skills: java
+
+dave:
+  name: Dave
+  email: MyString
+  join_reason: MyText
+  overview: MyText
+  location: MyString
+  anonymous:
+  phone: MyString
+  slack_username: MyString
+  read_manifesto:
+  read_code_of_conduct:
+  referer: becca
+  optin: Yes
   skills: java
