@@ -12,7 +12,7 @@ class CreateUsers < ActiveRecord::Migration[5.1]
       t.string :slack_userid
       t.boolean :read_manifesto
       t.boolean :read_code_of_conduct
-      t.references :referer, foreign_key: true
+      t.references :referer, foreign_key: false
 
       t.timestamps
     end

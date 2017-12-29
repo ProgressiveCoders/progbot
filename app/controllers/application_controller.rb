@@ -2,8 +2,10 @@ class ApplicationController < ActionController::Base
   include Secrets
   protect_from_forgery with: :exception
 
-  def verify_token() {
-    assert params[:token] == @VERIFICATION_TOKEN
-  }
+  def verify_token()
+    if params[:token] != @VERIFICATION_TOKEN
+      raise "verification token mismatch"
+    end
+  end
 
 end
