@@ -1,4 +1,4 @@
-class SlackController < ApplicationController
+class SlackController < APIController
   def search
   end
 
