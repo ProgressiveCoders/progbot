@@ -12,4 +12,5 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
+permit_params :name, :status, :description, :lead_id, :website, :slack_channel, skills: [], volunteers: []
 end
