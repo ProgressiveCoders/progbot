@@ -4,7 +4,7 @@ class CreateProjects < ActiveRecord::Migration[5.1]
       t.string :name
       t.string :status
       t.text :description
-      t.references :lead, foreign_key: true
+      t.references :lead, foreign_key: false
       t.string :website
       t.string :slack_channel
 

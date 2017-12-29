@@ -12,13 +12,16 @@
 
 ActiveRecord::Schema.define(version: 20171227214959) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
     t.string "resource_type"
-    t.integer "resource_id"
+    t.bigint "resource_id"
     t.string "author_type"
-    t.integer "author_id"
+    t.bigint "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
@@ -47,7 +50,7 @@ ActiveRecord::Schema.define(version: 20171227214959) do
     t.string "name"
     t.string "status"
     t.text "description"
-    t.integer "lead_id"
+    t.bigint "lead_id"
     t.string "website"
     t.string "slack_channel"
     t.datetime "created_at", null: false
@@ -56,15 +59,15 @@ ActiveRecord::Schema.define(version: 20171227214959) do
   end
 
   create_table "projects_skills", id: false, force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "skill_id"
+    t.bigint "project_id"
+    t.bigint "skill_id"
     t.index ["project_id"], name: "index_projects_skills_on_project_id"
     t.index ["skill_id"], name: "index_projects_skills_on_skill_id"
   end
 
   create_table "projects_volunteers", id: false, force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "user_id"
+    t.bigint "project_id"
+    t.bigint "user_id"
     t.index ["project_id"], name: "index_projects_volunteers_on_project_id"
     t.index ["user_id"], name: "index_projects_volunteers_on_user_id"
   end
@@ -76,8 +79,8 @@ ActiveRecord::Schema.define(version: 20171227214959) do
   end
 
   create_table "skills_users", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "skill_id"
+    t.bigint "user_id"
+    t.bigint "skill_id"
     t.index ["skill_id"], name: "index_skills_users_on_skill_id"
     t.index ["user_id"], name: "index_skills_users_on_user_id"
   end
@@ -91,9 +94,10 @@ ActiveRecord::Schema.define(version: 20171227214959) do
     t.boolean "anonymous"
     t.string "phone"
     t.string "slack_username"
+    t.string "slack_userid"
     t.boolean "read_manifesto"
     t.boolean "read_code_of_conduct"
-    t.integer "referer_id"
+    t.bigint "referer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "optin"
