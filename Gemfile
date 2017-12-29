@@ -12,7 +12,7 @@ gem 'devise'
 gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'
-
+gem 'listen'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
