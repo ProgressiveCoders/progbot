@@ -8,6 +8,8 @@ git_source(:github) do |repo_name|
 end
 
 gem 'activeadmin'
+gem 'select2-rails'
+gem 'activeadmin-select2'
 
 # Plus integrations with:
 gem 'devise'
