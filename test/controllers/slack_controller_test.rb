@@ -2,7 +2,7 @@ require 'test_helper'
 
 class SlackControllerTest < ActionDispatch::IntegrationTest
   test "should get search" do
-    post slack_search_url
+    post slack_search_url, params: { text: "c++, ruby" }
     assert_response :success
   end
 

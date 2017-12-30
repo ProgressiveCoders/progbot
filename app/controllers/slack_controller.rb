@@ -9,7 +9,7 @@ class SlackController < APIController
     render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
     Thread.new(params) { |params|
       # now send the search results to the response_url
-      results = ApplicationHelper::queryUsers(params[:text].split(/\s*,\s*/))
+      results = ApplicationHelper::queryUsers(params.require(:text).split(/\s*,\s*/))
       logger.debug results.inspect
       send_results(results, params)
     }
@@ -36,10 +36,7 @@ class SlackController < APIController
       result_str = ""
       results.each do |user|
         result_str += "*#{user.name}*    "
-        skill_list = []
-        user.skills.each do |skill|
-          skill_list.push(skill.name)
-        end
+        skill_list = user.skills.order(:name).pluck(:name)
         logger.debug "skill_list #{skill_list}"
         result_str += skill_list.join(", ") + "\n"
       end
