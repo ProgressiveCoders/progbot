@@ -4,12 +4,10 @@ require 'test_helper'
 
 class ApplicationHelperTest < ActiveSupport::TestCase
   test "should only find optins" do
-    skills = ['Java']
+    skills = ['java']
     userList = ApplicationHelper.queryUsers(skills)
     assert_not_empty(userList)
-    userList.each do |user|
-      assert_not_equal(user.name, "Charlie")
-    end
+    refute_includes userList.map(&:name), "Charlie"
   end
 
   test "should only match optins for project" do
