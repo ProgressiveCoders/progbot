@@ -13,7 +13,7 @@ robert:
   read_code_of_conduct:
   referer:
   optin: Yes
-  skills: c++, java
+  skills: java, c++
 
 becca:
   name: Becca
