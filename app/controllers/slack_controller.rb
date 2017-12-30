@@ -1,4 +1,5 @@
 require 'net/http'
+require 'uri'
 
 class SlackController < APIController
 
@@ -30,8 +31,8 @@ class SlackController < APIController
     logger.debug "send_results count #{results.count}"
     logger.debug "url #{params[:response_url]}"
     uri = URI(params[:response_url])
+    logger.debug "created uri"
     req = Net::Http::Post.new(uri)
-    logger.debug "sending to #{uri}"
     req.content_type = "application/json"
     result_body = {}
     if results.count > 0
