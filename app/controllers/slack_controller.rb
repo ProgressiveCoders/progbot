@@ -8,6 +8,7 @@ class SlackController < APIController
     Thread.new(params) { |params|
       # now send the search results to the response_url
       results = ApplicationHelper::queryUsers(params[:text].split(/\s*,\s*/))
+      logger.debug results.inspect
       send_results(results, params)
     }
   end
