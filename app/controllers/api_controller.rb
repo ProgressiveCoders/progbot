@@ -3,7 +3,7 @@ class APIController < ActionController::API
   @@SLACK_CLIENT_ID = ENV['SLACK_CLIENT_ID']
   @@SLACK_CLIENT_SECRET = ENV['SLACK_CLIENT_SECRET']
 
-  def verify_token()
+  def self.verify_token()
     if params[:token] != @@SLACK_VERIFICATION_TOKEN
       raise "verification token mismatch"
     end
