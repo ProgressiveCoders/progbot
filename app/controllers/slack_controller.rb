@@ -54,9 +54,12 @@ class SlackController < APIController
       result_body["attachments"] = [{"title": "No users found", "text": "No results"}]
     end
 
-    req.body = result_body
-    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-      http.request(req)
+    begin
+      req.body = result_body
+      res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+        http.request(req)
+    rescue Exception => exc
+      logger.error "error #{exc}"
     end
   end
 end
