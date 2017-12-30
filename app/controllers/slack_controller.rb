@@ -29,13 +29,14 @@ class SlackController < APIController
 
   def send_results(results, params)
     logger.debug "send_results count #{results.count}"
-    logger.debug "url #{params[:response_url]}"
     uri = URI(params[:response_url])
-    logger.debug "created uri"
     req = Net::Http::Post.new(uri)
+    logger.debug "created req"
     req.content_type = "application/json"
+    logger.debug "set req content type"
     result_body = {}
     if results.count > 0
+      logger.debug "count > 0"
       result_str = ""
       results.each do |user|
         result_str += user.name + "    "
@@ -43,12 +44,14 @@ class SlackController < APIController
         user.skills do |skill|
           skill_list.push(skill.name)
         end
+        logger.debug "skill_list #{skill_list}"
         result_str += skill_list.join(", ") + "\n"
       end
       logger.debug "results #{result_str}"
       result_body["attachments"] = [{"title": "#{results.length} Users Found", "text": result_str}]
     else
-      result_body["attachments"] = [{"title": "No users found"}]
+      logger.debug "count 0"
+      result_body["attachments"] = [{"title": "No users found", "text": "No results"}]
     end
 
     req.body = result_body
