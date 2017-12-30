@@ -33,7 +33,7 @@ class SlackController < APIController
     req = nil
     begin
       uri = URI(params[:response_url])
-      req = Net::Http::Post.new(uri)
+      req = Net::HTTP::Post.new(uri)
     rescue Exception => exc
       logger.error "exception #{exc}"
       raise
