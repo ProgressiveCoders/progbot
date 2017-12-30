@@ -4,7 +4,7 @@ class APIController < ActionController::API
   @@SLACK_CLIENT_SECRET = ENV['SLACK_CLIENT_SECRET']
 
   before_action :verify_token
-  def verify_token(params)
+  def verify_token
     if params[:token] != @@SLACK_VERIFICATION_TOKEN
       raise "verification token mismatch"
     end
