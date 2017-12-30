@@ -6,7 +6,7 @@ class SlackController < APIController
 
   def search
     # tell the user to cool their heels
-    render json: { response_type: "ephemeral", text: "performing search" }
+    render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
     Thread.new(params) { |params|
       # now send the search results to the response_url
       results = ApplicationHelper::queryUsers(params[:text].split(/\s*,\s*/))
@@ -35,7 +35,7 @@ class SlackController < APIController
       logger.debug "count > 0"
       result_str = ""
       results.each do |user|
-        result_str += user.name + "    "
+        result_str += "*#{user.name}* + "    "
         skill_list = []
         user.skills.each do |skill|
           skill_list.push(skill.name)
