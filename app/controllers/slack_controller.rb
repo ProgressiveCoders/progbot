@@ -1,3 +1,4 @@
+require 'json'
 require 'net/http'
 require 'uri'
 
@@ -55,7 +56,7 @@ class SlackController < APIController
     end
 
     begin
-      req.body = result_body
+      req.body = result_body.to_json
       res = Net::HTTP.start(uri.hostname, uri.port) do |http|
         http.request(req)
       end
