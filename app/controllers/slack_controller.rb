@@ -30,11 +30,6 @@ class SlackController < APIController
 
   def send_results(results, params)
     logger.debug "send_results count #{results.count}"
-    uri = URI(params[:response_url])
-    req = Net::HTTP::Post.new(uri)
-    logger.debug "created req"
-    req.content_type = "application/json"
-    logger.debug "set req content type"
     result_body = {}
     if results.count > 0
       logger.debug "count > 0"
@@ -56,10 +51,8 @@ class SlackController < APIController
     end
 
     begin
-      req.body = result_body.to_json
-      res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-        http.request(req)
-      end
+      uri = URI(params[:response_url])
+      res = Net::HTTP.post uri, result_body.to_json, "Content-Type" => "application/json"
       logger.debug "post result #{res}"
     rescue Exception => exc
       logger.error "error #{exc}"
