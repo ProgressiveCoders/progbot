@@ -27,7 +27,8 @@ class SlackController < APIController
   end
 
   def send_results(results, params)
-    logger.debug "send_results"
+    logger.debug "send_results count #{results.count}"
+    logger.debug "url #{params[:response_url]}"
     uri = URI(params[:response_url])
     req = Net::Http::Post.new(uri)
     logger.debug "sending to #{uri}"
