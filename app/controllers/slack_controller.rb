@@ -35,7 +35,7 @@ class SlackController < APIController
       logger.debug "count > 0"
       result_str = ""
       results.each do |user|
-        result_str += "*#{user.name}* + "    "
+        result_str += "*#{user.name}*    "
         skill_list = []
         user.skills.each do |skill|
           skill_list.push(skill.name)
