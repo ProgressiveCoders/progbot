@@ -40,9 +40,9 @@ class SlackController < APIController
         end
         result_str += skill_list.join(", ") + "\n"
       end
-      result_body["attachments"] = ["title": "#{results.length} Users Found", "text": result_str]
+      result_body["attachments"] = [{"title": "#{results.length} Users Found", "text": result_str}]
     else
-      result_body["attachments"] = ["title": "No users found"]
+      result_body["attachments"] = [{"title": "No users found"}]
     end
 
     req.body = result_body
