@@ -29,15 +29,8 @@ class SlackController < APIController
 
   def send_results(results, params)
     logger.debug "send_results count #{results.count}"
-    uri = nil
-    req = nil
-    begin
-      uri = URI(params[:response_url])
-      req = Net::HTTP::Post.new(uri)
-    rescue Exception => exc
-      logger.error "exception #{exc}"
-      raise
-    end
+    uri = URI(params[:response_url])
+    req = Net::HTTP::Post.new(uri)
     logger.debug "created req"
     req.content_type = "application/json"
     logger.debug "set req content type"
@@ -48,7 +41,7 @@ class SlackController < APIController
       results.each do |user|
         result_str += user.name + "    "
         skill_list = []
-        user.skills do |skill|
+        user.skills.each do |skill|
           skill_list.push(skill.name)
         end
         logger.debug "skill_list #{skill_list}"
