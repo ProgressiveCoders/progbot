@@ -63,7 +63,7 @@ ActiveAdmin.register User do
     f.inputs "Essay Questions" do
       f.input :join_reason
       f.input :overview
-      f.input :skills, :input_html => { multiple: true, size: 30 }
+      f.input :skills, :input_html => { multiple: true, size: 30, class: 'select2' }
     end
 
     f.inputs "Flags" do
