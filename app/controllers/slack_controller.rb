@@ -9,7 +9,7 @@ class SlackController < APIController
       # now send the search results to the response_url
       results = ApplicationHelper::queryUsers(params[:text].split(/\s*,\s*/))
       send_results(results, params)
-    }.start
+    }
   end
 
   def project_search
