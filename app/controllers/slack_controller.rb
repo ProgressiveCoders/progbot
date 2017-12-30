@@ -45,7 +45,8 @@ class SlackController < APIController
       end
       logger.debug "results #{result_str}"
       s = results.count != 1 ? "s" : ""
-      result_body["attachments"] = [{"title": "#{results.count} User#{s} Found", "text": result_str, "mrkdwn": true}]
+      result_body["attachments"] = [{"title": "#{results.count} User#{s} Found", "text": result_str, "mrkdwn_in": ["text"]}]
+      result_body["mrkdwn"] = true
     else
       logger.debug "count 0"
       result_body["attachments"] = [{"title": "No users found", "text": "No results"}]
