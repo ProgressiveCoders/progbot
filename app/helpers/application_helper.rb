@@ -3,11 +3,10 @@ require 'user'
 
 module ApplicationHelper
   def self.queryUsers(skillsList)
-    skillIds = Skill.where(name: skillsList).to_a
     return User.
       where(optin: true).
       joins(:skills).
-      where(skills: { :id => skillIds })
+      where("skills.name ILIKE ANY(ARRAY[?])", skillsList).distinct
   end
 
   def self.queryUsersForProject(project)
