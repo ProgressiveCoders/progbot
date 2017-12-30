@@ -12,7 +12,7 @@ techSkills = [".NET", "Angular", "API", "App Development", "AWS", "Back-End", "B
 "Oracle12c", "Phoenix", "PHP", "Pollster", "Python", "Rails", "React", "Ruby", "Rust", "Social Media Management", "SQLite", "Swift", "Tech Support", "Web Apps", "Web Design", "Web Development", "Web Infrastructure", "Web Scraping", "Windows", "Wordpress"]
 
 techSkills.each do |skill|
-  Skill.create!(name: skill)
+  Skill.create!(name: skill, tech: true)
 end
 
 nonTechSkills = ["Activist", "Business Development", "Campaign Experience", "Canvassing", "Community Engagement", "Community Fundraising", "Community Organizing", "Creative Design", "Creative Writing", "Crisis Management", "Customer Service", "Education/Teaching",
@@ -21,5 +21,5 @@ nonTechSkills = ["Activist", "Business Development", "Campaign Experience", "Can
 Leadership - Private Sector", "Organization Building"]
 
 nonTechSkills.each do |skill|
-  Skill.create!(name: skill)
+  Skill.create!(name: skill, tech: false)
 end
