@@ -60,6 +60,7 @@ class SlackController < APIController
       res = Net::HTTP.start(uri.hostname, uri.port) do |http|
         http.request(req)
       end
+      logger.debug "post result #{res}"
     rescue Exception => exc
       logger.error "error #{exc}"
     end
