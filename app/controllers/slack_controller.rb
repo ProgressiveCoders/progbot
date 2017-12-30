@@ -27,11 +27,13 @@ class SlackController < APIController
   end
 
   def send_results(results, params)
+    logger.debug "send_results"
     uri = URI(params[:response_url])
     req = Net::Http::Post.new(uri)
+    logger.debug "sending to #{uri}"
     req.content_type = "application/json"
     result_body = {}
-    if results.length > 0
+    if results.count > 0
       result_str = ""
       results.each do |user|
         result_str += user.name + "    "
