@@ -1,7 +1,6 @@
 require 'net/http'
 
 class SlackController < APIController
-  before_action verify_token
 
   def search
     # tell the user to cool their heels
