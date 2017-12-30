@@ -4,7 +4,7 @@ class SlackController < APIController
 
   def search
     # tell the user to cool their heels
-    render json: response_type: "ephemeral", text: "performing search"
+    render json: { response_type: "ephemeral", text: "performing search" }
     Thread.new(params) { |params|
       # now send the search results to the response_url
       results = ApplicationHelper::queryUsers(params[:text].split(/\s*,\s*/))
@@ -15,9 +15,9 @@ class SlackController < APIController
   def project_search
     project = Project.where(name: params[:text])
     if project == nil
-      render json: response_type: "ephemeral", text: "project not found!"
+      render json: { response_type: "ephemeral", text: "project not found!" }
     else
-      render json: response_type: "ephemeral", text: "performing search"
+      render json: { response_type: "ephemeral", text: "performing search" }
       Thread.new(project, params) { |project, params|
         results = ApplicationHelper::queryUsersForProject(project)
         send_results(results, params)
