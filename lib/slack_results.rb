@@ -1,7 +1,7 @@
 require_relative 'user_search'
 require_relative 'project_users_search'
+require_relative 'project_search'
 class SlackResults
-  attr_reader :search_text, :response_url
   def initialize(search_class, params)
     @search_class = search_class
     @params       = params
@@ -25,19 +25,19 @@ class SlackResults
       if results.present?
         logger.debug "count > 0"
         result_str = ""
-        results.each do |user|
-          result_str += "*#{user.name}*    "
-          skill_list = user.skills.order(:name).pluck(:name)
+        results.each do |user_or_project|
+          result_str += "*#{user_or_project.name}*    "
+          skill_list = user_or_project.skills.order(:name).pluck(:name)
           logger.debug "skill_list #{skill_list}"
           result_str += skill_list.join(", ") + "\n"
         end
         logger.debug "results #{result_str}"
         s = results.count != 1 ? "s" : ""
-        result_body["attachments"] = [{"title": "#{results.count} User#{s} Found", "text": result_str, "mrkdwn_in": ["text"]}]
+        result_body["attachments"] = [{"title": "#{results.count} Result#{s} Found", "text": result_str, "mrkdwn_in": ["text"]}]
         result_body["mrkdwn"] = true
       else
         logger.debug "count 0"
-        result_body["attachments"] = [{"title": "No users found", "text": "No results"}]
+        result_body["attachments"] = [{"title": "No results found", "text": "No results"}]
       end
 
       begin

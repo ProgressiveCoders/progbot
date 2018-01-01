@@ -8,6 +8,11 @@ class SlackController < APIController
     SlackResults.new(UserSearch, params).call
   end
 
+  def project_skills_search
+    render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
+    res = SlackResults.new(ProjectSearch, params).call
+  end
+
   def project_search
     project = Project.where(name: params[:text]).first
     if project == nil

@@ -6,6 +6,11 @@ class SlackControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get project_skills_search" do
+    post slack_project_skills_search_url, params: { text: "ruby on rails", response_url: "/" }
+    assert_response :success
+  end
+
   test "should get project_search" do
     post slack_project_search_url, params: { text: "Project1", response_url: "/" }
     assert_response :success
