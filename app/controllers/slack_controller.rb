@@ -1,60 +1,25 @@
-require 'json'
-require 'net/http'
-require 'uri'
+require 'slack_results'
 
 class SlackController < APIController
 
   def search
     # tell the user to cool their heels
     render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
-    Thread.new(params) { |params|
-      # now send the search results to the response_url
-      results = ApplicationHelper::queryUsers(params.require(:text).split(/\s*,\s*/))
-      logger.debug results.inspect
-      send_results(results, params)
-    }
+    SlackResults.new(UserSearch, params).call
+  end
+
+  def project_skills_search
+    render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
+    res = SlackResults.new(ProjectSearch, params).call
   end
 
   def project_search
-    project = Project.where(name: params[:text])
+    project = Project.where(name: params[:text]).first
     if project == nil
       render json: { response_type: "ephemeral", text: "project not found!" }
     else
-      render json: { response_type: "ephemeral", text: "performing search" }
-      Thread.new(project, params) { |project, params|
-        results = ApplicationHelper::queryUsersForProject(project)
-        send_results(results, params)
-      }
-    end
-  end
-
-  def send_results(results, params)
-    logger.debug "send_results count #{results.count}"
-    result_body = {}
-    if results.count > 0
-      logger.debug "count > 0"
-      result_str = ""
-      results.each do |user|
-        result_str += "*#{user.name}*    "
-        skill_list = user.skills.order(:name).pluck(:name)
-        logger.debug "skill_list #{skill_list}"
-        result_str += skill_list.join(", ") + "\n"
-      end
-      logger.debug "results #{result_str}"
-      s = results.count != 1 ? "s" : ""
-      result_body["attachments"] = [{"title": "#{results.count} User#{s} Found", "text": result_str, "mrkdwn_in": ["text"]}]
-      result_body["mrkdwn"] = true
-    else
-      logger.debug "count 0"
-      result_body["attachments"] = [{"title": "No users found", "text": "No results"}]
-    end
-
-    begin
-      uri = URI(params[:response_url])
-      res = Net::HTTP.post uri, result_body.to_json, "Content-Type" => "application/json"
-      logger.debug "post result #{res}"
-    rescue Exception => exc
-      logger.error "error #{exc}"
+      render json: { response_type: "ephemeral", text: "performing search: #{params[:text]}" }
+      SlackResults.new(ProjectUsersSearch, params.merge({ project: project })).call
     end
   end
 end
