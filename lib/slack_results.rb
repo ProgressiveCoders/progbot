@@ -35,7 +35,7 @@ class SlackResults
           extra_info = result_type == "User" ?
             user_or_project.slack_username :
             user_or_project.slack_channel
-          result_str += "*#{user_or_project.name}*    "
+          result_str += "*#{user_or_project.name} #{extra_info}*    "
           skill_list = user_or_project.skills.order(:name).pluck(:name)
           logger.debug "skill_list #{skill_list}"
           result_str += skill_list.join(", ") + "\n"
