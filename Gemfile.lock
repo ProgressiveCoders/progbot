@@ -60,6 +60,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    airrecord (0.2.3)
+      faraday (~> 0.10)
+      net-http-persistent (~> 2.9)
     arbre (1.1.1)
       activesupport (>= 3.0.0)
     arel (8.0.0)
@@ -100,6 +103,8 @@ GEM
       request_store (~> 1.0)
     erubi (1.7.0)
     execjs (2.7.0)
+    faraday (0.13.1)
+      multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
@@ -149,6 +154,8 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.10.3)
     multi_json (1.12.2)
+    multipart-post (2.0.0)
+    net-http-persistent (2.9.4)
     nio4r (2.1.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -259,6 +266,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   activeadmin-select2
+  airrecord
   byebug
   cancan
   capybara (~> 2.13)

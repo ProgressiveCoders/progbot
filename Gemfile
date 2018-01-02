@@ -10,6 +10,7 @@ end
 gem 'activeadmin'
 gem 'select2-rails'
 gem 'activeadmin-select2'
+gem 'airrecord'
 
 # Plus integrations with:
 gem 'devise'
