@@ -1,6 +1,11 @@
+require 'net/http'
+require 'uri'
+
 require_relative 'user_search'
 require_relative 'project_users_search'
 require_relative 'project_search'
+
+
 class SlackResults
   def initialize(search_class, params)
     @search_class = search_class
