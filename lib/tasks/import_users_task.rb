@@ -15,7 +15,8 @@ module ImportUsersTask
                  Skill.where(name: airtable_user[:non_tech_skills_and_specialties], tech: false)
         user.update(skills: skills,
                     email: airtable_user[:contact_e_mail],
-                    slack_username: airtable_user[:slack_username])
+                    slack_username: airtable_user[:slack_username],
+                    optin: true)
       end
     end
   end
