@@ -31,6 +31,10 @@ class SlackResults
         logger.debug "count > 0"
         result_str = ""
         results.each do |user_or_project|
+          result_type = user_or_project.class.name
+          extra_info = result_type == "User" ?
+            user_or_project.slack_username :
+            user_or_project.slack_channel
           result_str += "*#{user_or_project.name}*    "
           skill_list = user_or_project.skills.order(:name).pluck(:name)
           logger.debug "skill_list #{skill_list}"
