@@ -3,23 +3,35 @@ require 'slack_results'
 class SlackController < APIController
 
   def search
-    # tell the user to cool their heels
-    render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
-    SlackResults.new(UserSearch, params).call
+    if params[:text].empty?
+      render json: { response_type: "ephemeral", text: "Please specify at least one skill" }
+    else
+      # tell the user to cool their heels
+      render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
+      SlackResults.new(UserSearch, params).call
+    end
   end
 
   def project_skills_search
-    render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
-    res = SlackResults.new(ProjectSearch, params).call
+    if params[:text].empty?
+      render json: { response_type: "ephemeral", text: "Please specify at least one skill" }
+    else
+      render json: { response_type: "ephemeral", text: "performing search for: #{params[:text]}" }
+      res = SlackResults.new(ProjectSearch, params).call
+    end
   end
 
   def project_search
-    project = Project.where(name: params[:text]).first
-    if project == nil
-      render json: { response_type: "ephemeral", text: "project not found!" }
+    if params[:text].empty?
+      render json: { response_type: "ephemeral", text: "Please specify a project" }
     else
-      render json: { response_type: "ephemeral", text: "performing search: #{params[:text]}" }
-      SlackResults.new(ProjectUsersSearch, params.merge({ project: project })).call
+      project = Project.where(name: params[:text]).first
+      if project == nil
+        render json: { response_type: "ephemeral", text: "project not found!" }
+      else
+        render json: { response_type: "ephemeral", text: "performing search: #{params[:text]}" }
+        SlackResults.new(ProjectUsersSearch, params.merge({ project: project })).call
+      end
     end
   end
 end

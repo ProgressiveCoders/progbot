@@ -2,7 +2,7 @@ require 'slack_results'
 class SlackResultsTest < Minitest::Test
   def test_response_body
     matching_users = User.where(name: "Robert")
-    expected_response = {"attachments"=>[{:title=>"1 Result Found", :text=>"*Robert*    C++, Java\n", :mrkdwn_in=>["text"]}], "mrkdwn"=>true}
+    expected_response = {"attachments"=>[{:title=>"1 Result Found", :text=>"*Robert (MyString)*    C++, Java\n", :mrkdwn_in=>["text"]}], "mrkdwn"=>true}
     assert_equal expected_response, subject.send(:send_results, matching_users)
   end
 
