@@ -3,6 +3,7 @@
 
 require_relative 'config/application'
 require_relative 'lib/tasks/import_users_task'
+require_relative 'lib/tasks/import_projects_task'
 
 Rails.application.load_tasks
 
@@ -10,5 +11,12 @@ namespace :progbot do
   desc "Update users from AirTable"
   task :import_users do
     ImportUsersTask::Syncer.new.sync
+  end
+end
+
+namespace :progbot do
+  desc "Update projects from AirTable"
+  task :import_projects do
+    ImportProjectsTask::Syncer.new.sync
   end
 end
