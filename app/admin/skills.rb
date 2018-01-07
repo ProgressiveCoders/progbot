@@ -12,4 +12,6 @@ ActiveAdmin.register Skill do
 #   permitted
 # end
 
+permit_params :name, :tech, :skill_category_id
+
 end

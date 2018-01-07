@@ -23,3 +23,36 @@ Leadership - Private Sector", "Organization Building"]
 nonTechSkills.each do |skill|
   Skill.create!(name: skill, tech: false)
 end
+
+techSkillCategories = [".NET", "ASP.NET", "AWS", "Agile", "Angular.js", "Aphrodite",
+    "Apollo", "Aurelia", "Azure", "Babel", "Backbone", "Bootstrap", "C", "C#", "C++",
+    "C3", "CSS", "Census Data", "Clojure", "Coffee Script", "Connect", "D3" "Django",
+    "Docker", "Droid", "ES-Lint", "ES6", "ETL", "ElasticSearch", "Elixir", "Ember.js",
+    "Enzyme", "Express", "Firebase", "Flask", "Forestry.io", "Git", "Go", "GraphQL",
+    "HTML", "Hadoop", "Haskell", "Heroku", "IPFS", "Jasmine", "Java", "Javascript",
+    "Jekyll", "Kuberneti", "Lua", "MERN", "Materialize", "Minilog", "Minitest", "MobX",
+    "Mongo DB", "MySQL", "NationBuilder", "Netlify", "Node Foreman", "Node", "Node.js",
+    "Nodemon", "Not Sure Yet", "OSDI", "Objective-C", "Om", "PHP", "Phoenix", "PostgreSQL",
+    "Postgres", "Puppet", "Python", "QL", "Qgis", "R", "RSpec", "Radium", "Rails",
+    "React Native", "React-router", "React.js", "Redis", "Redux", "Rollbar", "Ruby",
+    "Rust", "S3", "SASS", "SPA", "SQL", "SQLte", "Scala", "Shell", "Spring", "Swift",
+    "Tableau", "To Be Determined", "Twilio", "Webpak", "WordPress", "iOS", "jQuery",
+    "js/Electron"]
+
+techSkillCategories.each do |category|
+    SkillCategory.create!(name: category, tech_stack: true)
+end
+
+needsCategories = [ "API Dev", "Algorithm", "Alpha Testers", "Back End",
+  "Beta Testers", "CMS", "Client Referrals",
+ "Coders", "Community Outreach", "Copy Writers", "Data Expert", "Data
+ Visualization", "Design", "End Users", "Fiscal Sponsor", "Front End",
+ "Funding", "Graphic Designer", "Legal", "MVP", "Map", "Marketing",
+ "Navigation", "Open Source Consult", "Organizing Experience", "Payment
+ Processing", "Project Management Consult", "Proof Of Concept" "Qa Testing",
+ "SEO Optimization", "Social Media", "UI", "UX", "Web Dev",
+ "Web Developer", "WordPress"]
+
+ needsCategories.each do |category|
+     SkillCategory.create!(name: category, tech_stack: false)
+ end
