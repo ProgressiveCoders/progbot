@@ -45,8 +45,8 @@ end
 
 needsCategories = [ "API Dev", "Algorithm", "Alpha Testers", "Back End",
   "Beta Testers", "CMS", "Client Referrals",
- "Coders", "Community Outreach", "Copy Writers", "Data Expert", "Data
- Visualization", "Design", "End Users", "Fiscal Sponsor", "Front End",
+ "Coders", "Community Outreach", "Copy Writers", "Data Expert",
+ "Data Visualization", "Design", "End Users", "Fiscal Sponsor", "Front End",
  "Funding", "Graphic Designer", "Legal", "MVP", "Map", "Marketing",
  "Navigation", "Open Source Consult", "Organizing Experience", "Payment
  Processing", "Project Management Consult", "Proof Of Concept" "Qa Testing",
