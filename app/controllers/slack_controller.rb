@@ -34,4 +34,9 @@ class SlackController < APIController
       end
     end
   end
+
+  def project_list
+    render json: { response_type: "ephemeral", text: "getting projects" }
+    SlackResults.new(ProjectList, params).call
+  end
 end

@@ -33,4 +33,9 @@ class SlackControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match(/Please specify a project/, response.parsed_body["text"])
   end
+
+  test "should get project_list" do
+    post slack_project_list_url, params: { text: "", response_url: "/" }
+    assert_response :success
+  end
 end

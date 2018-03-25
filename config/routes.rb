@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   post 'slack/project_skills_search'
 
+  post 'slack/project_list'
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   root to: 'admin/dashboard#index'
