@@ -1,0 +1,27 @@
+
+<%= simple_form_for(@user) do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :name, :hint => "If you wish to use an alias, please type \"Last, First\" and check the box below to request an informal video conference with the vetting committee.", :label => "Last Name, First Name"  %>
+  <%= f.input :anonymous %>
+  <%= f.input :email, :hint => "Your preferred E-mail address.  Best to use the one you signed up with on Slack!"  %>
+    
+  <%= f.input :join_reason, :label => "Why do you want to join the Progressive Coders Network?", :hint => "ProgCode is working to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots. Please tell us a little bit about yourself, what brought you to ProgCode and how you'd like to support these goals."  %>
+    
+  <%= f.input :overview, :label => "Skills and Relevant Experience (Tech or Non-Tech)",  :hint => "Just a quick rundown of the skills and experience you bring to the community. Are you a coder? Organizer? Accountant? A short list is great! We don't need an essay here."  %>
+  
+  
+  <%= f.input :location,  :hint => "Be as general or as specific as you'd like, but please include a timezone or the country you reside in."  %>
+  
+  <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
+  
+  <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
+  
+  <%= f.input :slack_username, :label => "Anticipated Slack Username", :hint => "Your username in Slack if you are already in our Slack community.  Ex: @charliebrown", :placeholder => "@charliebrown"  %>
+  
+  <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
+  <hr />
+
+  <%= f.button :submit, "Sign Up" %>
+  <hr />
+<% end %>
