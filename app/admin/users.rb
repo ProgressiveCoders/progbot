@@ -11,6 +11,12 @@ ActiveAdmin.register User do
 #   permitted << :other if params[:action] == 'create' && current_user.admin?
 #   permitted
 # end
+  controller do
+    def scoped_collection
+      end_of_association_chain.includes(:skills)
+    end
+  end
+  
   permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
                 :anonymous, :phone, :slack_username, :read_manifesto,
                 :read_code_of_conduct, :optin, skill_ids: []

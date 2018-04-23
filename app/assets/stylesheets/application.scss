@@ -10,6 +10,26 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
+ *= stub active_admin
  *= require_self
+ *= require_tree .
  */
+@import "bootstrap";
+
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+label {
+  display: inline-block;
+  margin-top: 2.5rem;
+}
+
+.form-text {
+  display: block;
+  margin-bottom: 1rem;
+}
