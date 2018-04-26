@@ -4,6 +4,7 @@ require 'uri'
 require_relative 'user_search'
 require_relative 'project_users_search'
 require_relative 'project_search'
+require_relative 'project_list'
 
 
 class SlackResults
