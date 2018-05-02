@@ -1,5 +1,5 @@
 
-<%= simple_form_for(@user) do |f| %>
+<%= simple_form_for(resource) do |f| %>
   <%= f.error_notification %>
 
   <%= f.input :name, :hint => "If you wish to use an alias, please type \"Last, First\" and check the box below to request an informal video conference with the vetting committee.", :label => "Last Name, First Name"  %>
@@ -10,8 +10,11 @@
     
   <%= f.input :overview, :label => "Skills and Relevant Experience (Tech or Non-Tech)",  :hint => "Just a quick rundown of the skills and experience you bring to the community. Are you a coder? Organizer? Accountant? A short list is great! We don't need an essay here."  %>
   
-  
   <%= f.input :location,  :hint => "Be as general or as specific as you'd like, but please include a timezone or the country you reside in."  %>
+  
+  <%= f.input :tech_skill_names, :as => :string, :input_html => {:data => {:tokens => format_skills(resource.tech_skills), :typeahead_source => format_skills }}    %>
+  
+  <%= f.input :non_tech_skill_names, :as => :string, :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
   
   <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
   
@@ -25,3 +28,7 @@
   <%= f.button :submit, "Sign Up" %>
   <hr />
 <% end %>
+
+<script type="text/javascript">
+  Users.init_form()
+</script>

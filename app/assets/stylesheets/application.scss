@@ -11,10 +11,13 @@
  * It is generally better to create a new file per style scope.
  *
  *= stub active_admin
+ *= require lib/bootstrap_setup
+ *= require lib/bootstrap-tokenfield
+ *= require lib/tokenfield-typeahead
  *= require_self
  *= require_tree .
  */
-@import "bootstrap";
+
 
 body {
   padding-top: 5rem;
