@@ -3,8 +3,13 @@
   <%= f.error_notification %>
 
   <%= f.input :name, :hint => "If you wish to use an alias, please type \"Last, First\" and check the box below to request an informal video conference with the vetting committee.", :label => "Last Name, First Name"  %>
-  <%= f.input :anonymous %>
+  <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
+  
   <%= f.input :email, :hint => "Your preferred E-mail address.  Best to use the one you signed up with on Slack!"  %>
+  
+  <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.) Your responses to this category are used only for light vetting of your online footprint and verification that you are who you say you are. This helps us ensure alignment of interests between the registrant and the community."  %>
+  
+  <%= f.input :hear_about_us, :label => "How did you hear about us?", :hint => "This helps us determine which outreach efforts are most successful."  %>
     
   <%= f.input :join_reason, :label => "Why do you want to join the Progressive Coders Network?", :hint => "ProgCode is working to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots. Please tell us a little bit about yourself, what brought you to ProgCode and how you'd like to support these goals."  %>
     
