@@ -17,9 +17,9 @@
   
   <%= f.input :location,  :hint => "Be as general or as specific as you'd like, but please include a timezone or the country you reside in."  %>
   
-  <%= f.input :tech_skill_names, :as => :string, :input_html => {:data => {:tokens => format_skills(resource.tech_skills), :typeahead_source => format_skills }}    %>
+  <%= f.input :tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_skills), :typeahead_source => format_skills }}    %>
   
-  <%= f.input :non_tech_skill_names, :as => :string, :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
+  <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
   
   <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
   
