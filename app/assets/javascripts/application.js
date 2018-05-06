@@ -10,6 +10,11 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= stub active_admin
+//= require jquery2
 //= require rails-ujs
 //= require turbolinks
+//= require bootstrap
+//= require lib/bootstrap-tokenfield
+//= require lib/typeahead.bundle
 //= require_tree .
