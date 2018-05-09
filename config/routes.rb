@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   root to: 'users#welcome'
+
+  get 'slack/auth', to: 'sessions#auth'
+
   post 'slack/search'
 
   post 'slack/project_search'
