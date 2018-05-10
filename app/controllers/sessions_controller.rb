@@ -3,14 +3,13 @@ require 'pry'
 class SessionsController < ApplicationController
 
   def create
-    @user = User.find_or_create_by(slack_userid: auth['uid']) do |u|
+    @user = User.find_or_create_by(slack_userid: auth['uid'])
       if auth['info']['user']
-        u.slack_username = auth['info']['user']
+        @user.slack_username = auth['info']['user']
       end
-    end
-
-    session[:user_id] = @user.id
-    render 'welcome/dashboard'
+      @user.save
+      session[:uid] = @user.slack_userid
+    redirect_to welcome_dashboard_path
   end
 
   private
