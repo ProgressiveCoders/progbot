@@ -1,0 +1,23 @@
+# Add configuration values here, as shown below.
+#
+# pusher_app_id: "2954"
+# pusher_key: 7381a978f7dd7f9a1117
+# pusher_secret: abdc3b896a0ffb85d373
+# stripe_api_key: sk_test_2J0l093xOyW72XUYJHE4Dv2r
+# stripe_publishable_key: pk_test_ro9jV5SNwGb1yYlQfzG17LHK
+#
+# production:
+#   stripe_api_key: sk_live_EeHnL644i6zo4Iyq4v1KdV9H
+#   stripe_publishable_key: pk_live_9lcthxpSIHbGwmdO941O1XVU
+AIRTABLE_API_KEY: keybZj4CBRpaLERmT
+DATABASE_URL: postgres://nazvfjhfqsrdzg:6f6c804b49c4a37728aac05a3816ee29c10d317b3025eeb1694c77485f183aff@ec2-54-235-244-185.compute-1.amazonaws.com:5432/d44mgeqt1n940a
+LANG: en_US.UTF-8
+PAPERTRAIL_API_TOKEN: BuiyXVm0ckimYOepXesm
+RACK_ENV: production
+RAILS_ENV: production
+RAILS_LOG_TO_STDOUT: enabled
+RAILS_SERVE_STATIC_FILES: enabled
+SECRET_KEY_BASE: c8325864fd6c6830a00c7f98bb7599d3d27ee52b6b8d638d880b40fe57af09a2befa0ac2da30456eab272cee95a65f6801fffd57e21532ff725be2ebd3fddf93
+SLACK_CLIENT_ID: '53858356256.291206045184'
+SLACK_CLIENT_SECRET: c50ca953f0c5a645bd596485b55ca5fd
+SLACK_VERIFICATION_TOKEN: A1Ew5Sgpx7hqYMo7y1fQiZew

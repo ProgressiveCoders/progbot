@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  root to: 'users#welcome'
+  root to: 'welcome#home'
 
-  get 'slack/auth', to: 'sessions#auth'
+  get '/welcome/dashboard' => 'welcome#dashboard'
+
+  get '/auth/slack/callback' => 'welcome#dashboard'
 
   post 'slack/search'
 
