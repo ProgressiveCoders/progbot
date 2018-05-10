@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   get '/welcome/dashboard' => 'welcome#dashboard'
 
-  get '/auth/slack/callback' => 'welcome#dashboard'
+  get '/auth/slack/callback' => 'sessions#create'
 
   post 'slack/search'
 
