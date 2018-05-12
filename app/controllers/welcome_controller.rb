@@ -10,7 +10,7 @@ class WelcomeController < ApplicationController
 
   def dashboard
     if session[:uid] != nil
-      @user = User.find_by(slack_userid: session[:uid])
+      @user = User.find_by(id: session[:uid])
     else
       redirect_to root_path
     end
