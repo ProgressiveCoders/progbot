@@ -14,6 +14,9 @@ class UsersController < ApplicationController
     end
   end
 
+  def register
+  end
+
   private
 
   def set_skills

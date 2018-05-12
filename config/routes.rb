@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   get '/auth/slack/callback' => 'sessions#create'
 
+  get '/logout' => 'sessions#destroy'
+
+  get '/users/register' => 'users#register'
+
   post 'slack/search'
 
   post 'slack/project_search'
