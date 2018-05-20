@@ -8,6 +8,13 @@ class UsersController < ApplicationController
     end
   end
 
+  def new
+    if session[:params]
+      binding.pry
+      @user = session[:params]
+    end
+  end
+
   def update
     update! do |success, failure|
       success.html { redirect_to edit_users_path }

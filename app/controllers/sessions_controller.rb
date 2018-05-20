@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
           redirect_to edit_users_path
         end
       else
-        redirect_to users_register_path
+        redirect_to new_users_path
         session[:params] = auth['info']
         #for users who are already a member of progcode's slack channel but not progbot
       end
