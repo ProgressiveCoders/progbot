@@ -2,6 +2,11 @@
   <div class="row justify-content-center">
     <div class="col-6">
       <h1 class="text-center">Volunteer Registration</h1>
+
+      <% if @user.is_approved %>
+        <p class="lead"> Although you have been accepted into ProgCode, you are not yet in our database. Please fill in this form to enter ProgBot.
+        </p>
+      <% end %>
       <p class="lead">ProgCode is a 501(c)(4) non-profit, non-partisan, progressive community of volunteers whose mission is to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots.</p>
 
       <p class="lead">In an effort to balance the safety of the ProgCode community with the privacy of registrants, all information provided on this form is treated as confidential by a three-person internal vetting committee. No personal information provided here will be shared with members of the community or with other individuals or entities. Responses are used only for light vetting and verification to ensure alignment of interests between the registrant and the community.</p>
@@ -9,10 +14,14 @@
       <p class="lead">Ready to join Progressive Coders Network? This is where you start!</p>
     </div>
   </div>
-  
+
   <div class="row justify-content-center bg-light">
     <div class="col-6 pt-5">
-      <%= render :partial => "users/form" %>
+      <% if @user.is_approved %>
+        <%= render :partial => "users/approved_form" %>
+      <% else %>
+        <%= render :partial => "users/form" %>
+      <% end %>
     </div>
   </div>
 </div>
