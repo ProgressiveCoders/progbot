@@ -3,7 +3,6 @@ class UsersController < ApplicationController
   before_action :set_skills
 
   def create
-    binding.pry
     create! do |success, failure|
       success.html { redirect_to new_users_path }
       # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time and "opt in" to progbot
@@ -11,8 +10,8 @@ class UsersController < ApplicationController
   end
 
   def new
-    if session[:params]
-      params = session[:params]
+    if session['devise.preliminary_user']
+      params = session['devise.preliminary_user']
       @user = User.new(name: params["name"], email: params["email"], slack_username: params["user"], slack_userid: params["user_id"], is_approved: true )
       if @user.slack_username == nil
         @user.slack_username = params[:name]
