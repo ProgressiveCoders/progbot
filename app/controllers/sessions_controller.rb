@@ -1,3 +1,4 @@
+# this controller is deprecated and will be deleted once i make sure none of it is still needed
 class SessionsController < ApplicationController
 
   def create
