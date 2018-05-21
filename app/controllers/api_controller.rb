@@ -1,4 +1,3 @@
-require 'pry'
 class APIController < ActionController::API
   @@SLACK_VERIFICATION_TOKEN = ENV['SLACK_VERIFICATION_TOKEN']
   @@SLACK_CLIENT_ID = ENV['SLACK_CLIENT_ID']

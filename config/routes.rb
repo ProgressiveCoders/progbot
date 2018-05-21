@@ -3,11 +3,16 @@ Rails.application.routes.draw do
 
   get '/welcome/dashboard' => 'welcome#dashboard'
 
-  get '/auth/slack/callback' => 'sessions#create'
+  devise_for :users, except: [:index], controllers: {
+        sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks'
+      }, :path => 'devise'
 
-  get '/logout' => 'sessions#destroy'
+  devise_scope :user do
+    get 'sign_in', :to => 'devise/sessions#new', :as => :user_session
+    get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+  end
 
-  get '/users/register' => 'users#register'
+  resources :users, except: [:index, :destroy]
 
   post 'slack/search'
 
@@ -20,6 +25,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  resource :users, except: [:index]
+
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
