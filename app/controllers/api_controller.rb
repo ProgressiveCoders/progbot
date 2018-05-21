@@ -5,6 +5,7 @@ class APIController < ActionController::API
 
   before_action :verify_token
   def verify_token
+    binding.pry
     if params[:token] != @@SLACK_VERIFICATION_TOKEN
       raise "verification token mismatch"
     end
