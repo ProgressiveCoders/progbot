@@ -1,4 +1,4 @@
-require 'pry'
+
 
 class WelcomeController < ApplicationController
 
