@@ -1,11 +1,20 @@
+require 'pry'
 class UsersController < ApplicationController
   inherit_resources
   before_action :set_skills
 
   def create
     create! do |success, failure|
-      success.html { redirect_to new_users_path }
+      success.html {
+        binding.pry
+        if @user.is_approved
+          redirect_to user_slack_omniauth_authorize_path
+        else
+          redirect_to confirmation_path
+        end
+      }
       # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time and "opt in" to progbot
+
     end
   end
 
@@ -27,6 +36,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def confirmation
+    binding.pry
+  end
+
+  def registration
+
+    binding.pry
+    @user = User.find(session[:id])
+    reset_session
+    binding.pry
+  end
+
   private
 
   def set_skills
@@ -39,7 +60,9 @@ class UsersController < ApplicationController
       :edit, :name, :anonymous, :email, :join_reason,
       :overview, :location, :tech_skill_names, :non_tech_skill_names,
       :optin, :phone, :slack_username, :read_code_of_conduct,
-      :verification_urls, :hear_about_us
+      :verification_urls, :hear_about_us, :is_approved
     )
   end
+
+
 end
