@@ -31,8 +31,11 @@ class UsersController < ApplicationController
   end
 
   def update
-    update! do |success, failure|
-      success.html { redirect_to edit_users_path }
+    binding.pry
+    @user = User.find(session[:id])
+    binding.pry
+    @user.update! do |success, failure|
+      success.html { sign_in_and_redirect @user }
     end
   end
 
@@ -41,11 +44,20 @@ class UsersController < ApplicationController
   end
 
   def registration
-
-    binding.pry
-    @user = User.find(session[:id])
-    reset_session
-    binding.pry
+    if session[:id]
+      @user = User.find(session[:id])
+      if @user
+        if !@user.is_approved
+          redirect_to confirmation_path
+        elsif @user.is_approved && !@user.optin
+          render 'registration'
+        else
+          redirect_to root_path
+        end
+      end
+    else
+      redirect_to root_path
+    end
   end
 
   private
