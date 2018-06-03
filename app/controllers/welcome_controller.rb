@@ -1,19 +1,13 @@
-
-
 class WelcomeController < ApplicationController
-
+  before_action :authenticate_user!, except: [:home]
+  
   def home
-    if session[:uid] != nil
+    if user_signed_in?
       redirect_to welcome_dashboard_path
     end
   end
 
   def dashboard
-    if session[:uid] != nil
-      @user = User.find_by(id: session[:uid])
-    else
-      redirect_to root_path
-    end
   end
 
 
