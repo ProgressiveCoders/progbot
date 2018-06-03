@@ -1,0 +1,15 @@
+
+
+<%= simple_form_for(@user) do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
+  <hr />
+
+  <%= f.button :submit, "Sign Up" %>
+  <hr />
+<% end %>
+
+<script type="text/javascript">
+  Users.init_form()
+</script>

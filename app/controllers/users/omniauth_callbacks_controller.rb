@@ -4,6 +4,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def slack
     auth = request.env['omniauth.auth']
+    # check to make sure team id is correct
     @user = User.find_by(email: auth['info']['email'])
     if @user
       if !@user.slack_userid || @user.slack_userid != auth['uid']
@@ -11,7 +12,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         @user.slack_username = auth['info']['user']
       end
       if @user.save
-        sign_in_and_redirect @user
+        if @user.is_approved && !@user.optin
+          session[:id] = @user.id
+          binding.pry
+          redirect_to users_registration_path
+        elsif @user.is_approved && @user.optin
+         sign_in_and_redirect @user
+        else
+         redirect_to confirmation_path
+        end
       else
         redirect_to edit_users_path
       end
@@ -20,6 +29,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to new_user_path
     end
   end
+
 
   # More info at:
   # https://github.com/plataformatec/devise#omniauth

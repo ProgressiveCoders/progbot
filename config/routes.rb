@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   root to: 'welcome#home'
 
   get '/welcome/dashboard' => 'welcome#dashboard'
+  get '/users/registration' => 'users#registration'
+  get 'users/new/confirmation' => 'users#confirmation'
 
   devise_for :users, except: [:index], controllers: {
         sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks'
