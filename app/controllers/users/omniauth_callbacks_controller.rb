@@ -14,7 +14,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user.save
         if @user.is_approved && !@user.optin
           session[:id] = @user.id
-          binding.pry
           redirect_to users_registration_path
         elsif @user.is_approved && @user.optin
          sign_in_and_redirect @user
