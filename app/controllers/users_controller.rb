@@ -6,7 +6,6 @@ class UsersController < ApplicationController
   def create
     create! do |success, failure|
       success.html {
-        binding.pry
         if @user.is_approved
           redirect_to user_slack_omniauth_authorize_path
         else
@@ -19,23 +18,19 @@ class UsersController < ApplicationController
   end
 
   def new
-    if session['devise.preliminary_user']
-      params = session['devise.preliminary_user']
-      @user = User.new(name: params["name"], email: params["email"], slack_username: params["user"], slack_userid: params["user_id"], is_approved: true )
-      if @user.slack_username == nil
-        @user.slack_username = params[:name]
-      end
-    else
+    binding.pry
+    if !@user
       @user = User.new(is_approved: false)
     end
   end
 
   def update
     binding.pry
-    @user = User.find(session[:id])
-    binding.pry
-    @user.update! do |success, failure|
-      success.html { sign_in_and_redirect @user }
+    if current_user.update!(optin: params["user"]["optin"])
+      binding.pry
+      redirect_to welcome_dashboard_path
+    else
+      redirect_to edit_users_path
     end
   end
 
@@ -44,16 +39,11 @@ class UsersController < ApplicationController
   end
 
   def registration
-    if session[:id]
-      @user = User.find(session[:id])
-      if @user
-        if !@user.is_approved
-          redirect_to confirmation_path
-        elsif @user.is_approved && !@user.optin
-          render 'registration'
-        else
-          redirect_to root_path
-        end
+    if current_user
+      if !current_user.is_approved
+        redirect_to confirmation_path
+      elsif current_user.is_approved && current_user.optin
+        redirect_to root_path
       end
     else
       redirect_to root_path

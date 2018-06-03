@@ -7,8 +7,12 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-    def after_sign_in_path_for(resource)
-      binding.pry
+  def after_sign_in_path_for(resource)
+    binding.pry
+    if !resource.optin
+      users_registration_path
+    else
       welcome_dashboard_path
     end
+  end
 end
