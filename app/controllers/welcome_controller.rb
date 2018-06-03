@@ -3,12 +3,14 @@
 class WelcomeController < ApplicationController
 
   def home
-
+    if user_signed_in?
+      redirect_to welcome_dashboard_path
+    end
 
   end
 
   def dashboard
-    if !current_user
+    if !user_signed_in?
       redirect_to welcome_home_path
     end
   end

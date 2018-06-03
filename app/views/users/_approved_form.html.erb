@@ -1,8 +1,8 @@
-<%= simple_form_for @user do |f| %>
+<%= simple_form_for(resource) do |f| %>
   <%= f.error_notification %>
 
   <%= f.hidden_field :is_approved %>
-  
+
   <%= f.label :name, "Name: #{@user.name}" %>
   <p class="form-text text-muted">If you wish to use an alias, check the box below.</p>
   <%= f.hidden_field :name %>
