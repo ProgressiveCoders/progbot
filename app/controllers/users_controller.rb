@@ -1,4 +1,4 @@
-require 'pry'
+
 class UsersController < ApplicationController
   inherit_resources
   before_action :set_skills
@@ -18,7 +18,6 @@ class UsersController < ApplicationController
   end
 
   def new
-    binding.pry
     if !@user
       @user = User.new(is_approved: false)
     end
@@ -31,7 +30,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    binding.pry
     if current_user.update!(user_params)
       if current_user.optin?
         redirect_to welcome_dashboard_path
