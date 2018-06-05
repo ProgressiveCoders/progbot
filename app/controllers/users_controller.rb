@@ -24,18 +24,27 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit
+    if !current_user
+      redirect_to new_user_path
+    end
+  end
+
   def update
     binding.pry
-    if current_user.update!(optin: params["user"]["optin"])
-      binding.pry
-      redirect_to welcome_dashboard_path
+    if current_user.update!(user_params)
+      if current_user.optin?
+        redirect_to welcome_dashboard_path
+      else
+        redirect_to users_registration_path
+      end
     else
       redirect_to edit_users_path
     end
   end
 
   def confirmation
-    binding.pry
+
   end
 
   def registration
@@ -43,7 +52,7 @@ class UsersController < ApplicationController
       if !current_user.is_approved
         redirect_to confirmation_path
       elsif current_user.is_approved && current_user.optin
-        redirect_to root_path
+        redirect_to welcome_dashboard_path
       end
     else
       redirect_to root_path

@@ -1,13 +1,13 @@
-<%= simple_form_for(resource) do |f| %>
+<%= simple_form_for(current_user) do |f| %>
   <%= f.error_notification %>
 
   <%= f.hidden_field :is_approved %>
 
-  <%= f.label :name, "Name: #{@user.name}" %>
+  <%= f.label :name, "Name: #{current_user.name}" %>
   <p class="form-text text-muted">If you wish to use an alias, check the box below.</p>
   <%= f.hidden_field :name %>
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
-  <%= f.label :email, "Email: #{@user.email}" %>
+  <%= f.label :email, "Email: #{current_user.email}" %>
   <p class="form-text text-muted">This is the e-mail address you used to sign up with on slack. If you would like to change your e-mail address, you can do it through slack.</p>
   <%= f.hidden_field :email %>
 
@@ -27,7 +27,7 @@
 
   <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
 
-  <%= f.label :slack_username, "Slack Username: #{@user.slack_username}" %>
+  <%= f.label :slack_username, "Slack Username: #{current_user.slack_username}" %>
   <p class="form-text text-muted">Your username in Slack. If you did not enter a username in slack, this is the same as your name.</p>
   <%= f.hidden_field :slack_username %>
 
