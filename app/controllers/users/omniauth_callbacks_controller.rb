@@ -22,7 +22,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user.slack_username == nil
         @user.slack_username = auth['info']['name']
       end
-      @user.save(validate:false)
+      @user.save :validate => false
       sign_in_and_redirect @user
     end
   end
