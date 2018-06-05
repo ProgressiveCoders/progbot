@@ -1,5 +1,5 @@
 AIRTABLE_API_KEY: keybZj4CBRpaLERmT
-DATABASE_URL: postgres://nazvfjhfqsrdzg:6f6c804b49c4a37728aac05a3816ee29c10d317b3025eeb1694c77485f183aff@ec2-54-235-244-185.compute-1.amazonaws.com:5432/d44mgeqt1n940a
+PROD_DATABASE_URL: postgres://nazvfjhfqsrdzg:6f6c804b49c4a37728aac05a3816ee29c10d317b3025eeb1694c77485f183aff@ec2-54-235-244-185.compute-1.amazonaws.com:5432/d44mgeqt1n940a
 LANG: en_US.UTF-8
 PAPERTRAIL_API_TOKEN: BuiyXVm0ckimYOepXesm
 RACK_ENV: production
