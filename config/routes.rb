@@ -7,11 +7,11 @@ Rails.application.routes.draw do
   get '/welcome/home' => 'welcome#home'
 
   unauthenticated do
-    root :to => 'welcome#dashboard'
+    root :to => 'welcome#home'
   end
 
   authenticated do
-    root :to => 'welcome#home'
+   root :to => 'welcome#dashboard'
   end
 
   devise_for :users, except: [:index], controllers: {

@@ -1,16 +1,4 @@
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <h1 class="text-center">Volunteer Registration</h1>
 
-      <p class="lead" style="color:red"> Although you have been accepted into ProgCode, you are not yet in our database. Please fill in this form to enter ProgBot.</p>
-
-      <p class="lead">ProgCode is a 501(c)(4) non-profit, non-partisan, progressive community of volunteers whose mission is to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots.</p>
-
-      <p class="lead">In an effort to balance the safety of the ProgCode community with the privacy of registrants, all information provided on this form is treated as confidential by a three-person internal vetting committee. No personal information provided here will be shared with members of the community or with other individuals or entities. Responses are used only for light vetting and verification to ensure alignment of interests between the registrant and the community.</p>
-
-      <p class="lead">Ready to join Progressive Coders Network? This is where you start!</p>
-    </div>
-  </div>
-
-  <%= render 'approved_form', user: @user %>
+<% if !current_user.valid?
+  <%= render 'approved_form' %>
+< % end %>
