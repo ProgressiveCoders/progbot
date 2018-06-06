@@ -23,7 +23,7 @@
 
   <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
 
-  <!-- <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %> -->
+  <%#= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
   <!-- Stephen proposed putting the "optin" checkbox in a different part of the webpage, where they review their information one final time after logging in with slack. checking for optin == true would also help us know whether a user should be taken straight to their dashboard after signing in or brought to a page where they are asked to confirm their info -->
 
   <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
