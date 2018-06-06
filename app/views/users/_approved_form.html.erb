@@ -1,13 +1,28 @@
-<%= simple_form_for @user do |f| %>
+<div class="container">
+<div class="row justify-content-center">
+  <div class="col-6">
+    <h1 class="text-center">Volunteer Registration</h1>
+
+    <p class="lead" style="color:red"> Although you have been accepted into ProgCode, you are not yet in our database. Please fill in this form to enter ProgBot.</p>
+
+    <p class="lead">ProgCode is a 501(c)(4) non-profit, non-partisan, progressive community of volunteers whose mission is to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots.</p>
+
+    <p class="lead">In an effort to balance the safety of the ProgCode community with the privacy of registrants, all information provided on this form is treated as confidential by a three-person internal vetting committee. No personal information provided here will be shared with members of the community or with other individuals or entities. Responses are used only for light vetting and verification to ensure alignment of interests between the registrant and the community.</p>
+
+    <p class="lead">Ready to join Progressive Coders Network? This is where you start!</p>
+  </div>
+</div>
+
+<%= simple_form_for(current_user) do |f| %>
   <%= f.error_notification %>
 
   <%= f.hidden_field :is_approved %>
-  
-  <%= f.label :name, "Name: #{@user.name}" %>
+
+  <%= f.label :name, "Name: #{current_user.name}" %>
   <p class="form-text text-muted">If you wish to use an alias, check the box below.</p>
   <%= f.hidden_field :name %>
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
-  <%= f.label :email, "Email: #{@user.email}" %>
+  <%= f.label :email, "Email: #{current_user.email}" %>
   <p class="form-text text-muted">This is the e-mail address you used to sign up with on slack. If you would like to change your e-mail address, you can do it through slack.</p>
   <%= f.hidden_field :email %>
 
@@ -27,7 +42,7 @@
 
   <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
 
-  <%= f.label :slack_username, "Slack Username: #{@user.slack_username}" %>
+  <%= f.label :slack_username, "Slack Username: #{current_user.slack_username}" %>
   <p class="form-text text-muted">Your username in Slack. If you did not enter a username in slack, this is the same as your name.</p>
   <%= f.hidden_field :slack_username %>
 
