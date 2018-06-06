@@ -1,3 +1,4 @@
+
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
@@ -6,7 +7,15 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-    def after_sign_in_path_for(resource)
-      welcome_dashboard_path
+  def after_sign_in_path_for(resource)
+    if resource.valid?
+      if !resource.optin
+        users_registration_path
+      else
+        welcome_dashboard_path
+      end
+    else
+      edit_user_path(resource)
     end
+  end
 end

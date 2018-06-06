@@ -1,10 +1,21 @@
 Rails.application.routes.draw do
-  root to: 'welcome#home'
 
   get '/welcome/dashboard' => 'welcome#dashboard'
+  get '/users/registration' => 'users#registration'
+  get 'users/new/confirmation' => 'users#confirmation'
+  put 'users/update' => 'users#update'
+  get '/welcome/home' => 'welcome#home'
+
+  unauthenticated do
+    root :to => 'welcome#home'
+  end
+
+  authenticated do
+   root :to => 'welcome#dashboard'
+  end
 
   devise_for :users, except: [:index], controllers: {
-        sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks'
+        sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks', users: 'users'
       }, :path => 'devise'
 
   devise_scope :user do
