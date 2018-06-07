@@ -20,9 +20,7 @@ class SlackBot
     end
 
     def client
-      binding.pry
       @client = Slack::Web::Client.new
-      binding.pry
       @client.auth_test
       @client
     end
