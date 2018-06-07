@@ -1,16 +1,28 @@
 class Dashboard::UsersController < Dashboard::BaseController
   inherit_resources
   defaults :singleton => true
-  
+
   before_action :set_skills
-    
-    
-  
+
+  def update
+    if current_user.update!(user_params)
+      if current_user.optin?
+        redirect_to welcome_dashboard_path
+      else
+        redirect_to users_registration_path
+      end
+    else
+      redirect_to edit_users_path
+    end
+  end
+
+
+
   protected
     def resource
       current_user
     end
-  
+
   private
 
     def user_params
@@ -22,4 +34,3 @@ class Dashboard::UsersController < Dashboard::BaseController
       )
     end
 end
-
