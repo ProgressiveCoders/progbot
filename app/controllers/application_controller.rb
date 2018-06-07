@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
         dashboard_base_index_path
       end
     else
-      edit_user_path(resource)
+      edit_dashboard_user_path
     end
   end
 end
