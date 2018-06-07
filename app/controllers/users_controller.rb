@@ -1,7 +1,7 @@
 
 class UsersController < ApplicationController
   inherit_resources
-  before_action :set_skills
+  before_action :set_skills, :authenticate_user!
 
 
   def create
