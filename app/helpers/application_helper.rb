@@ -1,7 +1,7 @@
 module ApplicationHelper
   def flash_div(bootstrapped = true, opts = {})
     tag = opts.delete(:tag) || :div
-    (opts[:class] ||= "") << (flash.blank? ? " invisible" : "")
+    (opts[:class] ||= "") << (flash.blank? ? " d-none" : "")
     (flash.blank? ? [:notice, :alert, :warning] : flash).map do |k, v|
       content_tag(tag, flash[k], :class => bootstrap_alert_class(k, opts.dup))
     end.compact.join("\n").html_safe
