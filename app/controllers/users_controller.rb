@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   inherit_resources
   before_action :set_skills
 
+
   def create
     create! do |success, failure|
       success.html {

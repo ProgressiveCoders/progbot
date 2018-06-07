@@ -1,6 +1,6 @@
 class SlackBot
   class << self
-    def post_to_recruitment(user, testing = true)
+    def post_to_recruitment(user, testing = false)
       client.chat_postMessage(recruitment_params(user, testing))
     end
 
