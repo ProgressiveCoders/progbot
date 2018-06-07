@@ -16,29 +16,10 @@ class UsersController < ApplicationController
       # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time and "opt in" to progbot
 
     end
-  end
 
   def new
     if !@user
       @user = User.new(is_approved: false)
-    end
-  end
-
-  def edit
-    if !current_user
-      redirect_to new_user_path
-    end
-  end
-
-  def update
-    if current_user.update!(user_params)
-      if current_user.optin?
-        redirect_to welcome_dashboard_path
-      else
-        redirect_to users_registration_path
-      end
-    else
-      redirect_to edit_users_path
     end
   end
 
