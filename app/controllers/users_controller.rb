@@ -10,7 +10,7 @@ class UsersController < ApplicationController
         if @user.is_approved
           redirect_to user_slack_omniauth_authorize_path
         else
-          redirect_to confirmation_path
+          redirect_to users_new_confirmation_path
         end
       }
       # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time and "opt in" to progbot
@@ -49,7 +49,7 @@ class UsersController < ApplicationController
   def registration
     if current_user
       if !current_user.is_approved
-        redirect_to confirmation_path
+        redirect_to users_new_confirmation_path
       elsif current_user.is_approved && current_user.optin
         redirect_to welcome_dashboard_path
       end
@@ -59,11 +59,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-  def set_skills
-    @tech_skills = Skill.tech_skills
-    @non_tech_skills = Skill.non_tech_skills
-  end
 
   def user_params
     params.require(:user).permit(
