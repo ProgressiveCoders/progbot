@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  namespace :dashboard do
+    get 'base/index'
+    resource :user, only: [:edit, :update]
+    resources :projects
+  end
+
   get '/welcome/dashboard' => 'welcome#dashboard'
   get '/users/registration' => 'users#registration'
   get 'users/new/confirmation' => 'users#confirmation'
@@ -11,7 +17,7 @@ Rails.application.routes.draw do
   end
 
   authenticated do
-   root :to => 'welcome#dashboard'
+   root :to => 'dashboard/base#index'
   end
 
   devise_for :users, except: [:index], controllers: {

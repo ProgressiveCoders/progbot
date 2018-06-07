@@ -11,12 +11,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if !@user.slack_userid || @user.slack_userid != auth['uid']
         @user.slack_userid = auth['uid']
         @user.slack_username = auth['info']['user']
+        @user.save
       end
-      if @user.save
-        sign_in_and_redirect @user
-      else
-        redirect_to edit_user_path(@user)
-      end
+      sign_in_and_redirect @user
     else
       @user = User.new(is_approved: true, email: auth['info']['email'], slack_userid: auth['uid'], slack_username: auth['info']['user'], name: auth['info']['name'])
       if @user.slack_username == nil
