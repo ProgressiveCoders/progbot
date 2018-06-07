@@ -7,12 +7,17 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+  def set_skills
+    @tech_skills = Skill.tech_skills
+    @non_tech_skills = Skill.non_tech_skills
+  end
+  
   def after_sign_in_path_for(resource)
     if resource.valid?
       if !resource.optin
         users_registration_path
       else
-        welcome_dashboard_path
+        dashboard_base_index_path
       end
     else
       edit_user_path(resource)
