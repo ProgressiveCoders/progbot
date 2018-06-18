@@ -7,7 +7,7 @@ class Dashboard::UsersController < Dashboard::BaseController
   def update
     if current_user.update!(user_params)
       if current_user.optin?
-        redirect_to welcome_dashboard_path
+        redirect_to dashboard_base_index_path
       else
         redirect_to users_registration_path
       end
