@@ -1,9 +1,14 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-6">
+
+  <% if !current_user.valid? %>
       <h1 class="text-center">Volunteer Registration</h1>
 
       <p class="lead" style="color:red"> Although you have been accepted into ProgCode, you are not yet in our database. Please fill in this form to enter ProgBot.</p>
+  <% else %>
+    <h1 class="text-center">Edit your Profile</h1>
+  <% end %>
 
       <p class="lead">ProgCode is a 501(c)(4) non-profit, non-partisan, progressive community of volunteers whose mission is to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots.</p>
 
@@ -13,7 +18,7 @@
     </div>
   </div>
 
-<%= simple_form_for(current_user) do |f| %>
+<%= simple_form_for current_user, :url => dashboard_user_path, :method => :patch do |f| %>
   <%= f.error_notification %>
 
   <%= f.hidden_field :is_approved %>
@@ -49,7 +54,7 @@
   <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
   <hr />
 
-  <%= f.button :submit, "Sign Up" %>
+  <%= f.button :submit %>
   <hr />
 <% end %>
 
