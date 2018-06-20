@@ -8,7 +8,7 @@
         You will also be able to create your own projects and anonymously search for users according to their skillset and contact them.
       </p>
 
-<%= simple_form_for current_user, :url => { :action => "update" }, :html => { :method => "put" } do |f| %>
+<%= simple_form_for current_user, :url => dashboard_user_path, :html => { :method => "put" } do |f| %>
   <%= f.error_notification %>
 
   <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
