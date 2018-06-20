@@ -7,12 +7,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     auth = request.env['omniauth.auth']
     Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect
     # check to make sure team id is correct
-    @user = User.find_by(email: auth['info']['email'])
+    @user = User.find_by(email: auth['info']['email']) || User.find_by(slack_userid: auth['uid'])
     if @user
       if !@user.slack_userid || @user.slack_userid != auth['uid']
         @user.slack_userid = auth['uid']
         @user.slack_username = auth['info']['user']
         @user.save
+      end
+      if !@user.email != auth['info']['email']
+        @user.email = auth['info']['email']
       end
       sign_in_and_redirect @user
     else
