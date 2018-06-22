@@ -1,15 +1,37 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-6">
 
-<%= simple_form_for(resource) do |f| %>
+  <% if !current_user.valid? %>
+      <h1 class="text-center">Volunteer Registration</h1>
+
+      <p class="lead" style="color:red"> Although you have been accepted into ProgCode, you are not yet in our database. Please fill in this form to enter ProgBot.</p>
+  <% else %>
+    <h1 class="text-center">Edit your Profile</h1>
+  <% end %>
+
+      <p class="lead">ProgCode is a 501(c)(4) non-profit, non-partisan, progressive community of volunteers whose mission is to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots.</p>
+
+      <p class="lead">In an effort to balance the safety of the ProgCode community with the privacy of registrants, all information provided on this form is treated as confidential by a three-person internal vetting committee. No personal information provided here will be shared with members of the community or with other individuals or entities. Responses are used only for light vetting and verification to ensure alignment of interests between the registrant and the community.</p>
+
+      <p class="lead">Ready to join Progressive Coders Network? This is where you start!</p>
+    </div>
+  </div>
+
+<%= simple_form_for current_user, :url => dashboard_user_path, :method => :patch do |f| %>
   <%= f.error_notification %>
 
   <%= f.hidden_field :is_approved %>
 
-  <%= f.input :name, :hint => "If you wish to use an alias, please type \"Last, First\" and check the box below to request an informal video conference with the vetting committee.", :label => "Last Name, First Name"  %>
+  <%= f.label :name, "Name: #{current_user.name}" %>
+  <p class="form-text text-muted">If you wish to use an alias, check the box below.</p>
+  <%= f.hidden_field :name %>
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
+  <%= f.label :email, "Email: #{current_user.email}" %>
+  <p class="form-text text-muted">This is the e-mail address you used to sign up with on slack. If you would like to change your e-mail address, you can do it through slack.</p>
+  <%= f.hidden_field :email %>
 
-  <%= f.input :email, :hint => "Your preferred E-mail address.  Best to use the one you signed up with on Slack!"  %>
-
-  <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.) Your responses to this category are used only for light vetting of your online footprint and verification that you are who you say you are. This helps us ensure alignment of interests between the registrant and the community."  %>
+  <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.)" %>
 
   <%= f.input :hear_about_us, :label => "How did you hear about us?", :hint => "This helps us determine which outreach efforts are most successful."  %>
 
@@ -23,17 +45,16 @@
 
   <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
 
-  <%#= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
-  <!-- Stephen proposed putting the "optin" checkbox in a different part of the webpage, where they review their information one final time after logging in with slack. checking for optin == true would also help us know whether a user should be taken straight to their dashboard after signing in or brought to a page where they are asked to confirm their info -->
-
   <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
 
-  <%= f.input :slack_username, :label => "Anticipated Slack Username", :hint => "Your username in Slack if you are already in our Slack community.  Ex: @charliebrown", :placeholder => "@charliebrown"  %>
+  <%= f.label :slack_username, "Slack Username: #{current_user.slack_username}" %>
+  <p class="form-text text-muted">Your username in Slack. If you did not enter a username in slack, this is the same as your name.</p>
+  <%= f.hidden_field :slack_username %>
 
   <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
   <hr />
 
-  <%= f.button :submit, "Sign Up" %>
+  <%= f.button :submit %>
   <hr />
 <% end %>
 

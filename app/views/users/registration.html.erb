@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <h1 class="text-center">Volunteer Registration</h1>
+
+      <p class="lead">
+        Welcome to Progbot! You are already a member of the Progressive Coders, but have not yet opted in to Progbot, our anonymized skills directory. By opting in, you are agreeing to be listed in our anonymized database of project volunteers. Project managers will be able to anonymously view your skills and contact you.
+        You will also be able to create your own projects and anonymously search for users according to their skillset and contact them.
+      </p>
+
+<%= simple_form_for current_user, :url => dashboard_user_path, :html => { :method => "put" } do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :optin, :label => "Opt In to Anonymized Member Skills Directory" %>
+  <hr />
+
+  <%= f.button :submit, "Sign Up" %>
+  <hr />
+<% end %>
+
+<script type="text/javascript">
+  Users.init_form()
+</script>
