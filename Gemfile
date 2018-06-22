@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'omniauth'
-gem 'omniauth-slack'
+gem 'omniauth-slack', :git => 'https://github.com/sdklos/omniauth-slack'
 gem 'figaro'
 gem 'activeadmin'
 gem 'select2-rails'
