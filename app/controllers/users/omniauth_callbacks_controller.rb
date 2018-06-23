@@ -1,27 +1,28 @@
-# frozen_string_literal: true
+require 'pry'# frozen_string_literal: true
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 
   def slack
     auth = request.env['omniauth.auth']
+    user_info = auth['extra']['raw_info']['user_info']['user']
     Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect
     # check to make sure team id is correct
-    @user = User.find_by(email: auth['info']['email']) || User.find_by(slack_userid: auth['uid'])
+    @user = User.find_by(email: user_info['profile']['email']) || User.find_by(slack_userid: user_info['id'])
     if @user
-      if !@user.slack_userid || @user.slack_userid != auth['uid']
-        @user.slack_userid = auth['uid']
-        @user.slack_username = auth['info']['user']
+      if !@user.slack_userid || @user.slack_userid != user_info['id']
+        @user.slack_userid = user_info['id']
+        @user.slack_username = user_info['name']
         @user.save
       end
-      if !@user.email != auth['info']['email']
-        @user.email = auth['info']['email']
+      if !@user.email != user_info['profile']['email']
+        @user.email = user_info['profile']['email']
       end
       sign_in_and_redirect @user
     else
-      @user = User.new(is_approved: true, email: auth['info']['email'], slack_userid: auth['uid'], slack_username: auth['info']['user'], name: auth['info']['name'])
+      @user = User.new(is_approved: true, email: user_info['profile']['email'], slack_userid: user_info['id'], slack_username: user_info['name'], name: user_info['profile']['real_name'])
       if @user.slack_username == nil
-        @user.slack_username = auth['info']['name']
+        @user.slack_username = user_info['name']
       end
       @user.save :validate => false
       sign_in_and_redirect @user
