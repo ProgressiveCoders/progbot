@@ -5,10 +5,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 
   def slack
-    Rails.logger.debug "Slack response "+request.env.to_json
     auth = request.env['omniauth.auth']
     user_info = auth['extra']['raw_info']['user_info']['user']
-    Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect
+    Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect + ", "+user_info.inspect
     # check to make sure team id is correct
     @user = User.find_by(email: user_info['profile']['email']) || User.find_by(slack_userid: user_info['id'])
     if @user
