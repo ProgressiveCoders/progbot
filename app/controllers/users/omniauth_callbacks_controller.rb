@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+require 'json'
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 
   def slack
+    Rails.logger.debug "Slack response "+request.to_json
     auth = request.env['omniauth.auth']
     user_info = auth['extra']['raw_info']['user_info']['user']
     Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect

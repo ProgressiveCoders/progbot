@@ -72,23 +72,11 @@ ActiveRecord::Schema.define(version: 20180520222215) do
     t.index ["user_id"], name: "index_projects_volunteers_on_user_id"
   end
 
-  create_table "skill_categories", force: :cascade do |t|
-    t.string "name"
-    t.boolean "tech_stack"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "tech", default: true
-  end
-
-  create_table "skills_categories_matching", force: :cascade do |t|
-    t.bigint "skill_id"
-    t.bigint "skill_category_id"
-    t.index ["skill_category_id"], name: "index_skills_categories_matching_on_skill_category_id"
-    t.index ["skill_id"], name: "index_skills_categories_matching_on_skill_id"
   end
 
   create_table "skills_users", id: false, force: :cascade do |t|
