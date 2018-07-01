@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'json'
-require 'pry'
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
