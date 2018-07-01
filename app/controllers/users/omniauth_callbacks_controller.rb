@@ -6,33 +6,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def slack
     auth = request.env['omniauth.auth']
-    user_info = auth["extra"]["user_info"]["user"]
-    Rails.logger.info "SLACK OMNIAUTH\n" + auth.inspect + ", " + user_info.inspect
+    @user_info = auth["extra"]["user_info"]["user"]
+    Rails.logger.info "SLACK OMNIAUTH\n" + auth.inspect + ", " + @user_info.inspect
     # check to make sure team id is correct
-    @user = User.find_by(email: user_info['profile']['email']) || User.find_by(slack_userid: user_info['id'])
+    @user = User.find_by(email: @user_info['profile']['email']) || User.find_by(slack_userid: @user_info['id'])
     if @user
-      if !@user.slack_userid || @user.slack_userid != user_info['id']
-        @user.slack_userid = user_info['id']
-        @user.slack_username = user_info['profile']['display_name']
-      end
-      if !@user.email != user_info['profile']['email']
-        @user.email = user_info['profile']['email']
-      end
-      if @user.is_approved != true && @user.slack_userid != nil
-        @user.is_approved = true
-      end
-      if @user.slack_username != user_info['profile']['display_name'] || @user.slack_username !=  user_info['profile']['real_name']
-        if user_info['profile']['display_name'] != ""
-          @user.slack_username = user_info['profile']['display_name']
-        else
-          @user.slack_username = user_info['profile']['real_name']
-        end
-      end
-      if @user.name == nil
-        @user.name = user_info['profile']['real_name']
-      end
+      @user.update_existing_user(@user_info)
     else
-      @user = User.new(is_approved: true, email: user_info['profile']['email'], slack_userid: user_info['id'], slack_username: user_info['profile']['display_name'], name: user_info['profile']['real_name'])
+      @user = User.new(is_approved: true, email: @user_info['profile']['email'], slack_userid: @user_info['id'], slack_username: @user_info['profile']['display_name'], name: @user_info['profile']['real_name'])
       if @user.slack_username == ""
         @user.slack_username = @user.name
       end

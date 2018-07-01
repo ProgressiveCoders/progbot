@@ -1,3 +1,4 @@
+
 class User < ApplicationRecord
   attr_accessor :tech_skill_names, :non_tech_skill_names
   belongs_to :referer, class_name: "User", optional: true
@@ -6,7 +7,7 @@ class User < ApplicationRecord
 
   validates_presence_of :name, :email, :slack_username, :location, :hear_about_us, :join_reason
   validates_acceptance_of :read_code_of_conduct
-  
+
   has_many :projects, :foreign_key => "lead_id"
 
   after_create :send_slack_notification
@@ -17,6 +18,29 @@ class User < ApplicationRecord
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.encrypted_password = Devise.friendly_token[0,20]
+    end
+  end
+
+  def update_existing_user(user_info)
+    if self.slack_userid || self.slack_userid != user_info['id']
+      self.slack_userid = user_info['id']
+      self.slack_username = user_info['profile']['display_name']
+    end
+    if !self.email != user_info['profile']['email']
+      self.email = user_info['profile']['email']
+    end
+    if self.is_approved != true && self.slack_userid != nil
+      self.is_approved = true
+    end
+    if self.slack_username != user_info['profile']['display_name']
+      if user_info['profile']['display_name'] != ""
+        self.slack_username = user_info['profile']['display_name']
+      elsif self.slack_username !=  user_info['profile']['real_name']
+        self.slack_username = user_info['profile']['real_name']
+      end
+    end
+    if self.name == nil || self.name != user_info['profile']['real_name']
+      self.name = user_info['profile']['real_name']
     end
   end
 
