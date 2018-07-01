@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 require 'json'
+require 'pry'
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 
   def slack
     auth = request.env['omniauth.auth']
-    user_info = auth['extra']['raw_info']['user_info']['user']
-    Rails.logger.info "SLACKK OMNIAUTH\n" + auth.inspect + ", "+user_info.inspect
+    user_info = auth["extra"]["user_info"]["user"]
+    Rails.logger.info "SLACK OMNIAUTH\n" + auth.inspect + ", " + user_info.inspect
     # check to make sure team id is correct
     @user = User.find_by(email: user_info['profile']['email']) || User.find_by(slack_userid: user_info['id'])
     if @user
