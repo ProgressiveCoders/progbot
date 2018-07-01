@@ -18,6 +18,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
       if !@user.email != user_info['profile']['email']
         @user.email = user_info['profile']['email']
+        @user.save
+      end
+      if @user.is_approved != true && @user.slack_userid != nil
+        @user.is_approved = true
+        @user.save
       end
       sign_in_and_redirect @user
     else
