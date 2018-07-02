@@ -22,7 +22,7 @@ class User < ApplicationRecord
   end
 
   def update_existing_user(user_info)
-    if self.slack_userid || self.slack_userid != user_info['id']
+    if !self.slack_userid || self.slack_userid != user_info['id']
       self.slack_userid = user_info['id']
       self.slack_username = user_info['profile']['display_name']
     end
