@@ -487,7 +487,7 @@
           if (this.$input.hasClass('tt-input') && this.$wrapper.find('.tt-cursor').length ) break
           if (this.$input.hasClass('tt-input') && this.$wrapper.find('.tt-hint').val() && this.$wrapper.find('.tt-hint').val().length) break
 
-          // Create token
+          // Create token -- EDIT HERE
           if (this.$input.is(document.activeElement) && this.$input.val().length || this.$input.data('edit')) {
             return this.createTokensFromInput(e, this.$input.data('edit'));
           }
@@ -634,6 +634,7 @@
       this.setTokens( this.$element.val() )
     }
 
+// EDIT HERE 
   , createTokensFromInput: function (e, focus) {
       if (this.$input.val().length < this.options.minLength)
         return // No input, simply return
