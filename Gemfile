@@ -20,7 +20,7 @@ gem 'devise'
 gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'
-
+gem 'audited', '~> 4.7'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
