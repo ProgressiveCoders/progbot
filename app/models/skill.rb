@@ -6,5 +6,9 @@ class Skill < ApplicationRecord
   scope :non_tech_skills, -> () { where(tech: false).order("name ASC") }
 
   audited
-  
+
+  audited associated_with :project
+  audited associated_with :user
+  has_associated_audits
+
 end
