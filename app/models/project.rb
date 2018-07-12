@@ -4,4 +4,9 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :skills
 
   audited
+
+  audited associated_with: :user
+  audited associated_with :skills
+  has_associated_audits
+
 end
