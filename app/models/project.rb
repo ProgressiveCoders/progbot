@@ -6,7 +6,7 @@ class Project < ApplicationRecord
   audited
 
   audited associated_with: :user
-  audited associated_with :skills
+  audited associated_with: :skills
   has_associated_audits
 
 end
