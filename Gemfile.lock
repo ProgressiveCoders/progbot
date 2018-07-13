@@ -66,6 +66,8 @@ GEM
     arbre (1.1.1)
       activesupport (>= 3.0.0)
     arel (8.0.0)
+    audited (4.7.1)
+      activerecord (>= 4.0, < 5.3)
     autoprefixer-rails (8.6.3)
       execjs
     bcrypt (3.1.12)
@@ -324,6 +326,7 @@ DEPENDENCIES
   activeadmin
   activeadmin-select2
   airrecord
+  audited (~> 4.7)
   bootstrap (~> 4.0.0)
   byebug
   cancan
