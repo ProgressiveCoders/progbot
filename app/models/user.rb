@@ -16,8 +16,8 @@ class User < ApplicationRecord
 
   audited
 
-  audited associated_with :user
-  audited associated_with :skill
+  audited associated_with: :user
+  audited associated_with: :skill
   has_associated_audits
 
   def self.from_omniauth(auth)
