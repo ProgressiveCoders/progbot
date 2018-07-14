@@ -38,7 +38,7 @@ class User < ApplicationRecord
     if self.is_approved != true && self.slack_userid != nil
       self.is_approved = true
     end
-    if self.slack_username != user_info['profile']['display_name']
+    if self.slack_username != user_info['profile']['display_name'] || self.slack_username == ""
       if user_info['profile']['display_name'] != ""
         self.slack_username = user_info['profile']['display_name']
       elsif self.slack_username !=  user_info['profile']['real_name']
