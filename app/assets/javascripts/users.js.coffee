@@ -12,15 +12,13 @@ window.Users =
   init_skills: (input_id) ->
     engine = new Bloodhound(
       local: $(input_id).data("typeahead-source")
-      identify: (obj) -> 
+      identify: (obj) ->
         obj.id
       datumTokenizer: (d) ->
         Bloodhound.tokenizers.whitespace d.value
       queryTokenizer: Bloodhound.tokenizers.whitespace
     )
     engine.initialize()
-    $(input_id).tokenfield( 
+    $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
     )
-  
-
