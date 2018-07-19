@@ -14,10 +14,10 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.use :label, class: 'control-label lead font-weight-normal'
-    b.use :error, wrap_with: { tag: 'span', class: 'form-text invalid-feedback' }
     b.use :hint,  wrap_with: { tag: 'p', class: 'form-text text-muted' }
     
-    b.use :input, class: 'form-control'
+    b.use :input, class: 'form-control', error_class: 'is-invalid', valid_class: 'is-valid'
+    b.use :error, wrap_with: { tag: 'div', class: 'form-text invalid-feedback' }
     
   end
 
