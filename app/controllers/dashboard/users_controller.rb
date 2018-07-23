@@ -16,7 +16,7 @@ class Dashboard::UsersController < Dashboard::BaseController
         redirect_to users_registration_path
       end
     else
-      redirect_to edit_dashboard_user_path
+      render :edit
     end
   end
 
