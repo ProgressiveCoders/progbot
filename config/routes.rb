@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   namespace :dashboard do
+    root :to => 'base#index'
     get 'base/index'
     resource :user, only: [:edit, :update]
     resources :projects

@@ -3,16 +3,20 @@ class Dashboard::UsersController < Dashboard::BaseController
   defaults :singleton => true
 
   before_action :set_skills
+  
+  def edit
+    current_user.valid?
+  end
 
   def update
-    if current_user.update!(user_params)
+    if current_user.update(user_params)
       if current_user.optin?
-        redirect_to dashboard_base_index_path
+        redirect_to dashboard_root_path
       else
         redirect_to users_registration_path
       end
     else
-      redirect_to edit_users_path
+      render :edit
     end
   end
 
