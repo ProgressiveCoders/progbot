@@ -634,7 +634,7 @@
       this.setTokens( this.$element.val() )
     }
 
-// EDIT HERE 
+// EDIT HERE
   , createTokensFromInput: function (e, focus) {
       if (this.$input.val().length < this.options.minLength)
         return // No input, simply return
