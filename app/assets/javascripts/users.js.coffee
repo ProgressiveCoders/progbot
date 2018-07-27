@@ -20,8 +20,12 @@ window.Users =
     )
     engine.initialize()
     $(input_id).on 'tokenfield:createtoken', (e) ->
-      skills = e.target.dataset.typeaheadSource
-      console.log(skills)
+      source = e.target.dataset.typeaheadSource
+      hash = eval(source)
+      skills = hash.map((x) ->
+        x.value
+      )
+      debugger
       return
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
