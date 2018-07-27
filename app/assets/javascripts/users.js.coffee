@@ -19,6 +19,10 @@ window.Users =
       queryTokenizer: Bloodhound.tokenizers.whitespace
     )
     engine.initialize()
+    $(input_id).on 'tokenfield:createtoken', (e) ->
+      skills = e.target.dataset.typeaheadSource
+      console.log(skills)
+      return
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
     )
