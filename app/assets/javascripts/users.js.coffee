@@ -29,7 +29,7 @@ window.Users =
       if !skills.includes(skill)
         e.preventDefault()
         $('#modal-invalid-skill').modal keyboard: true
-      return
+        return
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
     )
