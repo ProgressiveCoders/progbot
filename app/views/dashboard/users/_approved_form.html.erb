@@ -1,4 +1,24 @@
 <div class="container">
+
+  <div id="modal-invalid-skill" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Invalid Skill</h4>
+        </div>
+        <div class="modal-body">
+          <p>You can only add a skill that is already in our directory. If you think we have left out an important skill, please let us know at <a href="mailto:admin@progcode.org">admin@progcode.org</a> .</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="row justify-content-center">
     <div class="col-6">
 
@@ -27,7 +47,7 @@
   <%= f.hidden_field :slack_username %>
   <hr />
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
-  
+
 
   <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.)" %>
 
