@@ -25,7 +25,10 @@ window.Users =
       skills = hash.map((x) ->
         x.value
       )
-      debugger
+      skill = e.attrs.value
+      if !skills.includes(skill)
+        e.preventDefault()
+        $('#modal-invalid-skill').modal keyboard: true
       return
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
