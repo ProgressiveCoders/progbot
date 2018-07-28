@@ -13,9 +13,6 @@ Rails.application.routes.draw do
   put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
 
-  get '/skills/tech' => 'skills#tech_skills_index'
-  get '/skills/non-tech' => 'skills#non_tech_skills_index'
-
   unauthenticated do
     root :to => 'welcome#home'
   end
