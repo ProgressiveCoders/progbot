@@ -72,12 +72,35 @@ ActiveRecord::Schema.define(version: 20180830104536) do
     t.string "name"
     t.string "status"
     t.text "description"
-    t.bigint "lead_id"
+    t.integer "lead_ids", default: [], array: true
     t.string "website"
     t.string "slack_channel"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lead_id"], name: "index_projects_on_lead_id"
+    t.string "active_contributors"
+    t.text "attachments"
+    t.string "business_model"
+    t.text "full_release_features"
+    t.string "legal_structure"
+    t.string "master_channel_list"
+    t.text "mission_accomplished"
+    t.string "needs_categories", array: true
+    t.text "needs_pain_points_narrative"
+    t.string "org_structure"
+    t.string "oss_license_type"
+    t.string "progcode_coordinator"
+    t.string "project_applications"
+    t.datetime "project_created"
+    t.string "project_mgmt_url"
+    t.string "project_summary_text"
+    t.string "repository"
+    t.string "slack_channel_url"
+    t.string "software_license_url"
+    t.string "values_screening"
+    t.string "working_doc"
+    t.string "project_lead_slack_id"
+    t.string "team_member_ids"
+    t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 
   create_table "projects_skills", id: false, force: :cascade do |t|
