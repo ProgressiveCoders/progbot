@@ -1,5 +1,6 @@
 class Project < ApplicationRecord
-  belongs_to :lead, class_name: "User"
+  include ProjectConstants
+  # belongs_to :lead, class_name: "User"  # We are going to use arrays.
   has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
   has_and_belongs_to_many :skills
 
@@ -8,5 +9,13 @@ class Project < ApplicationRecord
   audited associated_with: :user
   audited associated_with: :skills
   has_associated_audits
+  
+  def leads
+    lead_ids.blank? ? [] : User.where(:id => self.lead_ids)
+  end
+  
+  def leads=(users)
+    self.lead_ids = users.map(&:id)
+  end
 
 end

@@ -28,5 +28,12 @@ class SlackBot
     def default_params
       { username: "Botty The ProgCode Bot"}
     end
+    
+    def lookup_by_email(email)
+      @client.users_lookupByEmail(email: email).user
+    rescue Slack::Web::Api::Errors::SlackError => e
+      puts "SlackBot:  Email not found: #{email}"
+      return nil
+    end
   end
 end
