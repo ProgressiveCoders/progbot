@@ -19,19 +19,18 @@ ActiveAdmin.register Project do
     selectable_column
     column :name
     column :status
-    column :description
-    column :leads do |project|
-      lead_list = []
-      project.leads.each {|lead| lead_list.push(lead.name)}
-      span lead_list.join(", ")
-      project.lead.name
+    column :description do |project|
+      span project.description.try(:truncate, 30), :title => project.description
     end
-    column :website
+    column :lead do |project|
+      project.leads.map(&:name).to_sentence
+    end
+    column :website do |project|
+      project.website.try(:truncate, 20)
+    end
     column :slack_channel
     column :skills do |project|
-      skill_list = []
-      project.skills.each {|skill| skill_list.push(skill.name)}
-      span skill_list.join(", ")
+      span project.skills.map(&:name).to_sentence
     end
     column :volunteers do |project|
       c = project.volunteers.count
@@ -41,10 +40,6 @@ ActiveAdmin.register Project do
   end
 
   show do
-    skill_list = []
-    project.skills.each { |skill| skill_list.push(skill.name) }
-    volunteer_list = []
-    project.volunteers.each { |volunteer| volunteer_list.push(volunteer.name) }
     attributes_table do
       row :name
       row :status
@@ -52,13 +47,13 @@ ActiveAdmin.register Project do
       row :website
       row :slack_channel
       row :lead do
-        span project.lead.name
+        span project.leads.map(&:name).to_sentence
       end
       row "Skills" do
-        span skill_list.join(", ")
+        span project.skills.map(&:name).to_sentence
       end
       row :volunteers do
-        span volunteer_list.join(", ")
+        span project.volunteers.map(&:name).to_sentence
       end
     end
   end
@@ -73,7 +68,7 @@ ActiveAdmin.register Project do
     end
 
     f.inputs "Selections" do
-      f.input :lead, :input_html => { multiple: false, size: 60, class: 'select2' }
+      f.input :leads, :input_html => { multiple: true, size: 60, class: 'select2' }
 
       f.input :skills, :input_html => { multiple: true, size: 60, class: 'select2' }
 
