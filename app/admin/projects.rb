@@ -68,7 +68,7 @@ ActiveAdmin.register Project do
     end
 
     f.inputs "Selections" do
-      f.input :leads, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :lead_ids, :input_html => { multiple: true, size: 60, class: 'select2' }
 
       f.input :skills, :input_html => { multiple: true, size: 60, class: 'select2' }
 
