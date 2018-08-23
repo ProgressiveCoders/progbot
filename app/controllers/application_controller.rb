@@ -1,5 +1,4 @@
 
-
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
@@ -14,14 +13,18 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    if resource.valid?
-      if !resource.optin
-        users_registration_path
+    if resource.class == AdminUser
+      admin_root_path
+    elsif resource.class == user_session_path
+      if resource.valid?
+        if !resource.optin
+          users_registration_path
+        else
+          dashboard_base_index_path
+        end
       else
-        dashboard_base_index_path
+        edit_dashboard_user_path
       end
-    else
-      edit_dashboard_user_path
     end
   end
 end
