@@ -11,10 +11,10 @@ The following is a summary of the project goals, intended function, and concerns
 #### To view the more detailed Project Overview, you can find it pinned to the top of the #progbot channel in the [Progressive Coders Slack Workspace](https://progcode.slack.com)
 
 ## GOALS
-- Enable site admins to manage users and projects as easily as they do now with airtable.
-- Present the same skillset for user skills and project needs, and allow registered users to modify these skills.
-- Save an audit trail with all edits done, whether through the user screens or the admin interface - this is important for tax and legal reasons.
-- Provide a backup means of administering users, possibly backing up to the original Airtable databases, in case there is a site problem and no developers available to fix it.
+Enable site admins to manage users and projects as easily as they do now with airtable.
+Present the same skillset for user skills and project needs, and allow registered users to modify these skills.
+Save an audit trail with all edits done, whether through the user screens or the admin interface - this is important for tax and legal reasons.
+Provide a backup means of administering users, possibly backing up to the original Airtable databases, in case there is a site problem and no developers available to fix it.
 
 ## SPECIFICATIONS
 
