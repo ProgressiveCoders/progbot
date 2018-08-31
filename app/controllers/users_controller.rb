@@ -1,12 +1,9 @@
-require 'pry'
-
 class UsersController < ApplicationController
   inherit_resources
   before_action :set_skills
 
 
   def create
-    binding.pry
     if User.find_by(email: params["user"]["email"])
       current_user = User.find_by(email: params["user"]["email"])
       current_user.update
