@@ -1,3 +1,4 @@
+
 class Dashboard::UsersController < Dashboard::BaseController
   inherit_resources
   defaults :singleton => true
