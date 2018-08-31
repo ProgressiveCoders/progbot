@@ -12,15 +12,18 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :status, :description, :lead_id, :website,
-                :slack_channel, skill_ids: [], volunteer_ids: []
+  permit_params :name, :status, :description, :website,
+                :slack_channel, skill_ids: [], volunteer_ids: [], lead_ids: []
 
   index do
     selectable_column
     column :name
     column :status
     column :description
-    column :lead do |project|
+    column :leads do |project|
+      lead_list = []
+      project.leads.each {|lead| lead_list.push(lead.name)}
+      span lead_list.join(", ")
       project.lead.name
     end
     column :website

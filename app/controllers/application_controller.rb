@@ -1,4 +1,4 @@
-
+require 'pry'
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
@@ -14,14 +14,20 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    if resource.valid?
-      if !resource.optin
-        users_registration_path
-      else
-        dashboard_base_index_path
-      end
+    if resource.is_a?(AdminUser)
+      binding.pry
+      admin_root_path
     else
-      edit_dashboard_user_path
+      if resource.valid?
+        if !resource.optin
+          users_registration_path
+        else
+          dashboard_base_index_path
+        end
+      else
+        edit_dashboard_user_path
+      end
     end
   end
+
 end
