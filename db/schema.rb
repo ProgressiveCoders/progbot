@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180711103650) do
+ActiveRecord::Schema.define(version: 20180830104536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 20180711103650) do
     t.inet "last_sign_in_ip"
     t.string "provider"
     t.string "uid"
+    t.string "gender_pronouns"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
