@@ -34,7 +34,7 @@ class Dashboard::UsersController < Dashboard::BaseController
         :edit, :anonymous, :join_reason,
         :overview, :location, :tech_skill_names, :non_tech_skill_names,
         :optin, :phone, :read_code_of_conduct,
-        :verification_urls, :hear_about_us, :is_approved
+        :verification_urls, :hear_about_us, :is_approved, :gender_pronouns
       )
     end
 end

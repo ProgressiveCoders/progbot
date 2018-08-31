@@ -9,6 +9,8 @@
 
   <%= f.input :email, :hint => "Your preferred E-mail address.  Best to use the one you signed up with on Slack!"  %>
 
+  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs"], include_blank: true, :label => "What are Your Pronouns? (Optional)"%>
+  
   <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.) Your responses to this category are used only for light vetting of your online footprint and verification that you are who you say you are. This helps us ensure alignment of interests between the registrant and the community."  %>
 
   <%= f.input :hear_about_us, :label => "How did you hear about us?", :hint => "This helps us determine which outreach efforts are most successful."  %>
@@ -30,6 +32,7 @@
 
   <%= f.input :slack_username, :label => "Anticipated Slack Username", :hint => "Your username in Slack if you are already in our Slack community.  Ex: @charliebrown", :placeholder => "@charliebrown"  %>
 
+  
   <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
   <hr />
 
