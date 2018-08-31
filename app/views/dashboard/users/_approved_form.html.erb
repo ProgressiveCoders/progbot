@@ -1,24 +1,5 @@
 <div class="container">
 
-  <div id="modal-invalid-skill" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Invalid Skill</h4>
-        </div>
-        <div class="modal-body">
-          <p>You can only add a skill that is already in our directory. If you think we have left out an important skill, please let us know at <a href="mailto:admin@progcode.org">admin@progcode.org</a> .</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   <div class="row justify-content-center">
     <div class="col-6">
 
@@ -48,6 +29,8 @@
   <hr />
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
 
+  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs"], include_blank: true, :label => "What are Your Pronouns? (Optional)", :selected => current_user.gender_pronouns %>
+
 
   <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.)" %>
 
@@ -64,7 +47,7 @@
   <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
 
   <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
-
+  
   <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
   <hr />
 
