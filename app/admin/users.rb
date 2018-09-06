@@ -13,7 +13,7 @@ ActiveAdmin.register User do
 # end
   controller do
     def scoped_collection
-      end_of_association_chain.includes(:skills)
+      end_of_association_chain.includes(:tech_skills).joins(:tech_skills)
     end
   end
   
@@ -26,17 +26,13 @@ ActiveAdmin.register User do
     column :name
     column :slack_username
     column :email
-    column :skills do |user|
-      skill_list = []
-      user.skills.each {|skill| skill_list.push(skill.name)}
-      span skill_list.join(", ")
+    column :tech_skills do |user|
+      span user.tech_skills.map(&:name).to_sentence
     end
     actions
   end
 
   show do
-    skill_list = []
-    user.skills.each { |skill| skill_list.push(skill.name) }
     attributes_table do
       row :name
       row :email
@@ -46,8 +42,8 @@ ActiveAdmin.register User do
       row :referer
       row :join_reason
       row :overview
-      row "Skills" do
-        span skill_list.join(", ")
+      row "Tech Skills" do
+        span user.tech_skills.map(&:name).to_sentence
       end
       row :anonymous
       row :optin, label: "Opt into skills search"
@@ -69,7 +65,7 @@ ActiveAdmin.register User do
     f.inputs "Essay Questions" do
       f.input :join_reason
       f.input :overview
-      f.input :skills, :input_html => { multiple: true, size: 30, class: 'select2' }
+      f.input :tech_skills, :input_html => { multiple: true, size: 30, class: 'select2' }
     end
 
     f.inputs "Flags" do

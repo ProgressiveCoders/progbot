@@ -13,18 +13,15 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     if resource.is_a?(AdminUser)
-      admin_root_path
-    else
-      if resource.valid?
-        if !resource.optin
-          users_registration_path
-        else
-          dashboard_base_index_path
-        end
+      admin_dashboard_path
+    elsif resource.valid?
+      if !resource.optin
+        users_registration_path
       else
-        edit_dashboard_user_path
+        dashboard_base_index_path
       end
+    else
+      edit_dashboard_user_path
     end
   end
-
 end
