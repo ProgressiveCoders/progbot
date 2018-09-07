@@ -1,9 +1,14 @@
-<p id="notice"><%= notice %></p>
+  <% if @user.is_approved%>
+  
+  <h1>Your e-mail address is already associated with a ProgCode Member</h2>
+  <br>
 
-<p>
-  <strong>Edit:</strong>
-  <%= @user.edit %>
-</p>
+  <a href="/devise/auth/slack"><img alt="Sign in with Slack" height="40" width="172" src="https://platform.slack-edge.com/img/sign_in_with_slack.png" srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a><br>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+  <% else %>
+
+  <h2>Someone with that e-mail address has already filled out an application form. We have updated your information and will be in touch shortly.</h2>
+
+  <% end %>
+<br>
+  <h3>Need Help? Contact admin@progcode.org</h3>

@@ -7,6 +7,10 @@ Rails.application.routes.draw do
     resources :projects
   end
 
+  scope :existing do
+    resources :users, only: [:show]
+  end
+
   get '/welcome/dashboard' => 'welcome#dashboard'
   get '/users/registration' => 'users#registration'
   get 'users/new/confirmation' => 'users#confirmation'
@@ -30,7 +34,7 @@ Rails.application.routes.draw do
     get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
   end
 
-  resources :users, except: [:index, :destroy]
+  resources :users, except: [:index, :destroy, :show]
 
   post 'slack/search'
 
