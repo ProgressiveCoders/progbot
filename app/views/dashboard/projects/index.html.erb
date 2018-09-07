@@ -44,9 +44,9 @@
   <tbody>
     <% collection.each do |project| %>
       <tr>
-        <td><%= link_to 'Show', dashboard_project %></td>
-        <td><%= link_to 'Edit', edit_dashboard_project_path(dashboard_project) %></td>
-        <td><%= link_to 'Destroy', dashboard_project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', dashboard_project_path(project) %></td>
+        <td><%= link_to 'Edit', edit_dashboard_project_path(project) %></td>
+        <td><%= link_to 'Destroy', dashboard_project_path(project), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
