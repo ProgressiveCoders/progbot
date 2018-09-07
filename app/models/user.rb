@@ -8,9 +8,7 @@ class User < ApplicationRecord
   validates_presence_of :name, :email, :slack_username, :location, :hear_about_us, :join_reason
   validates_acceptance_of :read_code_of_conduct
 
-  
-  has_many :projects_volunteers
-  has_many :volunteerings, through: :projects_volunteers, class_name: "Project"
+  has_and_belongs_to_many :volunteerings, class_name: "Project", join_table: "projects_volunteers"
 
   after_create :send_slack_notification
 
