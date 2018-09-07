@@ -5,9 +5,11 @@ class UsersController < ApplicationController
 
   def create
     if User.find_by(email: params["user"]["email"])
-      current_user = User.find_by(email: params["user"]["email"])
-      current_user.update
-      redirect_to users_new_confirmation_path
+      @user = User.find_by(email: params["user"]["email"])
+      if !@user.is_approved
+        @user.update(user_params)
+      end
+      redirect_to user_path(@user)
     else
       create! do |success, failure|
         success.html {
@@ -21,6 +23,14 @@ class UsersController < ApplicationController
       # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time and "opt in" to progbot
 
     end
+  end
+
+  def show
+    @user = User.find(params[:id])
+  end
+
+  def existing
+    @user = User.find_by(email: params["user"["email"]])
   end
 
   def new
