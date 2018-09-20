@@ -29,7 +29,7 @@
   <hr />
   <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
 
-  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs"], include_blank: true, :label => "What are Your Pronouns? (Optional)", :selected => current_user.gender_pronouns %>
+  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs", "other (elaborate in the 'additional information' section of the form"], include_blank: true, :label => "What are Your Pronouns? (Optional)", :selected => current_user.gender_pronouns %>
 
 
   <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.)" %>
