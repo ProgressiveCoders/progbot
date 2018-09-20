@@ -62,7 +62,7 @@ class UsersController < ApplicationController
       :edit, :name, :anonymous, :email, :join_reason,
       :overview, :location, :tech_skill_names, :non_tech_skill_names,
       :optin, :phone, :slack_username, :read_code_of_conduct,
-      :verification_urls, :hear_about_us, :is_approved, :gender_pronouns
+      :verification_urls, :hear_about_us, :is_approved, :gender_pronouns, :additional_information
     )
   end
 

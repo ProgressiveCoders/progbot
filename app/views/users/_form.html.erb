@@ -9,7 +9,7 @@
 
   <%= f.input :email, :hint => "Your preferred E-mail address.  Best to use the one you signed up with on Slack!"  %>
 
-  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs"], include_blank: true, :label => "What are Your Pronouns? (Optional)"%>
+  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs", "other (elaborate in the 'additional information' section of the form"], include_blank: true, :label => "What are Your Pronouns? (Optional)"%>
   
   <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.) Your responses to this category are used only for light vetting of your online footprint and verification that you are who you say you are. This helps us ensure alignment of interests between the registrant and the community."  %>
 
