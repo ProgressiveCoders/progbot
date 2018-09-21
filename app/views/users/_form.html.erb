@@ -32,9 +32,16 @@
 
   <%= f.input :slack_username, :label => "Anticipated Slack Username", :hint => "Your username in Slack if you are already in our Slack community.  Ex: @charliebrown", :placeholder => "@charliebrown"  %>
 
+  <%= f.input :additional_info, :label => "Is there any additional information you would like to share?"%>
+
+  <%= f.input :optin, :label => "All members of ProgCode are automatically added to our anonymized member skills directory, to facilitate participation and collaboration. Uncheck this checkbox if you would like to opt out." %>
   
-  <%= f.input :read_code_of_conduct, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
+  <%= f.input :read_code_of_conduct,:required => true, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
   <hr />
+
+  <h3><%= link_to 'Click here if you need to Register to Vote', 'https://vote.gov', target: "_blank" %></h3>
+  <hr />
+
 
   <%= f.button :submit, "Sign Up" %>
   <hr />
