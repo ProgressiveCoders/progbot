@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
 
   def create
-    if User.find_by(email: params["user"]["email"])
+    if User.find_by(email: params["user"]["email"]) && params["user"]["email"] != ''
       @user = User.find_by(email: params["user"]["email"])
       if !@user.is_approved
         @user.update(user_params)
@@ -20,7 +20,6 @@ class UsersController < ApplicationController
           end
         }
       end
-      # create separate workflow for approved member and non-approved member (see project overview). if validation passes the non-approved member is taken to a page where they are told to wait until they receive an email invitation to slack. approved members are redirected to a registration path where they check their info one last time
 
     end
   end
