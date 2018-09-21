@@ -1,0 +1,15 @@
+doc
+html
+*.sw?
+pkg
+coverage
+.bundle
+tmp
+cruddo.rdoc
+gli.wiki
+Gemfile.lock
+*.gem
+results.html
+.rbx
+.DS_Store
+Session.vim

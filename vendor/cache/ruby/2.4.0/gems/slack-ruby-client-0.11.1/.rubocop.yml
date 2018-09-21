@@ -1,0 +1,9 @@
+AllCops:
+  Exclude:
+    - vendor/**/*
+    - lib/slack/web/api/slack-api-ref/**/*
+
+Naming/MethodName:
+  Enabled: false
+
+inherit_from: .rubocop_todo.yml
