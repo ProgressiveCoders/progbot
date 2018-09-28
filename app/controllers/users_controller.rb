@@ -16,6 +16,7 @@ class UsersController < ApplicationController
           if @user.is_approved
             redirect_to user_slack_omniauth_authorize_path
           else
+            UserMailer.with(user: @user).confirmation_email.deliver_later
             redirect_to users_new_confirmation_path
           end
         }
