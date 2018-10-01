@@ -1,5 +1,0 @@
-source 'http://rubygems.org'
-
-gem 'slack-ruby-client', path: '../..'
-
-gem 'celluloid-io', require: ['celluloid/current', 'celluloid/io']
