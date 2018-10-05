@@ -30,4 +30,6 @@ class Project < ApplicationRecord
     self.non_tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
   end
 
+  
+
 end
