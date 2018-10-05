@@ -1,6 +1,22 @@
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
 
+  def show
+
+  end
+
+  def create
+    create! do |success, failure|
+      success.html {
+        redirect_to dashboard_project_path(@project)
+      }
+    end
+  end
+
+  def new
+    @project = Project.new
+  end
+
   private
   
   def begin_of_association_chain
