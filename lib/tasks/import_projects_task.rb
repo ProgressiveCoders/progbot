@@ -14,9 +14,33 @@ module ImportProjectsTask
         pp airtable_project
         puts ("-" * 20)
         proj = Project.find_or_initialize_by name: airtable_project[:project_name]
-        proj.leads = User.where(:slack_userid => airtable_project[:project_lead_slack_id]) unless airtable_project[:project_lead_slack_id].blank?
-        proj.volunteers += User.where(:slack_userid => airtable_project[:team_member_ids]) unless airtable_project[:team_member_ids].blank?
-        proj.skills = Skill.match_skills(airtable_project[:tech_stack]).tech_skills unless airtable_project[:tech_stack].blank?
+
+        if !airtable_project[:project_lead_slack_ids].blank?
+          airtable_project[:project_lead_slack_ids].each do |lead_id|
+            proj.lead_ids << User.where(:slack_userid => lead_id)
+          end
+        end
+
+        if !airtable_project[:team_member_ids].blank?
+          airtable_project[:team_member_ids].each do |member_id|
+            proj.volunteers += User.where(:slack_userid => member_id)
+          end
+        end
+
+        airtable_project[:progcode_coordinator_s_].each do |coord_id|
+          proj.progcode_coordinators += User.where(:slack_userid => coord_id)
+        end unless airtable_project[:progcode_coordinator_s_].blank?
+
+        airtable_project[:needs_categories].each do |category|
+          skills = []
+          skills << Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
+          skills.each do |skill|
+           proj.needs_categories << skill.id
+          end
+        end unless airtable_project[:needs_categories].blank?
+
+        proj.tech_skills = Skill.match_skills(airtable_project[:tech_stack]).tech_skills unless airtable_project[:tech_stack].blank?
+
         proj.assign_attributes(build_attributes(airtable_project))
         proj.save(:validate => false)
       end
@@ -24,12 +48,7 @@ module ImportProjectsTask
     
     def build_attributes(airtable_project)
       {
-        description: airtable_project[:project_summary_text],
-        active_contributors: airtable_project[:active_contributors_full_time_equivalent_],
-        progcode_coordinator: extract_assoc(airtable_project, :progcode_coordinator_s_, :name).join(","),
-        project_lead_slack_id: airtable_project[:project_lead_slack_id].try(:join, ","),
-        team_member_ids: airtable_project[:team_member_ids].try(:join, ","),
-        slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","),
+        description: airtable_project[:project_summary_text],    slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","),
         status: airtable_project[:project_status].try(:first) || "In Development"
       }.merge(extract_fields(airtable_project))
     end
@@ -53,7 +72,7 @@ module ImportProjectsTask
         :project_name, :project_summary_text, :active_contributors_full_time_equivalent_,
         :team_member, :project_lead_slack_contact, :members, :team_member_name_s_,
         :progcode_coordinator_s_, :team_member, :tech_stack, :project_status, :team_member_ids,
-        :project_lead_slack_id, :slack_channel
+        :project_lead_slack_id, :slack_channel, :needs_categories, :project_created, :master_channel_list
       )
     end
   end

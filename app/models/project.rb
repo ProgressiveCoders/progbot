@@ -3,6 +3,8 @@ class Project < ApplicationRecord
 
   attr_accessor :tech_skill_names, :non_tech_skill_names
 
+  has_and_belongs_to_many :skills
+  
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_skills, -> { where tech: false }, class_name: "Skill", join_table: "projects_skills"
 

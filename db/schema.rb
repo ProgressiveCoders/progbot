@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180921023508) do
+ActiveRecord::Schema.define(version: 20181109031433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,18 +78,11 @@ ActiveRecord::Schema.define(version: 20180921023508) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "active_contributors"
-    t.text "attachments"
-    t.string "business_model"
     t.text "full_release_features"
-    t.string "legal_structure"
     t.string "master_channel_list"
     t.text "mission_accomplished"
-    t.string "needs_categories", array: true
     t.text "needs_pain_points_narrative"
     t.string "org_structure"
-    t.string "oss_license_type"
-    t.string "progcode_coordinator"
-    t.string "project_applications"
     t.datetime "project_created"
     t.string "project_mgmt_url"
     t.string "project_summary_text"
@@ -98,8 +91,15 @@ ActiveRecord::Schema.define(version: 20180921023508) do
     t.string "software_license_url"
     t.string "values_screening"
     t.string "working_doc"
-    t.string "project_lead_slack_id"
-    t.string "team_member_ids"
+    t.string "business_models", default: [], array: true
+    t.string "legal_structures", default: [], array: true
+    t.string "oss_license_types", default: [], array: true
+    t.string "progcode_coordinators", default: [], array: true
+    t.string "project_applications", default: [], array: true
+    t.string "project_lead_slack_ids", default: [], array: true
+    t.string "team_member_ids", default: [], array: true
+    t.text "attachments"
+    t.integer "needs_categories", default: [], array: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 
