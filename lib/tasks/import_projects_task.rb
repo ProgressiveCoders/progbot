@@ -17,25 +17,35 @@ module ImportProjectsTask
 
         if !airtable_project[:project_lead_slack_ids].blank?
           airtable_project[:project_lead_slack_ids].each do |lead_id|
-            proj.lead_ids << User.where(:slack_userid => lead_id)
+            lead = User.where(:slack_userid => lead_id)
+            unless proj.lead_ids.include?(lead)
+              proj.lead_ids << lead.id
+            end
           end
         end
 
         if !airtable_project[:team_member_ids].blank?
           airtable_project[:team_member_ids].each do |member_id|
-            proj.volunteers += User.where(:slack_userid => member_id)
+            volunteer = User.where(:slack_userid => member_id)
+            unless proj.volunteers.include?(volunteer)
+              proj.volunteers += volunteer
+            end
           end
         end
 
-        airtable_project[:progcode_coordinator_s_].each do |coord_id|
-          proj.progcode_coordinators += User.where(:slack_userid => coord_id)
+        airtable_project[:progcode_coordinator_s_].each do |coord|
+           coordinator = User.find_by(slack_userid: coord.id)
+           if coordinator != nil
+             unless proj.progcode_coordinator_ids.include?(coordinator.id)
+            proj.progcode_coordinator_ids += coordinator.id
+           end
+          end
         end unless airtable_project[:progcode_coordinator_s_].blank?
 
         airtable_project[:needs_categories].each do |category|
-          skills = []
-          skills << Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
-          skills.each do |skill|
-           proj.needs_categories << skill.id
+          skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
+          unless proj.needs_categories.include?(skill)
+            proj.needs_categories += skill
           end
         end unless airtable_project[:needs_categories].blank?
 

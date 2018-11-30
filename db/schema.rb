@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181109031433) do
+ActiveRecord::Schema.define(version: 20181130023931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,11 @@ ActiveRecord::Schema.define(version: 20181109031433) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "needs_categories", force: :cascade do |t|
+    t.bigint "project_id"
+    t.bigint "skill_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.string "status"
@@ -94,12 +99,11 @@ ActiveRecord::Schema.define(version: 20181109031433) do
     t.string "business_models", default: [], array: true
     t.string "legal_structures", default: [], array: true
     t.string "oss_license_types", default: [], array: true
-    t.string "progcode_coordinators", default: [], array: true
     t.string "project_applications", default: [], array: true
     t.string "project_lead_slack_ids", default: [], array: true
     t.string "team_member_ids", default: [], array: true
     t.text "attachments"
-    t.integer "needs_categories", default: [], array: true
+    t.integer "progcode_coordinator_ids", default: [], array: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 
