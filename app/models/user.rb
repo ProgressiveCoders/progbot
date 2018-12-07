@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   has_and_belongs_to_many :volunteerings, class_name: "Project", join_table: "projects_volunteers"
 
-  after_create :send_slack_notification
+  # after_create :send_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
