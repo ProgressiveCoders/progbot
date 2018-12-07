@@ -3,6 +3,8 @@ require_relative '../../app/models/user'
 require_relative '../../app/models/project'
 require_relative '../../app/models/airtable_project'
 
+require 'pry'
+
 module ImportProjectsTask
   class Syncer
     def sync
@@ -17,6 +19,7 @@ module ImportProjectsTask
 
         if !airtable_project[:project_lead_slack_ids].blank?
           airtable_project[:project_lead_slack_ids].each do |lead_id|
+            binding.pry
             lead = User.where(:slack_userid => lead_id)
             unless proj.lead_ids.include?(lead)
               proj.lead_ids << lead.id
@@ -28,7 +31,7 @@ module ImportProjectsTask
           airtable_project[:team_member_ids].each do |member_id|
             volunteer = User.where(:slack_userid => member_id)
             unless proj.volunteers.include?(volunteer)
-              proj.volunteers += volunteer
+              proj.volunteers << volunteer
             end
           end
         end
@@ -37,7 +40,7 @@ module ImportProjectsTask
            coordinator = User.find_by(slack_userid: coord.id)
            if coordinator != nil
              unless proj.progcode_coordinator_ids.include?(coordinator.id)
-            proj.progcode_coordinator_ids += coordinator.id
+            proj.progcode_coordinator_ids << coordinator.id
            end
           end
         end unless airtable_project[:progcode_coordinator_s_].blank?
@@ -45,7 +48,7 @@ module ImportProjectsTask
         airtable_project[:needs_categories].each do |category|
           skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
           unless proj.needs_categories.include?(skill)
-            proj.needs_categories += skill
+            proj.needs_categories << skill
           end
         end unless airtable_project[:needs_categories].blank?
 
