@@ -17,12 +17,11 @@ module ImportProjectsTask
         puts ("-" * 20)
         proj = Project.find_or_initialize_by name: airtable_project[:project_name]
 
-        if !airtable_project[:project_lead_slack_ids].blank?
-          airtable_project[:project_lead_slack_ids].each do |lead_id|
-            binding.pry
-            lead = User.where(:slack_userid => lead_id)
-            unless proj.lead_ids.include?(lead)
-              proj.lead_ids << lead.id
+
+        if !airtable_project[:project_lead_slack_id].blank?
+          airtable_project[:project_lead_slack_id].each do |slack_id|
+            unless proj.project_lead_slack_ids.include?(slack_id)
+              proj.project_lead_slack_ids << slack_id
             end
           end
         end
@@ -37,6 +36,7 @@ module ImportProjectsTask
         end
 
         airtable_project[:progcode_coordinator_s_].each do |coord|
+          binding.pry
            coordinator = User.find_by(slack_userid: coord.id)
            if coordinator != nil
              unless proj.progcode_coordinator_ids.include?(coordinator.id)
