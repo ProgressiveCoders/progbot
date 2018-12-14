@@ -64,7 +64,7 @@ class User < ApplicationRecord
   end
 
 
-  def send_slack_notification
-    SlackBot.post_to_recruitment(self)
-  end
+  # def send_slack_notification
+  #   SlackBot.post_to_recruitment(self)
+  # end
 end
