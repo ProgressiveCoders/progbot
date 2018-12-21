@@ -35,15 +35,15 @@ module ImportProjectsTask
           end
         end
 
-        airtable_project[:progcode_coordinator_s_].each do |coord|
+        airtable_project[:progcode_coordinator_ids].each do |coord|
           binding.pry
-           coordinator = User.find_by(slack_userid: coord.id)
+           coordinator = User.find_by(slack_userid: coord)
            if coordinator != nil
              unless proj.progcode_coordinator_ids.include?(coordinator.id)
             proj.progcode_coordinator_ids << coordinator.id
            end
           end
-        end unless airtable_project[:progcode_coordinator_s_].blank?
+        end unless airtable_project[:progcode_coordinator_ids].blank?
 
         airtable_project[:needs_categories].each do |category|
           skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
@@ -84,7 +84,7 @@ module ImportProjectsTask
       end.except(
         :project_name, :project_summary_text, :active_contributors_full_time_equivalent_,
         :team_member, :project_lead_slack_contact, :members, :team_member_name_s_,
-        :progcode_coordinator_s_, :team_member, :tech_stack, :project_status, :team_member_ids,
+        :progcode_coordinator_s_, :progcode_coordinator_ids, :team_member, :tech_stack, :project_status, :team_member_ids,
         :project_lead_slack_id, :slack_channel, :needs_categories, :project_created, :master_channel_list
       )
     end
