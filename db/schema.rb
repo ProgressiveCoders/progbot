@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181130023931) do
+ActiveRecord::Schema.define(version: 20181228041952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,10 +100,11 @@ ActiveRecord::Schema.define(version: 20181130023931) do
     t.string "legal_structures", default: [], array: true
     t.string "oss_license_types", default: [], array: true
     t.string "project_applications", default: [], array: true
-    t.string "project_lead_slack_ids", default: [], array: true
-    t.string "team_member_ids", default: [], array: true
     t.text "attachments"
     t.integer "progcode_coordinator_ids", default: [], array: true
+    t.string "progcode_github_project_link"
+    t.boolean "mission_aligned"
+    t.string "flagged", default: [], array: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 
