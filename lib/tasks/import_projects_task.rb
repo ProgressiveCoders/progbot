@@ -18,26 +18,29 @@ module ImportProjectsTask
         proj = Project.find_or_initialize_by name: airtable_project[:project_name]
 
 
-        if !airtable_project[:project_lead_slack_id].blank?
-          airtable_project[:project_lead_slack_id].each do |slack_id|
-            unless proj.project_lead_slack_ids.include?(slack_id)
-              proj.project_lead_slack_ids << slack_id
+        airtable_project[:project_lead_slack_id].each do |slack_id|
+          lead = User.where(:slack_userid => slack_id)
+          binding.pry
+          if lead != nil
+            unless proj.lead_ids.include?(lead.id)
+              proj.lead_ids << lead.id
             end
           end
-        end
+        end unless airtable_project[:project_lead_slack_id].blank?
 
-        if !airtable_project[:team_member_ids].blank?
-          airtable_project[:team_member_ids].each do |member_id|
-            volunteer = User.where(:slack_userid => member_id)
+        airtable_project[:team_member_ids].each do |member_id|
+          binding.pry
+          volunteer = User.where(:slack_userid => member_id)
+          if volunteer != nil
             unless proj.volunteers.include?(volunteer)
               proj.volunteers << volunteer
             end
           end
-        end
+        end unless airtable_project[:team_member_ids].blank?
 
-        airtable_project[:progcode_coordinator_ids].each do |coord|
+        airtable_project[:progcode_coordinator_ids].each do |coord_id|
           binding.pry
-           coordinator = User.find_by(slack_userid: coord)
+           coordinator = User.where(:slack_userid => coord_id)
            if coordinator != nil
              unless proj.progcode_coordinator_ids.include?(coordinator.id)
             proj.progcode_coordinator_ids << coordinator.id
@@ -61,7 +64,7 @@ module ImportProjectsTask
     
     def build_attributes(airtable_project)
       {
-        description: airtable_project[:project_summary_text],    slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","),
+        description: airtable_project[:project_summary_text], slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","), master_channel_list: extract_assoc(airtable_project, :master_channel_list, :channel_name).join(","),
         status: airtable_project[:project_status].try(:first) || "In Development"
       }.merge(extract_fields(airtable_project))
     end
