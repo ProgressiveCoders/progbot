@@ -3,8 +3,6 @@ require_relative '../../app/models/user'
 require_relative '../../app/models/project'
 require_relative '../../app/models/airtable_project'
 
-require 'pry'
-
 module ImportProjectsTask
   class Syncer
     def sync
