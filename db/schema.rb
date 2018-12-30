@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181228043723) do
+ActiveRecord::Schema.define(version: 20181230152814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,7 +84,6 @@ ActiveRecord::Schema.define(version: 20181228043723) do
     t.datetime "updated_at", null: false
     t.string "active_contributors"
     t.text "full_release_features"
-    t.string "master_channel_list"
     t.text "mission_accomplished"
     t.text "needs_pain_points_narrative"
     t.string "org_structure"
@@ -104,6 +103,7 @@ ActiveRecord::Schema.define(version: 20181228043723) do
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
     t.string "flagged", default: [], array: true
+    t.string "master_channel_list", default: [], array: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 

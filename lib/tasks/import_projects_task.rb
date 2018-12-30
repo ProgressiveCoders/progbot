@@ -19,8 +19,7 @@ module ImportProjectsTask
 
 
         airtable_project[:project_lead_slack_id].each do |slack_id|
-          lead = User.where(:slack_userid => slack_id)
-          binding.pry
+          lead = User.find_by(:slack_userid => slack_id)
           if lead != nil
             unless proj.lead_ids.include?(lead.id)
               proj.lead_ids << lead.id
@@ -29,8 +28,7 @@ module ImportProjectsTask
         end unless airtable_project[:project_lead_slack_id].blank?
 
         airtable_project[:team_member_ids].each do |member_id|
-          binding.pry
-          volunteer = User.where(:slack_userid => member_id)
+          volunteer = User.find_by(:slack_userid => member_id)
           if volunteer != nil
             unless proj.volunteers.include?(volunteer)
               proj.volunteers << volunteer
@@ -39,8 +37,7 @@ module ImportProjectsTask
         end unless airtable_project[:team_member_ids].blank?
 
         airtable_project[:progcode_coordinator_ids].each do |coord_id|
-          binding.pry
-           coordinator = User.where(:slack_userid => coord_id)
+           coordinator = User.find_by(:slack_userid => coord_id)
            if coordinator != nil
              unless proj.progcode_coordinator_ids.include?(coordinator.id)
             proj.progcode_coordinator_ids << coordinator.id
@@ -57,14 +54,24 @@ module ImportProjectsTask
 
         proj.tech_skills = Skill.match_skills(airtable_project[:tech_stack]).tech_skills unless airtable_project[:tech_stack].blank?
 
+        if airtable_project.column_mappings.include?(:master_channel_list)
+          airtable_project[:master_channel_list].each do |channel|
+            unless proj.master_channel_list.include?(channel[:channel_name])
+              proj.master_channel_list << channel[:channel_name]
+            end
+          end unless airtable_project[:master_channel_list].blank?
+        end
+
         proj.assign_attributes(build_attributes(airtable_project))
         proj.save(:validate => false)
       end
+
+      
     end
     
     def build_attributes(airtable_project)
       {
-        description: airtable_project[:project_summary_text], slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","), master_channel_list: extract_assoc(airtable_project, :master_channel_list, :channel_name).join(","),
+        description: airtable_project[:project_summary_text], slack_channel: extract_assoc(airtable_project, :slack_channel, :channel_name).join(","),
         status: airtable_project[:project_status].try(:first) || "In Development"
       }.merge(extract_fields(airtable_project))
     end
