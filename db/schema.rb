@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181230152814) do
+ActiveRecord::Schema.define(version: 20181231183949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 20181230152814) do
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
-    t.string "status"
     t.text "description"
     t.integer "lead_ids", default: [], array: true
     t.string "website"
@@ -102,8 +101,9 @@ ActiveRecord::Schema.define(version: 20181230152814) do
     t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
-    t.string "flagged", default: [], array: true
+    t.string "import_errors", default: [], array: true
     t.string "master_channel_list", default: [], array: true
+    t.string "status", default: [], array: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 

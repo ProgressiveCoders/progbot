@@ -6,8 +6,8 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
   
   has_and_belongs_to_many :skills, class_name: "Skill", join_table: "projects_skills"
-  has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
-  has_and_belongs_to_many :non_tech_skills, -> { where tech: false }, class_name: "Skill", join_table: "projects_skills"
+  has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
+  has_and_belongs_to_many :non_tech_stack, -> { where tech: false }, class_name: "Skill", join_table: "projects_skills"
 
   has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
 
@@ -25,14 +25,16 @@ class Project < ApplicationRecord
     self.lead_ids = users.map(&:id)
   end
 
-  def tech_skill_names=(skill_names)
-    self.tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
+  def tech_stack_names=(skill_names)
+    self.tech_stack_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
   end
 
-  def non_tech_skill_names=(skill_names)
-    self.non_tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
+  def non_tech_stack_names=(skill_names)
+    self.non_tech_stack_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
   end
 
-  
+  def flagged?
+    !self.import_errors.blank?
+  end
 
 end
