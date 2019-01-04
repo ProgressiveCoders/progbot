@@ -22,7 +22,7 @@ module ImportProjectsTask
             proj.status << status
           end
         end
-        proj.status.uniq
+        proj.status = proj.status.uniq
 
         if airtable_project[:project_lead_slack_id].blank?
           proj.import_errors << "this project lacks a lead"
