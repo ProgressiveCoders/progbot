@@ -1,6 +1,5 @@
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
-  before_action :set_skills
 
   def show
 
