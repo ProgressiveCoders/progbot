@@ -1,11 +1,42 @@
 
-<%= simple_form_for([:dashboard, resource]) do |f| %>
+<%= simple_form_for([:dashboard, @project]) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
+
+  <%= f.input :name %>
+  <%= f.input :status, collection: ["Conceptual Phase", "Recruiting", "In Development", "Working Prototype", "Closed Testing (Alpha)", "Open Testing (Alpha/Beta)", "MVP", "Live!", "On Hold", "No Go", "Closed"] %>
+  <%= f.input :description %>
+  <%= f.input :tech_stack_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.tech_stack), :typeahead_source => format_skills(@tech_skills) }} %>
+
+  <%= f.input :non_tech_stack_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }}  %>
+  
+  <%= f.input :website %>
+ 
+  <%= f.input :business_models, collection: ["Ad Supported", "App User Fee", "Consulting", "Fiscal Sponsor", "Grants", "Institutional Donations", "License", "Looking for Funding", "Mailing List", "Microdonations", "Non-identifiable Data Sales", "None", "Other", "Percentage of Fundraising", "SaaS", "Self-Funded", "Subscription", "Voluntary Contributions", "Volunteer", "White Label", "Zero Overhead", "Non-Profit" ] %>
+  <%= f.input :full_release_features  %>
+  <%= f.input :legal_structures, collection: ["501c3", "501c4", "527", "Aktiebolag (AB) (Sweden)", "B Corp", "C Corp", "LLC", "Looking at Non-Profit", "None", "Other", "PAC", "S Corp", "Sole Proprietorship"]  %>
+
+  <%= f.input :mission_accomplished  %>
+  <%= f.input :needs_categories, collection: ["Algorithm", "Alpha Testers", "API Dev", "Back End", "Beta Testers", "Campaign Finance Expert", "Client Referrals", "CMS", "Coders", "Community Outreach" "Content Creators", "Copy Writers", "Data Analyst", "Data Expert", "Data Visualization", "Database", "Design", "Dev Community", "Electoral Campaign Experience", "End Users", "Fiscal Sponsor", "Front End", "Funding", "Graphic Designer", "Legal", "Map", "Marketing", "Mobile Dev", "MVP", "Navigation", "Node", "Open Source Consult", "Organizing Experience", "Payment Processing", "Political Science Background", "Product Manager Consult", "Proof of Concept", "QA Testing", "React", "React Native", "SEO Optimization", "Social Media", "Solutions Architect", "Systems Architect", "Taxonomy", "Tech Lead", "To Be Determined", "UI", "UX", "Web Dev", "Web Developer", "WordPress" ]  %>
+  <%= f.input :needs_pain_points_narrative  %>
+  <%= f.input :org_structure, collection: ["Cooperative", "Federated", "Flat Structure", "Grassroots", "Member-based", "None", "Other", "Sociocratic", "To Be Determined", "Traditional"]  %>
+  <%= f.input :oss_license_types, collection: [".c00 1.0", "Affero", "Apache 2.0", "BSD", "cc0 1.0", "CLA", "GNU AGPL", "GNU GPL", "GNU GPL v2", "GNU GPL v3", "GNU LGPL", "MIT License", "MPL", "Not Open Source", "TBD"]  %>
+  <%= f.input :project_applications, collection: ["Activism", "Android", "API", "App Dev", "Auto Dialer", "Canvassing", "Civic Engagement", "Communication", "Contact Your Rep", "CTA", "Data Platform", "Database", "Donations Platform", "Education", "Environment", "Event","File Sharing", "Foodsource Map", "Fundraising", "GOTV", "Help for Homeless", "Independent Media", "Information", "Labor Organizing", "Media", "Medical Care Locator", "Mobile App", "OSS", "Peer to Peer", "Phonebank", "Power Dialer", "Product Development Ideology", "Product Development Method", "Resource Locator", "Science", "Social", "Social Good", "Tech", "Telephony", "Texting", "User Stories", "Voting", "Web App", "Web Dev", "News"]  %>
+  <%= f.input :project_mgmt_url  %>
+
+
+  <%= f.input :values_screening, collection: ["Basic version open; supported version only progressives", "Nonpartisan", "Only Democrats", "Only Progressives", "Open to Everyone", "Open to Everyone: if TOS violated, users removed", "Open to progressives; if TOS violated, users removed", "Other"]  %>
+  <%= f.input :working_doc  %>
+  <%= f.input :lead_ids  %>
+ 
   </div>
 
   <div class="form-actions">
     <%= f.button :submit %>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  Projects.init_form()
+</script>
