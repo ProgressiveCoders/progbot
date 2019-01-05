@@ -1,6 +1,5 @@
 class AddArrayedColumns < ActiveRecord::Migration[5.1]
   def change
-    add_column :projects, :attachments, :text, array: true, default: []
     add_column :projects, :business_models, :string, array: true, default: []
     add_column :projects, :legal_structures, :string, array: true, default: []
     add_column :projects, :oss_license_types, :string, array: true, default: []
