@@ -22,7 +22,7 @@ module ImportProjectsTask
             proj.status << status
           end
         end
-        proj.status.uniq
+        proj.status = proj.status.uniq
 
         if airtable_project[:project_lead_slack_id].blank?
           proj.import_errors << "this project lacks a lead"
@@ -37,16 +37,17 @@ module ImportProjectsTask
           end
         end
         proj.lead_ids = proj.lead_ids.uniq
-
-        airtable_project[:team_member_ids].each do |member_id|
-          volunteer = User.find_by(:slack_userid => member_id)
-          if volunteer == nil
-            proj.import_errors << "volunteer slack id #{member_id} has no corresponding user"
-          else
-            proj.volunteers << volunteer
+        
+        if !airtable_project[:team_member_ids].blank?
+          volunteers = User.where(:slack_userid => airtable_project[:team_member_ids])
+          proj.volunteers += volunteers
+          proj.volunteers = proj.volunteers.uniq
+          if airtable_project[:team_member_ids].size != volunteers.size
+            missing = airtable_project[:team_member_ids] - volunteers.map(&:slack_userid).compact
+            proj.import_errors += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
           end
-        end unless airtable_project[:team_member_ids].blank?
-        proj.volunteers = proj.volunteers.uniq
+        end
+
 
         if airtable_project[:progcode_coordinator_ids].blank?
           proj.import_errors << "this project lacks a coordinator"
@@ -63,20 +64,18 @@ module ImportProjectsTask
         proj.progcode_coordinator_ids = proj.progcode_coordinator_ids.uniq
 
         airtable_project[:needs_categories].each do |category|
-          skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category)
-          proj.needs_categories << skill
+          skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil)
+          proj.needs_categories << skill unless proj.needs_categories.include?(skill)
         end unless airtable_project[:needs_categories].blank?
-        proj.needs_categories = proj.needs_categories.uniq
         
         if airtable_project[:tech_stack].blank?
           proj.import_errors << "this project lacks a tech stack"
         else
           airtable_project[:tech_stack].each do |tech|
             tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
-            proj.tech_stack << tech_skill
+            proj.tech_stack << tech_skill unless proj.tech_stack.include?(tech_skill)
           end
         end
-        proj.tech_stack = proj.tech_stack.uniq
 
         if airtable_project.column_mappings.include?(:master_channel_list)
           airtable_project[:master_channel_list].each do |channel|
@@ -98,6 +97,7 @@ module ImportProjectsTask
         end
 
         proj.mission_aligned = true
+        proj.import_errors.uniq!
         proj.save(:validate => false)
       end
     end
