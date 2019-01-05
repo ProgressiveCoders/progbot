@@ -2,8 +2,6 @@
 class Dashboard::UsersController < Dashboard::BaseController
   inherit_resources
   defaults :singleton => true
-
-  before_action :set_skills
   
   def edit
     current_user.valid?

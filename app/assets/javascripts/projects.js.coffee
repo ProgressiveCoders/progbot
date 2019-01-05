@@ -4,8 +4,8 @@ window.Projects =
   init_form: ->
     self = @
     $(document).ready(() ->
-      self.init_skills("#project_tech_skill_names")
-      self.init_skills("#project_non_tech_skill_names")
+      self.init_skills("#project_tech_stack_names")
+      self.init_skills("#project_non_tech_stack_names")
     )
     return
 
