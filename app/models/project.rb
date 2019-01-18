@@ -10,6 +10,10 @@ class Project < ApplicationRecord
 
   has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
 
+  validates_presence_of :name, :description, :tech_stack
+  
+  validates :legal_structures, :presence => true, :allow_blank => false
+
   audited
 
   audited associated_with: :user

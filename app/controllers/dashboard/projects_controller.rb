@@ -10,6 +10,9 @@ class Dashboard::ProjectsController < Dashboard::BaseController
       success.html {
         redirect_to dashboard_project_path(@project)
       }
+      failure.html {
+        render :edit
+      }
     end
   end
 
