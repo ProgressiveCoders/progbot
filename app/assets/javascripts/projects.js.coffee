@@ -6,6 +6,7 @@ window.Projects =
     $(document).ready(() ->
       self.init_skills("#project_tech_stack_names")
       self.init_skills("#project_non_tech_stack_names")
+      self.init_skills("#project_needs_category_names")
     )
     return
 
