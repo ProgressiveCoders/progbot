@@ -4,4 +4,13 @@
 
 .has-error {
     color: red;
+
+    .tokenfield {
+      border-color: #dc3545;
+    }
+    
+
+    .invalid-feedback {
+        display: block
+    }
 }
