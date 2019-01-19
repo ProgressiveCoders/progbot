@@ -1,7 +1,7 @@
 
 <%= simple_form_for([:dashboard, @project]) do |f| %>
   <%= f.error_notification %>
-  <%= f.hidden_field :lead_ids, :value => current_user.id %>
+  <%= f.hidden_field :lead_ids, :value => current_user.id, :multiple => true %>
 
   <div class="form-inputs">
 

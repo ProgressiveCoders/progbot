@@ -3,7 +3,7 @@ class Project < ApplicationRecord
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
   
-  has_and_belongs_to_many :skills, class_name: "Skill", join_table: "projects_skills"
+  has_and_belongs_to_many :stacks, class_name: "Skill", join_table: "projects_skills"
   
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
@@ -12,7 +12,7 @@ class Project < ApplicationRecord
 
   validates_presence_of :name, :description, :tech_stack
   
-  validates :legal_structures, :presence => true, :allow_blank => false
+  validates :legal_structures, :presence => true,:allow_blank => false
 
   audited
 
