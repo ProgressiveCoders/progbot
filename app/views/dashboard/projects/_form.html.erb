@@ -13,9 +13,9 @@
 
   <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.tech_stack), :typeahead_source => format_skills(@tech_skills) }}, :required => true %>
 
-  <%= f.input :non_tech_stack_names, :as => :string, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }} %>
+  <%= f.input :non_tech_stack_names, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }} %>
 
-  <%= f.input :needs_category_names, :as => :string, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.needs_categories), :typeahead_source => format_skills(@skills)}} %>
+  <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.needs_categories), :typeahead_source => format_skills(@skills)}} %>
 
   <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true } %>
 

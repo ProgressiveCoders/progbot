@@ -14,7 +14,6 @@ class Dashboard::ProjectsController < Dashboard::BaseController
 
   def new
     @project = Project.new
-    binding.pry
   end
 
   private
