@@ -1,19 +1,32 @@
-require 'pry'
-
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
 
   def show
-
+    @project = Project.find(params[:id])
   end
 
   def create
     @project = Project.new(project_params)
-    binding.pry
+    tech_names = project_params[:tech_stack_names].split(", ")
+    non_tech_names = project_params[:non_tech_stack_names].split(", ")
+    needs_category_names = project_params[:needs_category_names].split(", ")
+    @project.tech_stack = Skill.where(:name => tech_names)
+    @project.non_tech_stack = Skill.where(:name => non_tech_names)
+    @project.needs_categories = Skill.where(:name => needs_category_names)
+    if @project.valid?
+      @project.save
+      redirect_to dashboard_project_path(@project)
+    else
+      render :edit
+    end
   end
 
   def new
     @project = Project.new
+  end
+
+  def update
+ 
   end
 
   private

@@ -17,7 +17,7 @@
 
   <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.needs_categories), :typeahead_source => format_skills(@skills)}} %>
 
-  <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true } %>
+  <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
 
   <%= f.input :needs_pain_points_narrative, :label => 'Needs / Pain Points - Narrative', :hint => 'Why are you here?  What are you hoping ProgCode can provide?  What do you need to complete the next phase of your project?  What does your group need for continued success?'%>
   
@@ -25,9 +25,9 @@
 
   <%= f.input :working_doc, :label => 'Working Documentation', :hint => 'Have a link to docs or a living document that outlines your  project?  Post the link here!'%>
 
-  <%= f.input :oss_license_types, :label => 'OSS License Type',:hint => 'You may select more than one', :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true } %>
+  <%= f.input :oss_license_types, :label => 'OSS License Type',:hint => 'You may select more than one', :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
   
-  <%= f.input :legal_structures, :label => 'Legal Structure', :required => true, :hint => 'You may select more than one', :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true } %>
+  <%= f.input :legal_structures, :label => 'Legal Structure', :required => true, :hint => 'You may select more than one', :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true }, :include_blank  => false, :include_hidden => false %>
  
   </div>
 

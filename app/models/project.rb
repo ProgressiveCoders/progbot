@@ -12,9 +12,11 @@ class Project < ApplicationRecord
 
   has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
 
-  validates_presence_of :name, :description, :tech_stack
+  validates_presence_of :name, :description, :tech_stack, :tech_stack_names
   
   validates :legal_structures, :presence => true,:allow_blank => false
+
+  after_save :remove_blank_values
 
   audited
 
@@ -35,21 +37,44 @@ class Project < ApplicationRecord
   end
 
   def tech_stack_names
-    unless self.tech_stack.blank?
+    if self.tech_stack.blank?
+      []
+    else
       self.tech_stack.map { |stack| stack.name }
     end
   end
 
-  # def non_tech_stack_names
-  #   self.non_tech_stack.pluck(:name)
-  # end
+  def non_tech_stack_names=(stack_names)
+    self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
+  end
 
-  # def needs_category_names
-  #   self.needs_categories.pluck(:name)
-  # end
+  def non_tech_stack_names
+    if self.tech_stack.blank?
+      []
+    else
+      self.non_tech_stack.map { |stack| stack.name }
+    end
+  end
+
+  def needs_category_names=(category_names)
+    self.needs_category_ids = Skill.where(name: category_names.split(", ")).pluck(:id)
+  end
+
+  def needs_category_names
+    if self.needs_categories.blank?
+      []
+    else
+      self.needs_categories.map { |need| need.name }
+    end
+  end
 
   def flagged?
     !self.import_errors.blank?
+  end
+
+  def remove_blank_values
+    self.status  = self.status.reject(&:empty?)
+    self.legal_structures = self.legal_structures.reject(&:empty?)
   end
 
 end
