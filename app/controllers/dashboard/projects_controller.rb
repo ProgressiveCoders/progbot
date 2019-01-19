@@ -1,3 +1,5 @@
+require 'pry'
+
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
 
@@ -6,18 +8,13 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   def create
-    create! do |success, failure|
-      success.html {
-        redirect_to dashboard_project_path(@project)
-      }
-      failure.html {
-        render :edit
-      }
-    end
+    @project = Project.new(project_params)
+    binding.pry
   end
 
   def new
     @project = Project.new
+    binding.pry
   end
 
   private
@@ -27,7 +24,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   def project_params
-    params.require(:project).permit(:name, :status, :description, :website, :slack_channel, :active_contributors, :project_created, :master_channel_list, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, attachments: [], business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinators: [], project_applications: [], project_lead_slack_ids: [], team_member_ids: [], lead_ids: [], needs_categories: [])
+    params.require(:project).permit(:name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [])
   end
 end
 
