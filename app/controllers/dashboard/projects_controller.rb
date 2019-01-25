@@ -1,20 +1,20 @@
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
 
-  def show
-
-  end
-
   def create
-    create! do |success, failure|
-      success.html {
-        redirect_to dashboard_project_path(@project)
-      }
+    @project = Project.new(project_params)
+    tech_names = project_params[:tech_stack_names].split(", ")
+    non_tech_names = project_params[:non_tech_stack_names].split(", ")
+    needs_category_names = project_params[:needs_category_names].split(", ")
+    @project.tech_stack = Skill.where(:name => tech_names)
+    @project.non_tech_stack = Skill.where(:name => non_tech_names)
+    @project.needs_categories = Skill.where(:name => needs_category_names)
+    if @project.valid?
+      @project.save
+      redirect_to dashboard_project_path(@project)
+    else
+      render :edit
     end
-  end
-
-  def new
-    @project = Project.new
   end
 
   private
@@ -24,7 +24,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   def project_params
-    params.require(:project).permit(:name, :status, :description, :website, :slack_channel, :active_contributors, :project_created, :master_channel_list, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, attachments: [], business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinators: [], project_applications: [], project_lead_slack_ids: [], team_member_ids: [], lead_ids: [], needs_categories: [])
+    params.require(:project).permit(:name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [])
   end
 end
 

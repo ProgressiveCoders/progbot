@@ -1,14 +1,22 @@
 class Project < ApplicationRecord
   include ProjectConstants
 
+  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
+
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
   
-  has_and_belongs_to_many :skills, class_name: "Skill", join_table: "projects_skills"
+  has_and_belongs_to_many :stacks, class_name: "Skill", join_table: "projects_skills"
   
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
   has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
+
+  validates_presence_of :name, :description, :tech_stack, :tech_stack_names
+  
+  validates :legal_structures, :presence => true,:allow_blank => false
+
+  after_save :remove_blank_values
 
   audited
 
@@ -24,20 +32,49 @@ class Project < ApplicationRecord
     self.lead_ids = users.map(&:id)
   end
 
+  def tech_tack_names=(stack_names)
+    self.tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
+  end
+
   def tech_stack_names
-    self.tech_stack.pluck(:name)
+    if self.tech_stack.blank?
+      []
+    else
+      self.tech_stack.map { |stack| stack.name }
+    end
+  end
+
+  def non_tech_stack_names=(stack_names)
+    self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
   end
 
   def non_tech_stack_names
-    self.non_tech_stack.pluck(:name)
+    if self.tech_stack.blank?
+      []
+    else
+      self.non_tech_stack.map { |stack| stack.name }
+    end
+  end
+
+  def needs_category_names=(category_names)
+    self.needs_category_ids = Skill.where(name: category_names.split(", ")).pluck(:id)
   end
 
   def needs_category_names
-    self.needs_categories.pluck(:name)
+    if self.needs_categories.blank?
+      []
+    else
+      self.needs_categories.map { |need| need.name }
+    end
   end
 
   def flagged?
     !self.import_errors.blank?
+  end
+
+  def remove_blank_values
+    self.status  = self.status.reject(&:empty?)
+    self.legal_structures = self.legal_structures.reject(&:empty?)
   end
 
 end

@@ -1,1 +1,3 @@
-Test Project
+<% for attribute in @project.attributes.keys %>
+  <p><%= attribute.humanize %>: <%= @project.attributes[attribute].to_s %></p>
+<% end %>

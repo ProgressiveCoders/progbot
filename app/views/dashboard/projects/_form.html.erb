@@ -1,34 +1,33 @@
 
-<%= simple_form_for([:dashboard, @project]) do |f| %>
+<%= simple_form_for([:dashboard, resource]) do |f| %>
   <%= f.error_notification %>
+  <%= f.hidden_field :lead_ids, :value => current_user.id, :multiple => true %>
 
   <div class="form-inputs">
 
-  <%= f.input :name %>
-  <%= f.input :status, collection: ["Conceptual Phase", "Recruiting", "In Development", "Working Prototype", "Closed Testing (Alpha)", "Open Testing (Alpha/Beta)", "MVP", "Live!", "On Hold", "No Go", "Closed"] %>
-  <%= f.input :description %>
-  <%= f.input :tech_stack_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.tech_stack), :typeahead_source => format_skills(@tech_skills) }} %>
+  <%= f.input :name, :label => 'Project Name', :hint => 'This can be changed later, but is the name you would like your project or organization to go by in the greater ProgCode community.' %>
 
-  <%= f.input :non_tech_stack_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(@project.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }}  %>
+  <%= f.input :description, :hint => 'Tell us about your app: tell us a bit about what the MVP (minimal viable prodcut) looks like, and what problem you see the app solving.  Feel free to link to outside documentation as well!' %>
+
+  <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
+
+  <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_stack), :typeahead_source => format_skills(@tech_skills) }}, :required => true %>
+
+  <%= f.input :non_tech_stack_names, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }} %>
+
+  <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.needs_categories), :typeahead_source => format_skills(@skills)}} %>
+
+  <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
+
+  <%= f.input :needs_pain_points_narrative, :label => 'Needs / Pain Points - Narrative', :hint => 'Why are you here?  What are you hoping ProgCode can provide?  What do you need to complete the next phase of your project?  What does your group need for continued success?'%>
   
-  <%= f.input :website %>
- 
-  <%= f.input :business_models, collection: ["Ad Supported", "App User Fee", "Consulting", "Fiscal Sponsor", "Grants", "Institutional Donations", "License", "Looking for Funding", "Mailing List", "Microdonations", "Non-identifiable Data Sales", "None", "Other", "Percentage of Fundraising", "SaaS", "Self-Funded", "Subscription", "Voluntary Contributions", "Volunteer", "White Label", "Zero Overhead", "Non-Profit" ] %>
-  <%= f.input :full_release_features  %>
-  <%= f.input :legal_structures, collection: ["501c3", "501c4", "527", "Aktiebolag (AB) (Sweden)", "B Corp", "C Corp", "LLC", "Looking at Non-Profit", "None", "Other", "PAC", "S Corp", "Sole Proprietorship"]  %>
+  <%= f.input :mission_accomplished, :label => 'What is "Mission Accomplished" for your app?', :hint => "What does complete success look like for your project? Describing this can often be a different way for people to understand what you're trying to do."%>
 
-  <%= f.input :mission_accomplished  %>
-  <%= f.input :needs_categories, collection: ["Algorithm", "Alpha Testers", "API Dev", "Back End", "Beta Testers", "Campaign Finance Expert", "Client Referrals", "CMS", "Coders", "Community Outreach" "Content Creators", "Copy Writers", "Data Analyst", "Data Expert", "Data Visualization", "Database", "Design", "Dev Community", "Electoral Campaign Experience", "End Users", "Fiscal Sponsor", "Front End", "Funding", "Graphic Designer", "Legal", "Map", "Marketing", "Mobile Dev", "MVP", "Navigation", "Node", "Open Source Consult", "Organizing Experience", "Payment Processing", "Political Science Background", "Product Manager Consult", "Proof of Concept", "QA Testing", "React", "React Native", "SEO Optimization", "Social Media", "Solutions Architect", "Systems Architect", "Taxonomy", "Tech Lead", "To Be Determined", "UI", "UX", "Web Dev", "Web Developer", "WordPress" ]  %>
-  <%= f.input :needs_pain_points_narrative  %>
-  <%= f.input :org_structure, collection: ["Cooperative", "Federated", "Flat Structure", "Grassroots", "Member-based", "None", "Other", "Sociocratic", "To Be Determined", "Traditional"]  %>
-  <%= f.input :oss_license_types, collection: [".c00 1.0", "Affero", "Apache 2.0", "BSD", "cc0 1.0", "CLA", "GNU AGPL", "GNU GPL", "GNU GPL v2", "GNU GPL v3", "GNU LGPL", "MIT License", "MPL", "Not Open Source", "TBD"]  %>
-  <%= f.input :project_applications, collection: ["Activism", "Android", "API", "App Dev", "Auto Dialer", "Canvassing", "Civic Engagement", "Communication", "Contact Your Rep", "CTA", "Data Platform", "Database", "Donations Platform", "Education", "Environment", "Event","File Sharing", "Foodsource Map", "Fundraising", "GOTV", "Help for Homeless", "Independent Media", "Information", "Labor Organizing", "Media", "Medical Care Locator", "Mobile App", "OSS", "Peer to Peer", "Phonebank", "Power Dialer", "Product Development Ideology", "Product Development Method", "Resource Locator", "Science", "Social", "Social Good", "Tech", "Telephony", "Texting", "User Stories", "Voting", "Web App", "Web Dev", "News"]  %>
-  <%= f.input :project_mgmt_url  %>
+  <%= f.input :working_doc, :label => 'Working Documentation', :hint => 'Have a link to docs or a living document that outlines your  project?  Post the link here!'%>
 
-
-  <%= f.input :values_screening, collection: ["Basic version open; supported version only progressives", "Nonpartisan", "Only Democrats", "Only Progressives", "Open to Everyone", "Open to Everyone: if TOS violated, users removed", "Open to progressives; if TOS violated, users removed", "Other"]  %>
-  <%= f.input :working_doc  %>
-  <%= f.input :lead_ids  %>
+  <%= f.input :oss_license_types, :label => 'OSS License Type',:hint => 'You may select more than one', :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
+  
+  <%= f.input :legal_structures, :label => 'Legal Structure', :required => true, :hint => 'You may select more than one', :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true }, :include_blank  => false, :include_hidden => false %>
  
   </div>
 
