@@ -1,10 +1,6 @@
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
 
-  def show
-    @project = Project.find(params[:id])
-  end
-
   def create
     @project = Project.new(project_params)
     tech_names = project_params[:tech_stack_names].split(", ")
@@ -19,14 +15,6 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     else
       render :edit
     end
-  end
-
-  def new
-    @project = Project.new
-  end
-
-  def update
- 
   end
 
   private
