@@ -1,0 +1,39 @@
+<% require 'pry' %>
+
+<% scrubbed_attributes = resource.attributes.except('id', 'name', 'description', 'lead_ids', 'business_models', 'legal_structures', 'oss_license_types', 'project_applications', 'progcode_coordinator_ids', 'import_errors', 'master_channel_list', 'status', 'slack_channel', 'mission_aligned') %>
+
+<% contributor_attributes = resource.slice('leads', 'volunteers', 'progcode_coordinators') %>
+
+<% base_url = 'https://progcode.slack.com/messages/' %>
+
+<h1><%= resource.name %></h1>
+
+<p><b>Description:</b></p>
+<p><%= resource.description %></p>
+
+<% if resource.slack_channel.present? %>
+  <p><b>Slack Channel:</b></p>
+  <p><%= link_to resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel %></p>
+<% end %>
+
+
+<% contributor_attributes.each do |key, values| %>
+  <% if values.present? %>
+    <p><b><%= key.humanize %></b></p>
+    <ul>
+    <% values.each do |value| %>
+
+      <li><%= link_to value.name, base_url + 'team/' + value.slack_userid %></li>
+      
+    <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
+
+<% scrubbed_attributes.each do |key, value| %>
+  <% if value.present? %>
+    <p><b><%= key.humanize %></b></p>
+    <p><%= value %></p>
+  <% end %>
+<% end %>
