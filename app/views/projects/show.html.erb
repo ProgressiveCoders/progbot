@@ -1,10 +1,3 @@
-<% require 'pry' %>
-
-<% scrubbed_attributes = resource.attributes.except('id', 'name', 'description', 'lead_ids', 'business_models', 'legal_structures', 'oss_license_types', 'project_applications', 'progcode_coordinator_ids', 'import_errors', 'master_channel_list', 'status', 'slack_channel', 'mission_aligned') %>
-
-<% contributor_attributes = resource.slice('leads', 'volunteers', 'progcode_coordinators') %>
-
-<% base_url = 'https://progcode.slack.com/messages/' %>
 
 <h1><%= resource.name %></h1>
 
@@ -17,23 +10,48 @@
 <% end %>
 
 
-<% contributor_attributes.each do |key, values| %>
+<% contributor_attributes(resource).each do |key, values| %>
   <% if values.present? %>
     <p><b><%= key.humanize %></b></p>
     <ul>
     <% values.each do |value| %>
 
-      <li><%= link_to value.name, base_url + 'team/' + value.slack_userid %></li>
+      <li><%= link_to value.name, 'slack://user?team=T1KR8AG7J&id=' + value.slack_userid %></li>
       
     <% end %>
     </ul>
   <% end %>
 <% end %>
 
+<p><b>Tech Stack:</b></p>
+  <ul>
+    <% resource.tech_stack.each do |skill| %>
+      <li><%= link_to skill.name, skill %></li>
+    <% end %>
+  </ul>
 
-<% scrubbed_attributes.each do |key, value| %>
+<p><b>Non-Tech Stack:</b></p>
+  <ul>
+    <% resource.non_tech_stack.each do |skill| %>
+      <li><%= link_to skill.name, skill %></li>
+    <% end %>
+  </ul>
+
+<p><b>Needs Categories:</b></p>
+  <ul>
+    <% resource.needs_categories.each do |skill| %>
+      <li><%= link_to skill.name, skill %></li>
+    <% end %>
+  </ul>
+
+
+<% scrubbed_attributes(resource).each do |key, value| %>
   <% if value.present? %>
     <p><b><%= key.humanize %></b></p>
     <p><%= value %></p>
   <% end %>
+<% end %>
+
+<% if resource.leads.include?(current_user) %>
+  <p><%= link_to "Edit", edit_dashboard_project_path(resource)%></p>
 <% end %>

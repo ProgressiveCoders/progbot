@@ -13,7 +13,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
       @project.save
       redirect_to dashboard_project_path(@project)
     else
-      render :edit
+      render :new_edit
     end
   end
 
