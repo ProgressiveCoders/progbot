@@ -1,14 +1,11 @@
-<h1>Edit Project</h1>
-
 <%= simple_form_for([:dashboard, resource]) do |f| %>
   <%= f.error_notification %>
-  <%= f.hidden_field :lead_ids, :value => current_user.id, :multiple => true %>
 
   <div class="form-inputs">
 
-  <%= f.input :name, :label => 'Project Name', :hint => 'This can be changed later, but is the name you would like your project or organization to go by in the greater ProgCode community.' %>
+  <%= f.input :name, :label => 'Project Name', :hint => 'This is the name your project or organization goes by in the greater ProgCode community.' %>
 
-  <%= f.input :description, :hint => 'Tell us about your app: tell us a bit about what the MVP (minimal viable prodcut) looks like, and what problem you see the app solving.  Feel free to link to outside documentation as well!' %>
+  <%= f.input :description, :hint => 'What does the MVP (minimal viable prodcut) look like, and what problem do you see the app solving?  Feel free to link to outside documentation as well!' %>
 
   <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
 
@@ -29,6 +26,24 @@
   <%= f.input :oss_license_types, :label => 'OSS License Type',:hint => 'You may select more than one', :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
   
   <%= f.input :legal_structures, :label => 'Legal Structure', :required => true, :hint => 'You may select more than one', :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true }, :include_blank  => false, :include_hidden => false %>
+
+  <%= f.input :full_release_features %>
+
+  <%= f.input :org_structure, :label => 'Organizational Structure', :collection => Project::ORG_STRUCTURE, :include_blank => true %>
+
+  <%= f.input :project_mgmt_url, :label => 'Project Management URL' %>
+
+  <%= f.input :repository, :label => "Your Project's Repository" %>
+
+  <%= f.input :software_license_url %>
+
+  <%= f.input :values_screening, :collection => Project::VALUES_SCREENING, :include_blank => true %>
+
+  <%= f.input :business_models, :collection => Project::BUSINESS_MODEL, :input_html => { :multiple => true }, :include_blank => true, :include_hidden => false %>
+
+  <%= f.input :project_applications, :collection => Project::PROJECT_APPLICATIONS, :input_html => { :multiple => true }, :include_blank => true, :include_hidden => false %>
+
+  <%= f.input :attachments %>
  
   </div>
 
