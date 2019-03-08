@@ -36,6 +36,10 @@ Rails.application.routes.draw do
 
   resources :users, except: [:index, :destroy, :show]
 
+  resources :projects, only: [:show, :index]
+
+  resources :skills, only: [:index, :show]
+
   post 'slack/search'
 
   post 'slack/project_search'

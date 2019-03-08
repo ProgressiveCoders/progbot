@@ -1,0 +1,9 @@
+<% @alphabetized_projects.each do |project| %>
+  <h1><%= link_to project.name, project %></h1>
+  <p><%= project.description %></p>
+  <ul>
+    <% project.stacks.each do |stack| %>
+      <li><%= stack.name %></li>
+    <% end %>
+  </ul>
+<% end %>

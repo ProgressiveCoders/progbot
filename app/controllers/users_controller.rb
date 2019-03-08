@@ -24,12 +24,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def show
-    @user = User.find(params[:id])
-  end
-
   def existing
     @user = User.find_by(email: params["user"["email"]])
+    # replace with sending email to user instead of having it appear on screen
   end
 
   def new

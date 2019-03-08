@@ -1,0 +1,57 @@
+<%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+
+  <%= f.input :name, :label => 'Project Name', :hint => 'This is the name your project or organization goes by in the greater ProgCode community.' %>
+
+  <%= f.input :description, :hint => 'What does the MVP (minimal viable prodcut) look like, and what problem do you see the app solving?  Feel free to link to outside documentation as well!' %>
+
+  <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
+
+  <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_stack), :typeahead_source => format_skills(@tech_skills) }}, :required => true %>
+
+  <%= f.input :non_tech_stack_names, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }} %>
+
+  <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.needs_categories), :typeahead_source => format_skills(@skills)}} %>
+
+  <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
+
+  <%= f.input :needs_pain_points_narrative, :label => 'Needs / Pain Points - Narrative', :hint => 'Why are you here?  What are you hoping ProgCode can provide?  What do you need to complete the next phase of your project?  What does your group need for continued success?'%>
+  
+  <%= f.input :mission_accomplished, :label => 'What is "Mission Accomplished" for your app?', :hint => "What does complete success look like for your project? Describing this can often be a different way for people to understand what you're trying to do."%>
+
+  <%= f.input :working_doc, :label => 'Working Documentation', :hint => 'Have a link to docs or a living document that outlines your  project?  Post the link here!'%>
+
+  <%= f.input :oss_license_types, :label => 'OSS License Type',:hint => 'You may select more than one', :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
+  
+  <%= f.input :legal_structures, :label => 'Legal Structure', :required => true, :hint => 'You may select more than one', :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true }, :include_blank  => false, :include_hidden => false %>
+
+  <%= f.input :full_release_features %>
+
+  <%= f.input :org_structure, :label => 'Organizational Structure', :collection => Project::ORG_STRUCTURE, :include_blank => true %>
+
+  <%= f.input :project_mgmt_url, :label => 'Project Management URL' %>
+
+  <%= f.input :repository, :label => "Your Project's Repository" %>
+
+  <%= f.input :software_license_url %>
+
+  <%= f.input :values_screening, :collection => Project::VALUES_SCREENING, :include_blank => true %>
+
+  <%= f.input :business_models, :collection => Project::BUSINESS_MODEL, :input_html => { :multiple => true }, :include_blank => true, :include_hidden => false %>
+
+  <%= f.input :project_applications, :collection => Project::PROJECT_APPLICATIONS, :input_html => { :multiple => true }, :include_blank => true, :include_hidden => false %>
+
+  <%= f.input :attachments %>
+ 
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  Projects.init_form()
+</script>
