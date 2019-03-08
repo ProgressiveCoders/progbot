@@ -17,6 +17,15 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     end
   end
 
+  def edit
+    if resource.mission_aligned
+      render :aligned_edit
+    else
+      render :new_edit
+    end
+
+  end
+
   private
   
   def begin_of_association_chain
