@@ -21,6 +21,7 @@ gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'
 gem 'audited', '~> 4.7'
+gem 'aasm'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

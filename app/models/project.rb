@@ -10,7 +10,8 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
-  has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
+  has_many :volunteerings
+  has_many :users, through: :volunteerings
 
   validates_presence_of :name, :description, :tech_stack, :tech_stack_names
   
@@ -21,7 +22,7 @@ class Project < ApplicationRecord
   audited
 
   audited associated_with: :user
-  audited associated_with: :skills
+  audited associated_with: :skill
   has_associated_audits
   
   def leads
