@@ -28,6 +28,10 @@ class Project < ApplicationRecord
   def leads
     lead_ids.blank? ? [] : User.where(:id => self.lead_ids)
   end
+
+  def progcode_coordinators
+    progcode_coordinator_ids.blank? ? [] : User.where(:id => self.progcode_coordinator_ids)
+  end
   
   def leads=(users)
     self.lead_ids = users.map(&:id)

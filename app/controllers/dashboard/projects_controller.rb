@@ -13,8 +13,17 @@ class Dashboard::ProjectsController < Dashboard::BaseController
       @project.save
       redirect_to dashboard_project_path(@project)
     else
-      render :edit
+      render :new_edit
     end
+  end
+
+  def edit
+    if resource.mission_aligned
+      render :aligned_edit
+    else
+      render :new_edit
+    end
+
   end
 
   private

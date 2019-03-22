@@ -1,11 +1,72 @@
+<div class="container">
 
-<%= simple_form_for(current_user) do |f| %>
+  <div class="row justify-content-center">
+    <div class="col-6">
+
+  <% if !current_user.valid? %>
+      <h1 class="text-center">User Profile</h1>
+
+      <p class="lead text-danger text-center">
+        Some of the required elements of your profile have not yet been filled out. Please fill them out in order to continue to use ProgBot.
+      </p>
+
+  <% else %>
+      <h1 class="text-center">Edit your Profile</h1>
+  <% end %>
+    </div>
+  </div>
+
+<%= simple_form_for current_user, :url => dashboard_user_path, :method => :patch do |f| %>
   <%= f.error_notification %>
 
-  <div class="form-inputs">
-  </div>
+  <%= f.hidden_field :is_approved %>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
+  <%= f.label :name, "Name: #{current_user.name}", :class => "control-label lead font-weight-normal" %>
+  <%= f.hidden_field :name %>
+  <br/>
+  <%= f.label :email, "Email: #{current_user.email}", :class => "control-label lead font-weight-normal" %>
+  <%= f.hidden_field :email %>
+  <br/>
+  <%= f.label :slack_username, "Slack Username: #{current_user.slack_username}", :class => "control-label lead font-weight-normal" %>
+  <%= f.hidden_field :slack_username %>
+  <hr />
+  <%= f.input :anonymous, :hint => "I prefer to use an alias on the Slack for safety/privacy concerns. If checked, we will email you to arrange a mutually convenient time for a Zoom video call. Thank you!", :label => "I prefer to remain anonymous."  %>
+
+  <%= f.input :gender_pronouns, collection: ["ae, aer, aers", "fae, faer, faers", "e/ey, em, eirs", "he, him, his", "per, per, pers", "she, her, hers", "they, them, theirs", "ve, ver, vis", "xe, xem, xyrs", "ze/zie, hir, hirs", "other (elaborate in the 'additional information' section of the form"], include_blank: true, :label => "What are Your Pronouns? (Optional)", :selected => current_user.gender_pronouns %>
+
+
+  <%= f.input :verification_urls, :label => "Verification URLs", :hint => "(i.e., GitHub, personal website, personal blog, LinkedIn, Social Media, etc.)" %>
+
+  <%= f.input :hear_about_us, :label => "How did you hear about us?", :hint => "This helps us determine which outreach efforts are most successful."  %>
+
+  <%= f.input :join_reason, :label => "Why do you want to join the Progressive Coders Network?", :hint => "ProgCode is working to remove or reduce the influence of big money in politics by creating open source technology designed to empower the grassroots. Please tell us a little bit about yourself, what brought you to ProgCode and how you'd like to support these goals."  %>
+
+  <%= f.input :overview, :label => "Skills and Relevant Experience (Tech or Non-Tech)",  :hint => "Just a quick rundown of the skills and experience you bring to the community. Are you a coder? Organizer? Accountant? A short list is great! We don't need an essay here."  %>
+
+  <%= f.input :location,  :hint => "Be as general or as specific as you'd like, but please include a timezone or the country you reside in."  %>
+
+  <%= f.input :tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_skills), :typeahead_source => format_skills }}    %>
+
+  <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_skills), :typeahead_source => format_skills(@non_tech_skills) }}    %>
+
+  <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
+
+  <%= f.input :additional_info, :label => "Is there any additional information you would like to share?"%>
+  
+  <%= f.input :optin, :label => "All members of ProgCode are automatically added to our anonymized member skills directory, to facilitate participation and collaboration. Uncheck this checkbox if you would like to opt out. If you have previously opted out, check this box to opt back in!" %>
+  
+  <%= f.input :read_code_of_conduct, :required => true, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
+
+
+  <hr />
+
+    <h3><%= link_to 'Click here if you need to Register to Vote', 'https://vote.gov', target: "_blank" %></h3>
+  <hr />
+
+  <%= f.button :submit %>
+  <hr />
 <% end %>
+
+<script type="text/javascript">
+  Users.init_form()
+</script>
