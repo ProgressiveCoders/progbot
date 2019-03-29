@@ -32,8 +32,8 @@ ActiveAdmin.register Project do
     column :stacks do |project|
       span project.stacks.map(&:name).to_sentence
     end
-    column :users do |project|
-      c = project.users.count
+    column :volunteers do |project|
+      c = project.volunteers.count
       span "#{c} volunteer#{c == 1 ? '' : 's'}"
     end
     actions
