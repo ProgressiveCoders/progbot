@@ -4,9 +4,8 @@ class Volunteering < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
-  audited
-  audited associated_with :user
-  audited associated_with :project
+  audited associated_with: :project
+  audited associated_with: :user
   has_associated_audits
 
   aasm :column => 'state' do
@@ -27,9 +26,9 @@ class Volunteering < ApplicationRecord
     end
 
     event :confirm do
-        transitions from [:signed_up, :invited], to: :confirmed
+        transitions from: [:signed_up, :invited], to: :active
 
-        transitions from [:resigned, :removed], to: :former
+        transitions from: [:resigned, :removed], to: :former
     end
   end
 

@@ -15,8 +15,7 @@ class User < ApplicationRecord
 
   devise :omniauthable, omniauth_providers: [:slack]
 
-  audited
-  audited associated_with: :skill
+  audited associated_with: [:skill, :volunteering, :project]
   has_associated_audits
 
   def self.from_omniauth(auth)
