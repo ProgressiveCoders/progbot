@@ -11,9 +11,9 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     @project.needs_categories = Skill.where(:name => needs_category_names)
     if @project.valid?
       @project.save
-      redirect_to dashboard_project_path(@project)
+      redirect_to edit_dashboard_project_path(@project)
     else
-      render :new_edit
+      render :edit
     end
   end
 
@@ -21,9 +21,17 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     if resource.mission_aligned
       render :aligned_edit
     else
-      render :new_edit
+      render :edit
     end
 
+  end
+
+  def update
+    if resource.save
+      redirect_to edit_dashboard_project_path(@project)
+    else
+      render :edit
+    end
   end
 
   private

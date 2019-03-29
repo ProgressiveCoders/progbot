@@ -11,7 +11,6 @@ class Skill < ApplicationRecord
   scope :match_skill, -> (str) { where("lower(name) = lower(?)", str_or_arr) }
   scope :match_skills, -> (arr) { where("lower(name) IN (?)", arr.map(&:downcase)) }
 
-  audited associated_with: [:project, :user]
-  has_associated_audits
+  audited
 
 end

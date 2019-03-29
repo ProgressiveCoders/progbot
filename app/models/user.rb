@@ -9,13 +9,14 @@ class User < ApplicationRecord
   validates_acceptance_of :read_code_of_conduct
 
   has_many :volunteerings
-  has_many :projects, through: :volunteerings
+  has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
+  has_many :projects, through: :active_volunteerings, source: 'user'
 
   # after_create :send_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
-  audited associated_with: [:skill, :volunteering, :project]
+  audited
   has_associated_audits
 
   def self.from_omniauth(auth)

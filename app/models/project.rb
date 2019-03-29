@@ -19,8 +19,7 @@ class Project < ApplicationRecord
   validates :legal_structures, :presence => true,:allow_blank => false
 
   after_save :remove_blank_values
-
-  audited associated_with: [:volunteering, :user, :skill]
+  audited
   has_associated_audits
   
   def leads

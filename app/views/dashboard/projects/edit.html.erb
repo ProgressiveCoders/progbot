@@ -1,0 +1,11 @@
+<h1>Edit Project</h1>
+
+<%= render 'shared/invalid_skill_modal'%>
+
+<% if resource.mission_aligned%>
+  <%= render 'aligned_form'%>
+<% else %>
+  <%= render 'new_form', dashboard_project: @dashboard_project %>
+<% end %>
+
+<%= link_to 'Back', dashboard_projects_path %>

@@ -6,7 +6,6 @@ class Volunteering < ApplicationRecord
 
   audited associated_with: :project
   audited associated_with: :user
-  has_associated_audits
 
   aasm :column => 'state' do
     state :potential, initial: true
@@ -30,6 +29,15 @@ class Volunteering < ApplicationRecord
 
         transitions from: [:resigned, :removed], to: :former
     end
+
+    event :leave do
+      transitions from: :active, to: :resigned
+    end
+
+    event :cancel do
+      transitions from: :active, to: :removed
+    end
+
   end
 
 end
