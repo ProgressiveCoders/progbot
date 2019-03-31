@@ -34,7 +34,7 @@ class Volunteering < ApplicationRecord
       transitions from: :active, to: :resigned
     end
 
-    event :cancel do
+    event :remove do
       transitions from: :active, to: :removed
     end
 
