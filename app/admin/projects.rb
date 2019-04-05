@@ -29,8 +29,8 @@ ActiveAdmin.register Project do
       project.website.try(:truncate, 20)
     end
     column :slack_channel
-    column :skills do |project|
-      span project.skills.map(&:name).to_sentence
+    column :stacks do |project|
+      span project.stacks.map(&:name).to_sentence
     end
     column :volunteers do |project|
       c = project.volunteers.count

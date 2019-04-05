@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   def set_skills
     @tech_skills = Skill.tech_skills
     @non_tech_skills = Skill.non_tech_skills
-    @skills = Skill.all
+    @all_skills = Skill.all
   end
 
   def after_sign_in_path_for(resource)

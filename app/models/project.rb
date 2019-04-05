@@ -10,18 +10,16 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
-  has_and_belongs_to_many :volunteers, class_name: "User", join_table: "projects_volunteers"
+  has_many :volunteerings
+  has_many :active_volunteerings,  -> { where state: 'active' }, class_name: 'Volunteering'
+  has_many :volunteers, through: :active_volunteerings, source: 'user'
 
   validates_presence_of :name, :description, :tech_stack, :tech_stack_names
   
   validates :legal_structures, :presence => true,:allow_blank => false
 
   after_save :remove_blank_values
-
   audited
-
-  audited associated_with: :user
-  audited associated_with: :skills
   has_associated_audits
   
   def leads

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181231183949) do
+ActiveRecord::Schema.define(version: 20190329025330) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,13 +114,6 @@ ActiveRecord::Schema.define(version: 20181231183949) do
     t.index ["skill_id"], name: "index_projects_skills_on_skill_id"
   end
 
-  create_table "projects_volunteers", id: false, force: :cascade do |t|
-    t.bigint "project_id"
-    t.bigint "user_id"
-    t.index ["project_id"], name: "index_projects_volunteers_on_project_id"
-    t.index ["user_id"], name: "index_projects_volunteers_on_user_id"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -170,6 +163,14 @@ ActiveRecord::Schema.define(version: 20181231183949) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "volunteerings", force: :cascade do |t|
+    t.bigint "project_id"
+    t.bigint "user_id"
+    t.string "state"
+    t.index ["project_id"], name: "index_volunteerings_on_project_id"
+    t.index ["user_id"], name: "index_volunteerings_on_user_id"
   end
 
 end

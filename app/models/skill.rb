@@ -13,8 +13,4 @@ class Skill < ApplicationRecord
 
   audited
 
-  audited associated_with: :project
-  audited associated_with: :user
-  has_associated_audits
-
 end
