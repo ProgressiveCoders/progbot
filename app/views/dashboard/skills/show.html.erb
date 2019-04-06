@@ -4,13 +4,13 @@
 
 <ul>
   <% resource.projects.each do |project| %>
-    <li> <%= link_to project.name, project %></li>
+    <li> <%= link_to project.name, [:dashboard, project] %></li>
   <% end %>
 </ul>
 
 <h2>Projects Needing this Skill</h2>
 <ul>
   <% resource.project_needs.each do |project| %>
-    <li><%= link_to project.name, project %></li>
+    <li><%= link_to project.name, [:dashboard, project] %></li>
 <% end %>
 </ul>

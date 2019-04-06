@@ -1,0 +1,53 @@
+
+<h1><%= resource.name %></h1>
+
+<p><b>Description:</b></p>
+<p><%= resource.description %></p>
+
+<% if resource.slack_channel.present? %>
+  <p><b>Slack Channel:</b></p>
+  <p><%= link_to resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel %></p>
+<% end %>
+
+
+<% contributor_attributes(resource).each do |key, values| %>
+  <% if values.present? %>
+    <p><b><%= key.humanize %></b></p>
+    <ul>
+    <% values.each do |value| %>
+
+      <li><%= link_to value.name, 'slack://user?team=T1KR8AG7J&id=' + value.slack_userid %></li>
+      
+    <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
+<p><b>Tech Stack:</b></p>
+  <ul>
+    <% resource.tech_stack.each do |skill| %>
+      <li><%= link_to skill.name, [:dashboard, skill] %></li>
+    <% end %>
+  </ul>
+
+<p><b>Non-Tech Stack:</b></p>
+  <ul>
+    <% resource.non_tech_stack.each do |skill| %>
+      <li><%= link_to skill.name, [:dashboard, skill] %></li>
+    <% end %>
+  </ul>
+
+<p><b>Needs Categories:</b></p>
+  <ul>
+    <% resource.needs_categories.each do |skill| %>
+      <li><%= link_to skill.name, [:dashboard, skill] %></li>
+    <% end %>
+  </ul>
+
+
+<% scrubbed_attributes(resource).each do |key, value| %>
+  <% if value.present? %>
+    <p><b><%= key.humanize %></b></p>
+    <p><%= value %></p>
+  <% end %>
+<% end %>

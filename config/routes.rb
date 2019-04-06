@@ -4,7 +4,10 @@ Rails.application.routes.draw do
     root :to => 'base#index'
     get 'base/index'
     resource :user, only: [:edit, :update]
-    resources :projects
+    resources :skills, only: [:index, :show]
+    resources :projects do
+      get 'all', :on => :collection
+    end
   end
 
   scope :existing do
@@ -26,8 +29,8 @@ Rails.application.routes.draw do
   end
 
   devise_for :users, except: [:index], controllers: {
-        sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks', users: 'users'
-      }, :path => 'devise'
+    sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks', users: 'users'
+  }, :path => 'devise'
 
   devise_scope :user do
     get 'sign_in', :to => 'devise/sessions#new', :as => :user_session
@@ -38,7 +41,6 @@ Rails.application.routes.draw do
 
   resources :projects, only: [:show, :index]
 
-  resources :skills, only: [:index, :show]
 
   post 'slack/search'
 

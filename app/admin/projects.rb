@@ -70,7 +70,7 @@ ActiveAdmin.register Project do
     f.inputs "Selections" do
       f.input :lead_ids, :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :skills, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
 
       f.input :volunteers, :input_html => { multiple: true, size: 60, class: 'select2' }
     end

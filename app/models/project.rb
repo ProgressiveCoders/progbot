@@ -16,7 +16,7 @@ class Project < ApplicationRecord
 
   validates_presence_of :name, :description, :tech_stack, :tech_stack_names
   
-  validates :legal_structures, :presence => true,:allow_blank => false
+  validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
   after_save :remove_blank_values
   audited
