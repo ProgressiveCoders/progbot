@@ -4,7 +4,7 @@
 
 
 <div class="table-responsive">
-  <table class="table table-striped table-sm">
+  <table class="table table-bordered table-striped table-sm">
     <thead>
       <tr>
         <th>#</th>
@@ -14,20 +14,18 @@
         <th>Website</th>
         <th>Slack Channel</th>
         <th>Created</th>
-        <th>&nbsp;</th>
       </tr>
     </thead>
     <tbody>
       <% collection.each do |project| %>
         <tr>
-          <td><%= project.id %></td>
+          <td><%= link_to project.id, edit_dashboard_project_path(project) %></td>
           <td><%= project.name %></td>
           <td><%= project.status %></td>
           <td><%= project.description.try(:truncate, 100) %></td>
-          <td><%= project.website %></td>
+          <td><%= link_to "Visit", project.website, :class => "btn btn-primary btn-sm", :target => "_blank" %></td>
           <td><%= project.slack_channel %></td>
           <td><%= project.created_at.to_date %></td>
-          <td><%= link_to 'Edit', edit_dashboard_project_path(project), :class => "btn btn-info" %></td>
         </tr>
       <% end %>
       
