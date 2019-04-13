@@ -1,5 +1,9 @@
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
+  
+  def all
+    @projects = Project.order("name ASC").includes(:stacks).all
+  end
 
   def create
     @project = Project.new(project_params)
@@ -15,6 +19,10 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     else
       render :edit
     end
+  end
+  
+  def show
+    @project = Project.find(params[:id])
   end
 
   def edit

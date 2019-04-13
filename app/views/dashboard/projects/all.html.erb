@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>All Projects</h1>
+
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Skills</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @projects.each do |project| %>
+        <tr>
+          <td><%= project.id %></td>
+          <td><%= link_to project.name, dashboard_project_path(project) %></td>
+          <td><%= project.description.try(:truncate, 100) %></td>
+          <td><%= project.stacks.map(&:name).to_sentence %></td>
+          <td><%= project.created_at.to_date %></td>
+        </tr>
+      <% end %>
+      
+    </tbody>
+  </table>
+</div>
+<br>
