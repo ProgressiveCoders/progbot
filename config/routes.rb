@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :projects do
       get 'all', :on => :collection
     end
+    resources :volunteerings, only: [:index, :create, :update, :edit]
   end
 
   scope :existing do
@@ -38,8 +39,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, except: [:index, :destroy, :show]
-
-  resources :projects, only: [:show, :index]
 
 
   post 'slack/search'

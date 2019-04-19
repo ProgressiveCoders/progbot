@@ -4,6 +4,9 @@ class Volunteering < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  validates :project, presence: true
+  validates :user, presence: true
+
   audited associated_with: :project
   audited associated_with: :user
 

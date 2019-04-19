@@ -1,5 +1,3 @@
-require 'pry'
-
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
   
