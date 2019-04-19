@@ -5,9 +5,13 @@
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Info</a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#volunteers" role="tab" aria-controls="profile" aria-selected="false">Volunteers</a>
-  </li>
+
+  <% if resource.mission_aligned %>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#volunteers" role="tab" aria-controls="profile" aria-selected="false">Volunteers</a>
+    </li>
+  <% end %>
+
 </ul>
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -19,29 +23,32 @@
     <% end %>
       
   </div>
-  <div class="tab-pane fade" id="volunteers" role="tabpanel" aria-labelledby="profile-tab">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Slackname</th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% resource.volunteerings.includes(:user).each do |vol| %>
-        <tr>
-          <th scope="row">1</th>
-          <td><%= vol.user.name %></td>
-          <td><%= vol.user.slack_username %></td>
-          <td><%= vol.state %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
 
-  </div>
+  <% if resource.mission_aligned %>
+    <div class="tab-pane fade" id="volunteers" role="tabpanel" aria-labelledby="profile-tab">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Slackname</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% resource.volunteerings.includes(:user).each do |vol| %>
+          <tr>
+            <th scope="row">1</th>
+            <td><%= vol.user.name %></td>
+            <td><%= vol.user.slack_username %></td>
+            <td><%= vol.state %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  
 </div>
 
 

@@ -7,6 +7,8 @@
 
   <%= f.input :description, :hint => 'What does the MVP (minimal viable prodcut) look like, and what problem do you see the app solving?  Feel free to link to outside documentation as well!' %>
 
+  <%= f.input :slack_channel %>
+
   <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
 
   <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_stack), :typeahead_source => format_skills(@tech_skills) }}, :required => true %>

@@ -79,4 +79,15 @@ class Project < ApplicationRecord
     self.legal_structures = self.legal_structures.reject(&:empty?)
   end
 
+  def mission_aligned_status
+    if self.mission_aligned
+      'confirmed'
+    elsif self.mission_aligned == false
+      'rejected'
+    elsif self.mission_aligned.nil?
+      'pending'
+    end
+
+  end
+
 end

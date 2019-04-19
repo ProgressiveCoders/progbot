@@ -1,8 +1,10 @@
+require 'pry'
+
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
   
   def all
-    @projects = Project.order("name ASC").includes(:stacks).all
+    @projects = Project.order("name ASC").includes(:stacks).where(:mission_aligned => true)
   end
 
   def create
@@ -25,17 +27,10 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     @project = Project.find(params[:id])
   end
 
-  def edit
-    if resource.mission_aligned
-      render :aligned_edit
-    else
-      render :edit
-    end
 
-  end
 
   def update
-    if resource.save
+    if resource.update(project_params)
       redirect_to edit_dashboard_project_path(@project)
     else
       render :edit
