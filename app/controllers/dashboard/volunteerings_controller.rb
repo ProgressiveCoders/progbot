@@ -35,6 +35,10 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
     def update
 
       case volunteering_params[:event]
+      when 'apply'
+        resource.apply!(current_user)
+      when 'recruit'
+        resource.recruit!(current_user)
       when 'withdraw'
         resource.withdraw!(current_user)
       when 'confirm'
