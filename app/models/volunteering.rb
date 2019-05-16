@@ -24,7 +24,7 @@ class Volunteering < ApplicationRecord
     state :former
     
     event :register_preexisting do
-      transitions from: :potential, to: :active
+      transitions from: :potential, to: :active, guard: :not_end_user?
     end
     
     event :apply do
@@ -57,6 +57,10 @@ class Volunteering < ApplicationRecord
       transitions from: [:resigned, :removed], to: :active, guard: :user_can_restore?
     end
 
+  end
+
+  def not_end_user?(user)
+    user == 'rake task'
   end
 
   def user_is_not_lead?(user)
