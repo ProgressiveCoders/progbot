@@ -1,6 +1,14 @@
 
 <h1><%= resource.name %></h1>
 
+<% if !resource.leads.include?(current_user)%>
+  <% if resource.volunteers.include?(current_user)%>
+    <%= link_to "Manage your Volunteering", edit_dashboard_volunteering_path(Volunteering.get_volunteering_id(project = resource, user = current_user))  %>
+  <% else %>
+    <%= link_to "Volunteer for this Project", new_dashboard_volunteering_path(:project_id => resource.id) %>
+  <% end %>
+<% end %>
+
 <p><b>Status:</b></p>
 <ul>
   <% resource.status.each do |status|%>

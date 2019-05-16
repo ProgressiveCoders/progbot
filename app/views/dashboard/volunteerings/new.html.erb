@@ -1,0 +1,11 @@
+<%= simple_form_for([:dashboard, @volunteering], :url => { :action => "create" }) do |f| %>
+
+<%= f.hidden_field :project_id %>
+<%= f.hidden_field :event, :value => 'apply' %>
+
+<%= f.hint "You are signing up to volunteer for #{@project.name}. The project leads will be notified of your interest and asked to confirm. By Clicking the button below you are agreeing to share your slack profile and skills with the project leads of 
+#{@project.name}."%>
+
+<%= f.button :submit, "Volunteer" %>
+
+<% end %>

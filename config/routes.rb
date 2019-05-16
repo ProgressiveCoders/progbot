@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :projects do
       get 'all', :on => :collection
     end
-    resources :volunteerings, only: [:index, :create, :update, :edit]
+    resources :volunteerings, only: [:index, :new, :create, :update, :edit]
   end
 
   scope :existing do

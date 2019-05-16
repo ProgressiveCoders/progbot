@@ -38,10 +38,10 @@
         <tbody>
           <% resource.volunteerings.includes(:user).each do |vol| %>
           <tr>
-            <th scope="row">1</th>
+            <th scope="row"><%= link_to vol.id, edit_dashboard_volunteering_path(vol) %></th>
             <td><%= vol.user.name %></td>
             <td><%= vol.user.slack_username %></td>
-            <td><%= vol.state %></td>
+            <td><%= vol.state.humanize %></td>
           </tr>
           <% end %>
         </tbody>

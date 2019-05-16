@@ -39,11 +39,13 @@ module ImportProjectsTask
         proj.lead_ids = proj.lead_ids.uniq
         
         if !airtable_project[:team_member_ids].blank?
-          volunteers = User.where(:slack_userid => airtable_project[:team_member_ids])
+          volunteer_slack_ids = airtable_project[:team_member_ids].reject {|x| !airtable_project[:project_lead_slack_id].blank? && airtable_project[:project_lead_slack_id].include?(x)}
+          volunteers = User.where(:slack_userid => volunteer_slack_ids)
           proj.volunteers += volunteers
           proj.volunteers = proj.volunteers.uniq
+          proj.volunteerings.reject{|v| v.state == "active"}.each {|v| v.register_preexisting!}
           if airtable_project[:team_member_ids].size != volunteers.size
-            missing = airtable_project[:team_member_ids] - volunteers.map(&:slack_userid).compact
+            missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
             proj.import_errors += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
           end
         end

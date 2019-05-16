@@ -16,7 +16,7 @@
           <td><%= link_to volunteering.id, edit_dashboard_volunteering_path(volunteering) %></td>
           <td><%= link_to project.name, dashboard_project_path(project) %></td>
           <td>
-            <%= volunteering.state %>
+            <%= volunteering.state.humanize %>
           </td>
           <td>
             <% if project.slack_channel %>
