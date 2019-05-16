@@ -15,7 +15,7 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
       @volunteering = Volunteering.create(:project_id => volunteering_params[:project_id], :user_id => current_user.id)
 
       if volunteering_params[:event] == 'apply'
-        @volunteering.apply!
+        @volunteering.apply!(current_user)
       end
 
       redirect_to dashboard_volunteerings_path
