@@ -42,15 +42,18 @@ ActiveAdmin.register Project do
   show do
     attributes_table do
       row :name
-      row :status
+      row :status do
+        span project.status.join(', ')
+      end
+      row :mission_aligned
       row :description
       row :website
       row :slack_channel
-      row :lead do
-        span project.leads.map(&:name).to_sentence
+      row :leads do
+        span project.leads.map(&:slack_username).to_sentence
       end
       row "Skills" do
-        span project.skills.map(&:name).to_sentence
+        span project.stacks.map(&:name).to_sentence
       end
       row :volunteers do
         span project.volunteers.map(&:name).to_sentence
@@ -65,14 +68,15 @@ ActiveAdmin.register Project do
       f.input :description
       f.input :website
       f.input :slack_channel
+      f.input :mission_aligned
     end
 
     f.inputs "Selections" do
-      f.input :lead_ids, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :leads, collection: User.all.map(&:slack_username), :selected => project.leads.map(&:slack_username), :input_html => { multiple: true, size: 60, class: 'select2' }
 
       f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :volunteers, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :volunteers, collection: User.all.map(&:slack_username), :selected => project.volunteers.map(&:slack_username), :input_html => { multiple: true, size: 60, class: 'select2' }
     end
     f.actions
   end

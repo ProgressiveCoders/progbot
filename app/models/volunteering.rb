@@ -24,7 +24,11 @@ class Volunteering < ApplicationRecord
     state :former
     
     event :register_preexisting do
-      transitions from: :potential, to: :active, guard: :not_end_user?
+      transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
+    end
+
+    event :register_removal do
+      transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
     event :apply do
@@ -59,12 +63,12 @@ class Volunteering < ApplicationRecord
 
   end
 
-  def not_end_user?(user)
-    user == 'rake task'
+  def application_override?(key)
+    key == ENV['AASM_OVERRIDE']
   end
 
   def user_is_not_lead?(user)
-    !self.project.leads.include?(user)
+    !self.project.leads.include?(user) and user.is_a? User
   end
 
   def user_is_lead?(user)
