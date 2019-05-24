@@ -8,7 +8,7 @@
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
 
 techSkills = [".NET", "Angular", "API", "App Development", "AWS", "Back-End", "Block-Chain Tech", "C", "C#", "C++", "Clojure", "Computer Hardware", "CSS", "Data Analyst", "Data Migration", "Data Science", "Dev Ops", "Django", "Docker", "Droid", "Drupal", "E-Mail",
-"Elixir", "Ember", "Front-End", "Full-Stack", "Go", "Graph Database", "Hacker", "Haskell", "Heroku", "Information Architecture", "iOS", "Java", "JavaScript", "jQuery", "Kuberneti", "Machine Learning", "Mobile Dev", "Mongo DB", "My SQL", "Neo4j", "Network Admin", "Node.JS", "Objective-C",
+"Elixir", "Ember", "Expo", "Front-End", "Full-Stack", "Go", "Graph Database", "Hacker", "Haskell", "Heroku", "Information Architecture", "iOS", "Java", "JavaScript", "jQuery", "Kuberneti", "Machine Learning", "Mobile Dev", "Mongo DB", "My SQL", "Neo4j", "Network Admin", "Node.JS", "Objective-C",
 "Oracle12c", "Phoenix", "PHP", "Pollster", "Python", "Rails", "React", "Ruby", "Rust", "Social Media Management", "SQLite", "Swift", "Tech Support", "Web Apps", "Web Design", "Web Development", "Web Infrastructure", "Web Scraping", "Windows", "Wordpress"]
 
 techSkills.each do |skill|

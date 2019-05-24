@@ -15,10 +15,10 @@ ActiveAdmin.register Volunteering do
 
         def update
             case volunteering_params[:event]
-            when 'register_preexisting'
-              resource.register_preexisting!(ENV['AASM_OVERRIDE'])
-            when 'register_removal'
-                resource.register_removal!(ENV['AASM_OVERRIDE'])
+            when 'set_active'
+              resource.set_active!(ENV['AASM_OVERRIDE'])
+            when 'set_former'
+              resource.set_former!(ENV['AASM_OVERRIDE'])
             end
 
             redirect_to admin_volunteering_path
@@ -35,11 +35,10 @@ ActiveAdmin.register Volunteering do
         f.input :project, :input_html => {disabled: true, readonly: true}
         f.input :user, :input_html => {disabled: true, readonly: true}
         f.input :state, :input_html => {disabled: true, readonly: true}
-        f.input :event, collection: resource.aasm.events({permitted: true}, ENV['AASM_OVERRIDE']).map(&:name), :selected => volunteering.state, :input_html => {class: 'select2'}
+        f.input :event, label: 'Change State', collection: resource.aasm.events({permitted: true}, ENV['AASM_OVERRIDE']).map(&:name), :selected => volunteering.state, :input_html => {class: 'select2'}
 
         f.submit
 
     end
-
 
 end

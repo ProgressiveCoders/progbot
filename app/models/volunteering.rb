@@ -14,20 +14,20 @@ class Volunteering < ApplicationRecord
 
   attr_accessor :event
 
+  # after_save :send_slack_notification
+
   aasm :column => 'state' do
     state :potential, initial: true
     state :signed_up
     state :invited
     state :active
-    state :resigned
-    state :removed
     state :former
     
-    event :register_preexisting do
+    event :set_active do
       transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
     end
 
-    event :register_removal do
+    event :set_former do
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
@@ -45,20 +45,14 @@ class Volunteering < ApplicationRecord
 
     event :confirm, guard: :user_can_confirm? do
         transitions from: [:signed_up, :invited], to: :active
-
-        transitions from: [:resigned, :removed], to: :former
     end
 
     event :leave do
-      transitions from: :active, to: :resigned, guard: :user_is_volunteer?
+      transitions from: :active, to: :former, guard: :user_is_volunteer?
     end
 
     event :remove do
-      transitions from: :active, to: :removed, guard: :user_is_lead?
-    end
-
-    event :restore do
-      transitions from: [:resigned, :removed], to: :active, guard: :user_can_restore?
+      transitions from: :active, to: :former, guard: :user_is_lead?
     end
 
   end
@@ -88,18 +82,10 @@ class Volunteering < ApplicationRecord
   end
 
   def user_can_confirm?(user)
-    if self.signed_up? || self.resigned?
+    if self.signed_up?
       user_is_lead?(user)
-    elsif self.invited? || self.removed?
+    elsif self.invited?
       user_is_volunteer?(user)
-    end
-  end
-
-  def user_can_restore?(user)
-    if self.resigned?
-      user_is_volunteer?(user)
-    elsif self.removed?
-      user_is_lead?(user)
     end
   end
 
@@ -111,6 +97,10 @@ class Volunteering < ApplicationRecord
 
   def relevant?
     ['signed_up', 'invited', 'active', 'resigned', 'removed'].include?(self.state)
+  end
+
+  def send_slack_notification
+    SlackBot.send_to_channel(self)
   end
 
 
