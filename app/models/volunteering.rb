@@ -96,7 +96,7 @@ class Volunteering < ApplicationRecord
   end
 
   def relevant?
-    ['signed_up', 'invited', 'active', 'resigned', 'removed'].include?(self.state)
+    ['signed_up', 'invited', 'active'].include?(self.state)
   end
 
   def send_slack_notification

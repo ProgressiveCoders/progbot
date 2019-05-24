@@ -47,8 +47,6 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
         resource.leave!(current_user)
       when 'remove'
         resource.remove!(current_user)
-      when 'restore'
-        resource.restore!(current_user)
       end
 
       redirect_to edit_dashboard_volunteering_path(resource)
