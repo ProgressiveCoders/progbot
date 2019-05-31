@@ -30,5 +30,15 @@ module ApplicationHelper
     skills.map { |skill| {"id": skill.id, "value": skill.name } }
   end
 
+  def list_slack_channels
+    SlackBot.client.channels_list.channels.map(&:name)
+  end
+
+  def slack_channels_typeahead_source
+    SlackBot.client.channels_list.channels.pluck(:name).map { |value| { value: name } }
+  end
+
+
+
 
 end
