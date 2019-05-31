@@ -11,8 +11,9 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
   has_many :volunteerings
+  has_many :volunteers, through: :volunteerings, source: 'user'
   has_many :active_volunteerings,  -> { where state: 'active' }, class_name: 'Volunteering'
-  has_many :volunteers, through: :active_volunteerings, source: 'user'
+  has_many :active_volunteers, through: :active_volunteerings, source: 'user'
 
   validates_presence_of :name, :description, :tech_stack, :tech_stack_names
   
@@ -77,6 +78,17 @@ class Project < ApplicationRecord
   def remove_blank_values
     self.status  = self.status.reject(&:empty?)
     self.legal_structures = self.legal_structures.reject(&:empty?)
+  end
+
+  def mission_aligned_status
+    if self.mission_aligned
+      'confirmed'
+    elsif self.mission_aligned == false
+      'rejected'
+    elsif self.mission_aligned.nil?
+      'pending'
+    end
+
   end
 
 end

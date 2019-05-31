@@ -62,6 +62,9 @@ class User < ApplicationRecord
     self.non_tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
   end
 
+  def relevant_volunteerings
+    self.volunteerings.select { |v| v.relevant? }
+  end
 
   # def send_slack_notification
   #   SlackBot.post_to_recruitment(self)

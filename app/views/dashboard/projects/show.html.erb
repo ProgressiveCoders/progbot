@@ -1,12 +1,27 @@
 
 <h1><%= resource.name %></h1>
 
+<% if !resource.leads.include?(current_user)%>
+  <% if resource.volunteers.include?(current_user)%>
+    <%= link_to "Manage your Volunteering", edit_dashboard_volunteering_path(Volunteering.get_volunteering_id(project = resource, user = current_user))  %>
+  <% else %>
+    <%= link_to "Volunteer for this Project", new_dashboard_volunteering_path(:project_id => resource.id) %>
+  <% end %>
+<% end %>
+
+<p><b>Status:</b></p>
+<ul>
+  <% resource.status.each do |status|%>
+    <li><%= status %></li>
+  <% end %>
+</ul>
+
 <p><b>Description:</b></p>
 <p><%= resource.description %></p>
 
 <% if resource.slack_channel.present? %>
   <p><b>Slack Channel:</b></p>
-  <p><%= link_to resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel %></p>
+  <p><%= link_to '#' + resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel %></p>
 <% end %>
 
 

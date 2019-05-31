@@ -11,9 +11,9 @@
         <th>Name</th>
         <th>Status</th>
         <th>Description</th>
-        <th>Website</th>
+        <th>View</th>
         <th>Slack Channel</th>
-        <th>Created</th>
+        <th>ProgCode Mission Aligned?</th>
       </tr>
     </thead>
     <tbody>
@@ -21,11 +21,17 @@
         <tr>
           <td><%= link_to project.id, edit_dashboard_project_path(project) %></td>
           <td><%= project.name %></td>
-          <td><%= project.status %></td>
-          <td><%= project.description.try(:truncate, 100) %></td>
-          <td><%= link_to "Visit", project.website, :class => "btn btn-primary btn-sm", :target => "_blank" %></td>
-          <td><%= project.slack_channel %></td>
-          <td><%= project.created_at.to_date %></td>
+          <td>
+            <%= project.status.join(", ").try(:truncate, 20) %>
+          </td>
+          <td><%= project.description.try(:truncate, 85) %></td>
+          <td><%= link_to "Visit", dashboard_project_path(project), :class => "btn btn-primary btn-sm", :target => "_blank" %></td>
+          <td>
+            <% if project.slack_channel %>
+              <%= link_to '#' + project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + project.slack_channel %>
+            <% end %>
+          </td>
+          <td><%= project.mission_aligned_status %></td>
         </tr>
       <% end %>
       

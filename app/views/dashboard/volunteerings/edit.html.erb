@@ -1,0 +1,29 @@
+<h1>Volunteer: <%= link_to @user.slack_username, 'slack://user?team=T1KR8AG7J&id=' + @user.slack_userid %></h1>
+
+<h1>Project: <%= link_to @project.name, dashboard_project_path(@project) %>
+
+<h1>Status: <%= resource.state.humanize %></h1>
+
+<h2>Volunteer's Tech Skills:</h2>
+
+<% @user.tech_skills.each do |skill| %>
+  <ul>
+   <h3> <li><%= link_to skill.name, dashboard_skill_path(skill) %></li></h3>
+  </ul>
+<% end %>
+
+<h2>Volunteer's Non Tech Skills:</h2>
+
+<% @user.non_tech_skills.each do |skill| %>
+  <ul>
+  <h3><li><%= link_to skill.name, dashboard_skill_path(skill) %></li></h3>
+  </ul>
+<% end %>
+
+<%= simple_form_for([:dashboard, resource]) do |f| %>
+
+<%= f.input :event, :label => 'Edit Status', collection: resource.aasm.events({permitted: true}, current_user).map(&:name)  %>
+
+<%= f.button :submit %>
+
+<% end %>

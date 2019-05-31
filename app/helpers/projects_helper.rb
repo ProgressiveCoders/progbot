@@ -5,7 +5,7 @@ module ProjectsHelper
     end
 
     def contributor_attributes(project)
-        project.slice('leads', 'volunteers', 'progcode_coordinators')
+        project.slice('leads', 'active_volunteers', 'progcode_coordinators')
     end
 
 end

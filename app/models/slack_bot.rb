@@ -19,6 +19,26 @@ class SlackBot
       }.merge(default_params)
     end
 
+    # def send_to_channel(volunteering, testing = true)
+    #   channels = client.channels_list.channels
+    #   channel = channels.detect { |c| c.name.match() == volunteering.project.slack_channel}
+    #   client.chat_postMessage(volunteering_params(volunteering, testing))
+    # end
+
+    # def volunteering_params(volunteering, testing = true)
+    #   {
+    #     channel: testing ? '#progbot' : "'#'#{volunteering.project.slack_channel}",
+    #     attachments: [
+    #       {
+    #         pretext: 'Volunteer Update',
+    #         title: "There has been an update to a volunteering in #{volunteering.project.name}. Its status is now #{volunteering.state}. Check it out on ProgBot"
+    #       }
+
+    #     ]
+
+    #   }
+    # end
+
     def client
       @client = Slack::Web::Client.new
       @client.auth_test

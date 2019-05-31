@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Manage</th>
+        <th>Project</th>
+        <th>Volunteering Status</th>
+        <th>Slack Channel</th>
+        <th>Project Lead(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @volunteerings.each do |volunteering| %>
+        <% project = volunteering.project %>
+        <tr>
+          <td><%= link_to volunteering.id, edit_dashboard_volunteering_path(volunteering) %></td>
+          <td><%= link_to project.name, dashboard_project_path(project) %></td>
+          <td>
+            <%= volunteering.state.humanize %>
+          </td>
+          <td>
+            <% if project.slack_channel %>
+              <%= link_to '#' + project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + project.slack_channel %>
+            <% end %>
+          </td>
+          <td>
+            <% project.leads.each do |lead| %>
+              <%= link_to lead.name, 'slack://user?team=T1KR8AG7J&id=' + lead.slack_userid %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      
+    </tbody>
+  </table>
+</div>
