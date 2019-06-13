@@ -32,6 +32,14 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Setup the mailer config
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_url_options = { host: "progressive-coders-bot.herokuapp.com" }
+  config.action_mailer.smtp_settings = {
+    :domain => 'localhost:3000'
+  }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

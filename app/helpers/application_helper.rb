@@ -35,7 +35,7 @@ module ApplicationHelper
   end
 
   def slack_channels_typeahead_source
-    SlackBot.client.channels_list.channels.pluck(:name).map { |value| { value: name } }
+    SlackBot.client.channels_list.channels.pluck(:name).map { |name| { value: name } }
   end
 
 
