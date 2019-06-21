@@ -28,6 +28,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
 
 
   def update
+    resource.get_slack_channel_id
     if resource.update(project_params)
       redirect_to edit_dashboard_project_path(@project)
     else

@@ -46,6 +46,7 @@ class Project < ApplicationRecord
       self.tech_stack.map { |stack| stack.name }
     end
   end
+  
 
   def non_tech_stack_names=(stack_names)
     self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
@@ -90,5 +91,30 @@ class Project < ApplicationRecord
     end
 
   end
+
+  def get_slack_channel_id
+    unless self.slack_channel.blank?
+    
+      channel = client.channels_info(channel: '#' + self.slack_channel)
+
+      unless channel.blank?
+
+        self.slack_channel_id = channel.channel.id
+      end
+    
+    end
+
+  rescue Slack::Web::Api::Errors::SlackError => e
+    puts "SlackBot:  Channel does not exist"
+    return nil
+
+  end
+
+  def client
+    @client = Slack::Web::Client.new
+    @client.auth_test
+    @client
+  end
+
 
 end

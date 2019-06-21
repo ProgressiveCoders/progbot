@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190329025330) do
+ActiveRecord::Schema.define(version: 20190621021642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 20190329025330) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "active_contributors"
-    t.text "attachments"
     t.text "full_release_features"
     t.text "mission_accomplished"
     t.text "needs_pain_points_narrative"
@@ -97,13 +96,15 @@ ActiveRecord::Schema.define(version: 20190329025330) do
     t.string "business_models", default: [], array: true
     t.string "legal_structures", default: [], array: true
     t.string "oss_license_types", default: [], array: true
-    t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "project_applications", default: [], array: true
+    t.text "attachments"
+    t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
     t.string "import_errors", default: [], array: true
     t.string "master_channel_list", default: [], array: true
     t.string "status", default: [], array: true
+    t.string "slack_channel_id"
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 

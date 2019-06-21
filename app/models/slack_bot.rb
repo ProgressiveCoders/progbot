@@ -19,6 +19,8 @@ class SlackBot
       }.merge(default_params)
     end
 
+    
+
     # def send_to_channel(volunteering, testing = true)
     #   channels = client.channels_list.channels
     #   channel = channels.detect { |c| c.name.match() == volunteering.project.slack_channel}
