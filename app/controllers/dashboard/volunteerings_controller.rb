@@ -16,6 +16,7 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
 
       if volunteering_params[:event] == 'apply'
         @volunteering.apply!(current_user)
+        EmailNotifierMailer.new_volunteer_email.deliver_later
       end
 
       redirect_to dashboard_volunteerings_path
