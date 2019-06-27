@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include SlackHelpers
+
   def flash_div(bootstrapped = true, opts = {})
     tag = opts.delete(:tag) || :div
     (opts[:class] ||= "") << (flash.blank? ? " d-none" : "")
@@ -32,7 +34,7 @@ module ApplicationHelper
 
   def get_slack_channels
     Rails.cache.fetch('get_slack_channels', expires_in: 12.hours) do
-      SlackBot.client.channels_list.channels
+      client.channels_list.channels
     end
   end
 

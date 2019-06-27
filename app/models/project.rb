@@ -1,5 +1,8 @@
+require 'pry'
+
 class Project < ApplicationRecord
   include ProjectConstants
+  include SlackHelpers
 
   attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
 
@@ -93,6 +96,7 @@ class Project < ApplicationRecord
   end
 
   def get_slack_channel_id
+
     unless self.slack_channel.blank?
     
       channel = client.channels_info(channel: '#' + self.slack_channel)
@@ -110,10 +114,16 @@ class Project < ApplicationRecord
 
   end
 
-  def client
-    @client = Slack::Web::Client.new
-    @client.auth_test
-    @client
+  def pull_ids_from_names(params)
+    self.slack_channel = params[:slack_channel]
+    self.get_slack_channel_id
+    tech_names = params[:tech_stack_names].split(", ")
+    non_tech_names = params[:non_tech_stack_names].split(", ")
+    needs_category_names = params[:needs_category_names].split(", ")
+    self.tech_stack = Skill.where(:name => tech_names)
+    self.non_tech_stack = Skill.where(:name => non_tech_names)
+    self.needs_categories = Skill.where(:name => needs_category_names)
+
   end
 
 

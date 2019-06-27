@@ -1,4 +1,5 @@
 class SlackBot
+  include SlackHelpers
   class << self
     def post_to_recruitment(user, testing = false)
       client.chat_postMessage(recruitment_params(user, testing))
@@ -40,12 +41,6 @@ class SlackBot
 
     #   }
     # end
-
-    def client
-      @client = Slack::Web::Client.new
-      @client.auth_test
-      @client
-    end
 
     def default_params
       { username: "Botty The ProgCode Bot"}
