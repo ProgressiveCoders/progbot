@@ -32,6 +32,10 @@ module ApplicationHelper
     skills.map { |skill| {"id": skill.id, "value": skill.name } }
   end
 
+  def format_tokens(skills)
+    skills.map{|s| s.name}.join(", ")
+  end
+
   def slack_channels_typeahead_source(channels)
     channels.map { |channel| { id: channel.id, value: channel.name } }
   end

@@ -33,6 +33,7 @@ class UsersController < ApplicationController
     if !@user
       @user = User.new(is_approved: false)
     end
+
   end
 
   def confirmation

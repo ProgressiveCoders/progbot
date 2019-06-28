@@ -1,4 +1,4 @@
-require 'pry'
+
 
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
@@ -26,21 +26,26 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   def edit
-    @channels = get_slack_channels
+    @channels = SlackHelpers.get_slack_channels
+    skills = resource.tech_stack.map{|s| s.name}.join(",")
+    print skills
+    
   end
 
 
 
   def update
 
+    resource.assign_attributes(project_params)
+    
     if params[:slack_channel]
       
-      resource.get_slack_channel_id(get_slack_channels, params[:slack_channel])
+      resource.get_slack_channel_id(params[:slack_channel])
     end
 
     resource.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
 
-    if resource.update(project_params)
+    if resource.save
       redirect_to edit_dashboard_project_path(@project)
     else
       render :edit
@@ -49,13 +54,6 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   private
-
-  def get_slack_channels
-    channels = Rails.cache.fetch('get_slack_channels', expires_in: 12.hours) do
-      client.channels_list.channels
-    end
-
-  end
 
   
   def begin_of_association_chain

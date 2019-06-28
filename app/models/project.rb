@@ -1,5 +1,3 @@
-require 'pry'
-
 class Project < ApplicationRecord
   include ProjectConstants
   include SlackHelpers
@@ -95,8 +93,9 @@ class Project < ApplicationRecord
 
   end
 
-  def get_slack_channel_id(channels, channel_name)
-    channel = channels.where(name: '#' + channel_name)
+  def get_slack_channel_id(channel_name)
+
+    channel = get_slack_channels.where(name: '#' + channel_name)
 
       unless channel.blank?
 

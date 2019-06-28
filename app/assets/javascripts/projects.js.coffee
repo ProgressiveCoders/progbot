@@ -1,13 +1,22 @@
 this.Projects || (this.Projects = {})
 
 window.Projects =
-  init_form: ->
+  init_aligned_form: ->
     self = @
     $(document).ready(() ->
       self.init_collection("#project_tech_stack_names")
       self.init_collection("#project_non_tech_stack_names")
       self.init_collection("#project_needs_category_names")
       self.init_collection("#project_slack_channel")
+    )
+    return
+
+  init_form: ->
+    self = @
+    $(document).ready(() ->
+      self.init_collection("#project_tech_stack_names")
+      self.init_collection("#project_non_tech_stack_names")
+      self.init_collection("#project_needs_category_names")
     )
     return
 
@@ -28,13 +37,13 @@ window.Projects =
         x.value
       )
       item = e.attrs.value
-      if !collection.includes(item)
-        if e.target.id == "project_slack_channel"
-          e.preventDefault()
-          $('#modal-invalid-channel').modal keyboard: true
-        else
-          e.preventDefault()
-          $('#modal-invalid-skill').modal keyboard: true
+      # if !collection.includes(item)
+      #   if e.target.id == "project_slack_channel"
+      #     e.preventDefault()
+      #     $('#modal-invalid-channel').modal keyboard: true
+      #   else
+      #     e.preventDefault()
+      #     $('#modal-invalid-skill').modal keyboard: true
         
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]

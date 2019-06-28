@@ -1,11 +1,11 @@
 class SlackBot
   include SlackHelpers
   class << self
-    def post_to_recruitment(user, testing = false)
-      client.chat_postMessage(recruitment_params(user, testing))
+    def post_to_recruitment(user, testing = true)
+      SlackHelpers.client.chat_postMessage(recruitment_params(user, testing))
     end
 
-    def recruitment_params(user, testing = false)
+    def recruitment_params(user, testing = true)
       {
         channel: testing ? "#progbot" : '#recruitment',
         attachments: [
