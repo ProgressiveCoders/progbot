@@ -32,14 +32,8 @@ module ApplicationHelper
     skills.map { |skill| {"id": skill.id, "value": skill.name } }
   end
 
-  def get_slack_channels
-    Rails.cache.fetch('get_slack_channels', expires_in: 12.hours) do
-      client.channels_list.channels
-    end
-  end
-
-  def slack_channels_typeahead_source
-    get_slack_channels.pluck(:name).map { |name| { value: name } }
+  def slack_channels_typeahead_source(channels)
+    channels.map { |channel| { id: channel.id, value: channel.name } }
   end
 
 

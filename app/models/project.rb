@@ -95,35 +95,22 @@ class Project < ApplicationRecord
 
   end
 
-  def get_slack_channel_id
-
-    unless self.slack_channel.blank?
-    
-      channel = client.channels_info(channel: '#' + self.slack_channel)
+  def get_slack_channel_id(channels, channel_name)
+    channel = channels.where(name: '#' + channel_name)
 
       unless channel.blank?
 
         self.slack_channel_id = channel.channel.id
       end
-    
-    end
-
   rescue Slack::Web::Api::Errors::SlackError => e
     puts "SlackBot:  Channel does not exist"
     return nil
-
   end
 
-  def pull_ids_from_names(params)
-    self.slack_channel = params[:slack_channel]
-    self.get_slack_channel_id
-    tech_names = params[:tech_stack_names].split(", ")
-    non_tech_names = params[:non_tech_stack_names].split(", ")
-    needs_category_names = params[:needs_category_names].split(", ")
+  def get_ids_from_names(tech_names, non_tech_names, needs_category_names)
     self.tech_stack = Skill.where(:name => tech_names)
     self.non_tech_stack = Skill.where(:name => non_tech_names)
     self.needs_categories = Skill.where(:name => needs_category_names)
-
   end
 
 

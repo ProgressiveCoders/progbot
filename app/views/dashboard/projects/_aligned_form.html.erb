@@ -7,7 +7,7 @@
 
   <%= f.input :description, :hint => 'What does the MVP (minimal viable prodcut) look like, and what problem do you see the app solving?  Feel free to link to outside documentation as well!' %>
 
-  <%= f.input :slack_channel, :hint => 'Start typing to find your Slack Channel. You can only choose one!', :placeholder => "Search for Your Slack Channel", :input_html => {:data => {:value => resource.slack_channel, :typeahead_source => slack_channels_typeahead_source, :limit => 1 }} %>
+  <%= f.input :slack_channel, :hint => 'Start typing to find your Slack Channel. You can only choose one!', :placeholder => "Search for Your Slack Channel", :input_html => {:data => {:value => resource.slack_channel, :typeahead_source => slack_channels_typeahead_source(@channels), :limit => 1 }} %>
 
   <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
 
