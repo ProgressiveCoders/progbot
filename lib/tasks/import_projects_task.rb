@@ -88,7 +88,9 @@ module ImportProjectsTask
         
         proj.assign_attributes(build_attributes(airtable_project))
 
-        proj.get_slack_channel_id
+        if airtable_project[:slack_channel]
+          proj.get_slack_channel_id(airtable_project[:slack_channel][0][:channel_name])
+        end
 
         if airtable_project[:project_name].blank?
           proj.import_errors << "this project lacks a name"

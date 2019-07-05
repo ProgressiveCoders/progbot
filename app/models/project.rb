@@ -95,11 +95,12 @@ class Project < ApplicationRecord
 
   def get_slack_channel_id(channel_name)
 
-    channel = get_slack_channels.where(name: '#' + channel_name)
+
+    channel = SlackHelpers.get_slack_channels.find {|channel| channel["name"] == channel_name}
 
       unless channel.blank?
 
-        self.slack_channel_id = channel.channel.id
+        self.slack_channel_id = channel.id
       end
   rescue Slack::Web::Api::Errors::SlackError => e
     puts "SlackBot:  Channel does not exist"

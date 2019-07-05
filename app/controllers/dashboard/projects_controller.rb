@@ -14,6 +14,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     @project.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
 
     if @project.valid?
+      @project.project_created = Time.current
       @project.save
       redirect_to edit_dashboard_project_path(@project)
     else
