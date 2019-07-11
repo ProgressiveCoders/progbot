@@ -8,14 +8,18 @@ class UsersController < ApplicationController
       @user = User.find_by(email: params["user"]["email"])
       if !@user.is_approved
         @user.update(user_params)
+        EmailNotifierMailer.with(user: @user).new_user_signed_up_again.deliver_later
+      else
+        EmailNotifierMailer.with(user: @user).existing_user_signed_up.deliver_later
       end
-      redirect_to user_path(@user)
+      redirect_to users_new_confirmation_path
     else
       create! do |success, failure|
         success.html {
           if @user.is_approved
             redirect_to user_slack_omniauth_authorize_path
           else
+            EmailNotifierMailer.with(user: @user).new_user_signed_up.deliver_later
             redirect_to users_new_confirmation_path
           end
         }
@@ -24,10 +28,10 @@ class UsersController < ApplicationController
     end
   end
 
-  def existing
-    @user = User.find_by(email: params["user"["email"]])
-    # replace with sending email to user instead of having it appear on screen
-  end
+  # def existing
+  #   @user = User.find_by(email: params["user"["email"]])
+  #   # replace with sending email to user instead of having it appear on screen
+  # end
 
   def new
     if !@user
