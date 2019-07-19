@@ -37,13 +37,13 @@ window.Projects =
         x.value
       )
       item = e.attrs.value
-      # if !collection.includes(item)
-      #   if e.target.id == "project_slack_channel"
-      #     e.preventDefault()
-      #     $('#modal-invalid-channel').modal keyboard: true
-      #   else
-      #     e.preventDefault()
-      #     $('#modal-invalid-skill').modal keyboard: true
+      if !collection.includes(item)
+        if e.target.id == "project_slack_channel"
+          e.preventDefault()
+          $('#modal-invalid-channel').modal keyboard: true
+        else
+          e.preventDefault()
+          $('#modal-invalid-skill').modal keyboard: true
         
     $(input_id).tokenfield(
       typeahead: [null, { source: engine.ttAdapter() }]
