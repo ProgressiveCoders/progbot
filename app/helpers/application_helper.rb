@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include SlackHelpers
+
   def flash_div(bootstrapped = true, opts = {})
     tag = opts.delete(:tag) || :div
     (opts[:class] ||= "") << (flash.blank? ? " d-none" : "")
@@ -28,6 +30,14 @@ module ApplicationHelper
 
   def format_skills(skills = @tech_skills)
     skills.map { |skill| {"id": skill.id, "value": skill.name } }
+  end
+
+  def format_tokens(skills)
+    skills.map{|s| s.name}.join(", ")
+  end
+
+  def slack_channels_typeahead_source(channels)
+    channels.map { |channel| { id: channel.id, value: channel.name } }
   end
 
 

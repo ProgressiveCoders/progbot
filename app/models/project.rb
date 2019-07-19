@@ -1,5 +1,6 @@
 class Project < ApplicationRecord
   include ProjectConstants
+  include SlackHelpers
 
   attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
 
@@ -46,6 +47,7 @@ class Project < ApplicationRecord
       self.tech_stack.map { |stack| stack.name }
     end
   end
+  
 
   def non_tech_stack_names=(stack_names)
     self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
@@ -90,5 +92,26 @@ class Project < ApplicationRecord
     end
 
   end
+
+  def get_slack_channel_id(channel_name)
+
+
+    channel = SlackHelpers.get_slack_channels.find {|channel| channel["name"] == channel_name}
+
+      unless channel.blank?
+
+        self.slack_channel_id = channel.id
+      end
+  rescue Slack::Web::Api::Errors::SlackError => e
+    puts "SlackBot:  Channel does not exist"
+    return nil
+  end
+
+  def get_ids_from_names(tech_names, non_tech_names, needs_category_names)
+    self.tech_stack = Skill.where(:name => tech_names)
+    self.non_tech_stack = Skill.where(:name => non_tech_names)
+    self.needs_categories = Skill.where(:name => needs_category_names)
+  end
+
 
 end

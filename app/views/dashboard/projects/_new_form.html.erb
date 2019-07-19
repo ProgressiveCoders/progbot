@@ -11,11 +11,11 @@
 
   <%= f.input :website, :hint => 'Does your group or project have a website?  Post the URL here!' %>  
 
-  <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.tech_stack), :typeahead_source => format_skills(@tech_skills) }}, :required => true %>
+  <%= f.input :tech_stack_names, :as => :string, :label => 'Tech Stack', :hint => 'What tech does your project make use of?', :error => 'This field is mandatory', :placeholder => "Type something...", :input_html => {:value  => format_tokens(resource.tech_stack), :data => {:typeahead_source => format_skills(@tech_skills) }}, :required => true %>
 
-  <%= f.input :non_tech_stack_names, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.non_tech_stack), :typeahead_source => format_skills(@non_tech_skills) }} %>
+  <%= f.input :non_tech_stack_names, label: 'Non-Tech Stack', :hint => 'What non-tech attributes does your project have?', :placeholder => "Type something...", :input_html => {:value => format_tokens(resource.non_tech_stack), :data => {:typeahead_source => format_skills(@non_tech_skills) }} %>
 
-  <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:data => {:tokens => format_skills(resource.needs_categories), :typeahead_source => format_skills(@all_skills)}} %>
+  <%= f.input :needs_category_names, :label => 'Needs Categories', :hint => 'What skills are needed for your project? Choose as many as are relevant!', :placeholder => "Type something...", :input_html => {:value => format_tokens(resource.needs_categories), :data => {:typeahead_source => format_skills(@all_skills)}} %>
 
   <%= f.input :status, :label => 'Project Status',:hint => 'You may select more than one', :collection => Project::STATUSES, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false %>
 

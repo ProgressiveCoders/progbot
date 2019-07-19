@@ -85,8 +85,12 @@ module ImportProjectsTask
           end unless airtable_project[:master_channel_list].blank?
           proj.master_channel_list = proj.master_channel_list.uniq.compact
         end
-
+        
         proj.assign_attributes(build_attributes(airtable_project))
+
+        if airtable_project[:slack_channel]
+          proj.get_slack_channel_id(airtable_project[:slack_channel][0][:channel_name])
+        end
 
         if airtable_project[:project_name].blank?
           proj.import_errors << "this project lacks a name"

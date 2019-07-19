@@ -1,10 +1,11 @@
 class SlackBot
+  include SlackHelpers
   class << self
-    def post_to_recruitment(user, testing = false)
-      client.chat_postMessage(recruitment_params(user, testing))
+    def post_to_recruitment(user, testing = true)
+      SlackHelpers.client.chat_postMessage(recruitment_params(user, testing))
     end
 
-    def recruitment_params(user, testing = false)
+    def recruitment_params(user, testing = true)
       {
         channel: testing ? "#progbot" : '#recruitment',
         attachments: [
@@ -18,6 +19,8 @@ class SlackBot
         ]
       }.merge(default_params)
     end
+
+    
 
     # def send_to_channel(volunteering, testing = true)
     #   channels = client.channels_list.channels
@@ -38,12 +41,6 @@ class SlackBot
 
     #   }
     # end
-
-    def client
-      @client = Slack::Web::Client.new
-      @client.auth_test
-      @client
-    end
 
     def default_params
       { username: "Botty The ProgCode Bot"}

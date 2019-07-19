@@ -1,5 +1,8 @@
+
+
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
+  include SlackHelpers
   
   def all
     @projects = Project.order("name ASC").includes(:stacks).where(:mission_aligned => true)
@@ -7,13 +10,11 @@ class Dashboard::ProjectsController < Dashboard::BaseController
 
   def create
     @project = Project.new(project_params)
-    tech_names = project_params[:tech_stack_names].split(", ")
-    non_tech_names = project_params[:non_tech_stack_names].split(", ")
-    needs_category_names = project_params[:needs_category_names].split(", ")
-    @project.tech_stack = Skill.where(:name => tech_names)
-    @project.non_tech_stack = Skill.where(:name => non_tech_names)
-    @project.needs_categories = Skill.where(:name => needs_category_names)
+
+    @project.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
+
     if @project.valid?
+      @project.project_created = Time.current
       @project.save
       redirect_to edit_dashboard_project_path(@project)
     else
@@ -25,17 +26,36 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     @project = Project.find(params[:id])
   end
 
+  def edit
+    @channels = SlackHelpers.get_slack_channels
+    skills = resource.tech_stack.map{|s| s.name}.join(",")
+    print skills
+    
+  end
+
 
 
   def update
-    if resource.update(project_params)
+
+    resource.assign_attributes(project_params)
+    
+    if params[:slack_channel]
+      
+      resource.get_slack_channel_id(params[:slack_channel])
+    end
+
+    resource.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
+
+    if resource.save
       redirect_to edit_dashboard_project_path(@project)
     else
       render :edit
     end
+
   end
 
   private
+
   
   def begin_of_association_chain
     current_user

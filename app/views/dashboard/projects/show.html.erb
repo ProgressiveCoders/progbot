@@ -21,7 +21,7 @@
 
 <% if resource.slack_channel.present? %>
   <p><b>Slack Channel:</b></p>
-  <p><%= link_to '#' + resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel %></p>
+  <p><%= link_to '#' + resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel_id %></p>
 <% end %>
 
 
@@ -63,6 +63,11 @@
 <% scrubbed_attributes(resource).each do |key, value| %>
   <% if value.present? %>
     <p><b><%= key.humanize %></b></p>
-    <p><%= value %></p>
+    
+    <% if key.include?('url') || key.include?('link') || key == 'working_doc' || key == 'website' || key == 'repository' || key == 'attachments' %>
+      <p><%= link_to value, value %></p>
+    <% else %>
+      <p><%= value %></p>
+    <% end %>
   <% end %>
 <% end %>
