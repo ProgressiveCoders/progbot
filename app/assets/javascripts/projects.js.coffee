@@ -20,7 +20,7 @@ window.Projects =
     )
     return
 
-  init_collection: (input_id, type) ->
+  init_collection: (input_id) ->
     engine = new Bloodhound(
       local: $(input_id).data("typeahead-source")
       identify: (obj) ->
