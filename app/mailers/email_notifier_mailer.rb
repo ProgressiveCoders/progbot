@@ -3,8 +3,18 @@ class EmailNotifierMailer < ApplicationMailer
 
     layout 'email_notifier'
 
-    def new_volunteer_email
-        mail(to:'sdklos@gmail.com', subject: 'We Received Your Application')
+    def new_user_admin_notification
+        attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
+        @user = params[:user]
+        mail(to:'sdklos@gmail.com', subject: 'New User Signup')
+    end
+
+    def new_project_admin_notification
+
+    end
+
+    def new_project_confirmation
+
     end
 
     def existing_user_signed_up

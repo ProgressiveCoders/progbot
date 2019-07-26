@@ -20,6 +20,7 @@ class UsersController < ApplicationController
             redirect_to user_slack_omniauth_authorize_path
           else
             EmailNotifierMailer.with(user: @user).new_user_signed_up.deliver_later
+            EmailNotifierMailer.with(user: @user).new_user_admin_notification.deliver_later
             redirect_to users_new_confirmation_path
           end
         }
