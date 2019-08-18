@@ -11,10 +11,9 @@ ActiveAdmin.register User do
 #   permitted << :other if params[:action] == 'create' && current_user.admin?
 #   permitted
 # end
+
   controller do
-    def scoped_collection
-      end_of_association_chain.includes(:tech_skills).joins(:tech_skills)
-    end
+
   end
   
   permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
@@ -27,8 +26,9 @@ ActiveAdmin.register User do
     column :slack_username
     column :email
     column :tech_skills do |user|
-      span user.tech_skills.map(&:name).to_sentence
+      user.tech_skills.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
     end
+
     actions
   end
 

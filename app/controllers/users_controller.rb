@@ -29,11 +29,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # def existing
-  #   @user = User.find_by(email: params["user"["email"]])
-  #   # replace with sending email to user instead of having it appear on screen
-  # end
-
   def new
     if !@user
       @user = User.new(is_approved: false)

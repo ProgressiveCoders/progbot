@@ -3,35 +3,45 @@ class EmailNotifierMailer < ApplicationMailer
 
     layout 'email_notifier'
 
+    before_action { @user, @project = params[:user], params[:project] }
+    before_action :set_attachment_source
+
     def new_user_admin_notification
-        attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
-        @user = params[:user]
-        mail(to:'sdklos@gmail.com', subject: 'New User Signup')
+      mail(to: check_testing_status, subject: 'New User Signup')
     end
 
     def new_project_admin_notification
-
+        mail(to: check_testing_status, subject: 'New Project')
     end
 
     def new_project_confirmation
+        mail(to: check_testing_status, subject: 'New Project')
+    end
 
+    def project_mission_aligned_changed
+        @mission_aligned_was = params[:mission_aligned_was]
+        mail(to: check_testing_status(@project.leads.pluck(:email)), subject: "Your Project's Mission Aligned Status has been Updated")
     end
 
     def existing_user_signed_up
-        attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
-        @user = params[:user]
-        mail(to: @user.email, subject: 'You Have Already Been Accepted')
+      mail(to: @user.email, subject: 'You Have Already Been Accepted')
     end
 
     def new_user_signed_up
-        attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
-        @user = params[:user]
-        mail(to: @user.email, subject: 'We Have Received Your Application')
+      mail(to: @user.email, subject: 'We Have Received Your Application')
     end
 
     def new_user_signed_up_again
-        attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
-        @user = params[:user]
-        mail(to: @user.email, subject: 'We Have Updated Your Application')
+      mail(to: @user.email, subject: 'We Have Updated Your Application')
+    end
+
+    private
+
+    def check_testing_status(prod_target = 'admin@progcode.org')
+      Rails.env.production? ? prod_target : 'sdklos@gmail.com'
+    end
+
+    def set_attachment_source
+      attachments.inline['logo-only.png'] = File.read("#{Rails.root}/app/assets/images/logo-only.png")
     end
 end
