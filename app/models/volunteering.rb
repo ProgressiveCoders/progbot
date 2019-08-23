@@ -116,17 +116,18 @@ class Volunteering < ApplicationRecord
       if !project.flags.include?('this project lacks a lead')
         project.flags << 'this project lacks a lead'
       end
+
+      if !coordinators.empty?
+        coordinators.each do |coordinator|
+          send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
+        end
+      else
+        if !project.flags.include?('this project lacks a coordinator')
+          project.flags << 'this project lacks a coordinator'
+        end
+      end
     end
-      
-    if !coordinators.empty?
-      coordinators.each do |coordinator|
-        send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
-      end
-    else
-      if !project.flags.include?('this project lacks a coordinator')
-        project.flags << 'this project lacks a coordinator'
-      end
-    end 
+       
   end
 
   def send_slack_volunteering_notification(user:,title_link:,testing: true)
