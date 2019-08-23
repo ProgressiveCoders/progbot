@@ -12,4 +12,11 @@ module SlackHelpers
       end
       channels
     end
+
+    def self.lookup_by_email(email)
+      self.client.users_lookupByEmail(email: email).user
+    rescue Slack::Web::Api::Errors::SlackError => e
+      puts "SlackBot:  Email not found: #{email}"
+      return nil
+    end
 end

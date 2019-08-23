@@ -1,6 +1,7 @@
 class Project < ApplicationRecord
   include ProjectConstants
   include SlackHelpers
+  include Rails.application.routes.url_helpers
 
   attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
 
@@ -11,7 +12,7 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
-  has_many :volunteerings
+  has_many :volunteerings, dependent: :destroy
   has_many :volunteers, through: :volunteerings, source: 'user'
   has_many :active_volunteerings,  -> { where state: 'active' }, class_name: 'Volunteering'
   has_many :active_volunteers, through: :active_volunteerings, source: 'user'
@@ -20,9 +21,17 @@ class Project < ApplicationRecord
   
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
+  after_create :send_new_project_slack_notification
+  
+  # after_create :send_new_project_notification_emails
+
   after_save :remove_blank_values
   audited
   has_associated_audits
+  
+  def self.projects_slack_channel
+    "CLUDUR2MD"
+  end
   
   def leads
     lead_ids.blank? ? [] : User.where(:id => self.lead_ids)
@@ -74,7 +83,7 @@ class Project < ApplicationRecord
   end
 
   def flagged?
-    !self.import_errors.blank?
+    !self.flags.blank?
   end
 
   def remove_blank_values
@@ -111,6 +120,54 @@ class Project < ApplicationRecord
     self.tech_stack = Skill.where(:name => tech_names)
     self.non_tech_stack = Skill.where(:name => non_tech_names)
     self.needs_categories = Skill.where(:name => needs_category_names)
+  end
+
+  def send_new_project_notification_emails
+    user = User.find(self.lead_ids.first)
+    EmailNotifierMailer.with(user: user, project: self).new_project_confirmation.deliver_later
+    EmailNotifierMailer.with({user: user, project: self}).new_project_admin_notification.deliver_later
+  end
+
+  def send_mission_aligned_changed_notification_email(mission_aligned_was)
+    EmailNotifierMailer.with({project: self, mission_aligned_was: mission_aligned_was}).project_mission_aligned_changed.deliver_later
+  end
+
+  def send_new_project_slack_notification
+    SlackBot.send_message({
+      channel: Project.projects_slack_channel,
+      attachments: [
+        pretext: "New Project Created",
+        title: "A New Project Has Been Created: #{self.name}",
+        title_link: admin_project_url(self),
+        text: "This project is pending admin approval."
+      ]
+    }, testing = false)
+  end
+
+  def send_mission_aligned_changed_slack_notifications(mission_aligned_was)
+    self.leads.each do |lead|
+      SlackBot.send_message({
+        channel: lead.slack_userid,
+        attachments: [
+          pretext: "Mission Aligned Status Changed",
+          title: "Your Project's Mission Aligned Status has Changed",
+          text: "The mission aligned status of your project, #{self.name} has changed from #{mission_aligned_was} to #{self.mission_aligned_status}.",
+          title_link: dashboard_projects_url
+        ]
+      }, testing = true)
+    end
+
+    if self.mission_aligned
+      SlackBot.send_message({
+        channel: Project.projects_slack_channel,
+        attachments: [
+          pretext: "Project Has been Approved",
+          title: "#{self.name} has been validated as mission aligned.",
+          text: "Click the link above to view this project and to volunteer",
+          title_link: dashboard_project_url(self)
+        ]
+      }, testing = false)
+    end
   end
 
 

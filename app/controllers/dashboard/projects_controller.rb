@@ -9,15 +9,12 @@ class Dashboard::ProjectsController < Dashboard::BaseController
 
   def create
     @project = Project.new(project_params)
-    @user = current_user
 
     @project.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
 
     if @project.valid?
       @project.project_created = Time.current
       @project.save
-      EmailNotifierMailer.with(user: @user, project: @project).new_project_confirmation.deliver_later
-      EmailNotifierMailer.with({user: @user, project: @project}).new_project_admin_notification.deliver_later
       redirect_to edit_dashboard_project_path(@project)
     else
       render :edit
@@ -25,7 +22,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
   
   def show
-
+    @project = Project.find(params[:id])
   end
 
   def edit

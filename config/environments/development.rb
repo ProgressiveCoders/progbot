@@ -62,4 +62,4 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 end
 
-Rails.application.routes.default_url_options[:host] = "lvh.me"
+Rails.application.routes.default_url_options[:host] = "localhost:3000"

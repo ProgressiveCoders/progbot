@@ -74,7 +74,8 @@ ActiveAdmin.register Project do
 
       if resource.save
         if mission_aligned_changed == true && resource.leads.any?
-          EmailNotifierMailer.with({project: @project, mission_aligned_was: mission_aligned_was}).project_mission_aligned_changed.deliver_later
+          resource.send_mission_aligned_changed_notification_email(mission_aligned_was)
+          resource.send_mission_aligned_changed_slack_notifications(mission_aligned_was)
         end
         redirect_to admin_project_path(resource)
       else

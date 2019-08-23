@@ -1,5 +1,6 @@
 class Volunteering < ApplicationRecord
   include AASM
+  include Rails.application.routes.url_helpers
 
   belongs_to :user
   belongs_to :project
@@ -14,14 +15,14 @@ class Volunteering < ApplicationRecord
 
   attr_accessor :event
 
-  # after_save :send_slack_notification
-
   aasm :column => 'state' do
     state :potential, initial: true
     state :signed_up
     state :invited
     state :active
     state :former
+
+    after_all_transitions :send_volunteering_updates
     
     event :set_active do
       transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
@@ -99,8 +100,50 @@ class Volunteering < ApplicationRecord
     ['signed_up', 'invited', 'active'].include?(self.state)
   end
 
-  def send_slack_notification
-    SlackBot.send_to_channel(self)
+  def send_volunteering_updates
+    leads = self.project.leads
+    project = self.project
+    volunteer = self.user
+    coordinators = self.project.progcode_coordinators
+
+    send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+
+    if !leads.empty?
+      leads.each do |lead|
+        send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
+      end
+    else
+      if !project.flags.include?('this project lacks a lead')
+        project.flags << 'this project lacks a lead'
+      end
+    end
+      
+    if !coordinators.empty?
+      coordinators.each do |coordinator|
+        send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
+      end
+    else
+      if !project.flags.include?('this project lacks a coordinator')
+        project.flags << 'this project lacks a coordinator'
+      end
+    end 
+  end
+
+  def send_slack_volunteering_notification(user:,title_link:,testing: true)
+    base_params = {
+      channel: user.slack_userid,
+      attachments: [
+        pretext: "Volunteering Updated",
+        title: "#{self.user.slack_username}'s volunteering for #{self.project.name} has been updated",
+        text: "#{self.user.slack_username}'s status has been changed from #{self.aasm.from_state} to #{self.aasm.to_state}. Click the link to view more details in ProgBot."
+      ]
+    }
+
+    SlackBot.send_message(SlackBot.merge_params(base_params, {
+      attachments: [
+        title_link: title_link
+      ]
+    }), testing = testing)
   end
 
 
