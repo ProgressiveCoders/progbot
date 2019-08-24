@@ -20,7 +20,6 @@ ActiveAdmin.register Volunteering do
             when 'set_former'
               resource.set_former!(ENV['AASM_OVERRIDE'])
             end
-
             redirect_to admin_volunteering_path
         end
 

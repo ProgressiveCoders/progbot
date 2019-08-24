@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190621021642) do
+ActiveRecord::Schema.define(version: 20190823022634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 20190621021642) do
     t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
-    t.string "import_errors", default: [], array: true
+    t.string "flags", default: [], array: true
     t.string "master_channel_list", default: [], array: true
     t.string "status", default: [], array: true
     t.string "slack_channel_id"

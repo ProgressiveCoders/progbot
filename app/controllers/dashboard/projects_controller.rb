@@ -1,5 +1,4 @@
 
-
 class Dashboard::ProjectsController < Dashboard::BaseController
   inherit_resources
   include SlackHelpers
@@ -33,8 +32,6 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     
   end
 
-
-
   def update
 
     resource.assign_attributes(project_params)
@@ -47,7 +44,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     resource.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
 
     if resource.save
-      redirect_to edit_dashboard_project_path(@project)
+      redirect_to edit_dashboard_project_path(resource)
     else
       render :edit
     end

@@ -35,7 +35,7 @@ Rails.application.configure do
   # Setup the mailer config
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: "progressive-coders-bot.herokuapp.com" }
+  config.action_mailer.default_url_options = { host: 'localhost:3000'}
   config.action_mailer.smtp_settings = {
     :domain => 'localhost:3000'
   }
@@ -62,4 +62,4 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 end
 
-Rails.application.routes.default_url_options[:host] = "lvh.me"
+Rails.application.routes.default_url_options[:host] = "localhost:3000"

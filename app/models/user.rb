@@ -1,5 +1,7 @@
 
 class User < ApplicationRecord
+  include Rails.application.routes.url_helpers
+
   attr_accessor :tech_skill_names, :non_tech_skill_names
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
@@ -8,17 +10,17 @@ class User < ApplicationRecord
   validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
   validates_acceptance_of :read_code_of_conduct
 
-  has_many :volunteerings
+  has_many :volunteerings, dependent: :destroy
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
   has_many :projects, through: :active_volunteerings, source: 'user'
 
-  # after_create :send_slack_notification
+  after_create :send_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
   audited
   has_associated_audits
-
+  
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
@@ -67,6 +69,13 @@ class User < ApplicationRecord
   end
 
   def send_slack_notification
-    SlackBot.post_to_recruitment(self)
+    SlackBot.send_message({
+      channel: "#recruitment",
+      attachments: [
+        pretext: 'New User Signup',
+        title: "A New User Has Signed Up: #{self.name}:::#{self.email}",
+        title_link: admin_user_url(self, :only_path => false),
+      ]
+    })
   end
 end

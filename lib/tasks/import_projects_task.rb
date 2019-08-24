@@ -16,7 +16,7 @@ module ImportProjectsTask
         proj = Project.find_or_initialize_by name: airtable_project[:project_name]
 
         if airtable_project[:project_status].blank?
-          proj.import_errors << "this project lacks a status"
+          proj.flags << "this project lacks a status"
         else
           airtable_project[:project_status].each do |status|
             proj.status << status
@@ -25,12 +25,12 @@ module ImportProjectsTask
         proj.status = proj.status.uniq
 
         if airtable_project[:project_lead_slack_id].blank?
-          proj.import_errors << "this project lacks a lead"
+          proj.flags << "this project lacks a lead"
         else
           airtable_project[:project_lead_slack_id].each do |slack_id|
             lead = User.find_by(:slack_userid => slack_id)
             if lead == nil
-              proj.import_errors << "project lead slack id #{slack_id} has no corresponding user"
+              proj.flags << "project lead slack id #{slack_id} has no corresponding user"
             else
               proj.lead_ids << lead.id
             end
@@ -46,18 +46,18 @@ module ImportProjectsTask
           proj.volunteerings.reject{|v| v.state == "active"}.each {|v| v.set_active!(ENV['AASM_OVERRIDE'])}
           if airtable_project[:team_member_ids].size != volunteers.size
             missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
-            proj.import_errors += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
+            proj.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
           end
         end
 
 
         if airtable_project[:progcode_coordinator_ids].blank?
-          proj.import_errors << "this project lacks a coordinator"
+          proj.flags << "this project lacks a coordinator"
         else
           airtable_project[:progcode_coordinator_ids].each do |coord_id|
             coordinator = User.find_by(:slack_userid => coord_id)
             if coordinator == nil
-              proj.import_errors << "progcode coordinator slack id #{coord_id} has no corresponding user"
+              proj.flags << "progcode coordinator slack id #{coord_id} has no corresponding user"
             else
               proj.progcode_coordinator_ids << coordinator.id
             end
@@ -71,7 +71,7 @@ module ImportProjectsTask
         end unless airtable_project[:needs_categories].blank?
         
         if airtable_project[:tech_stack].blank?
-          proj.import_errors << "this project lacks a tech stack"
+          proj.flags << "this project lacks a tech stack"
         else
           airtable_project[:tech_stack].each do |tech|
             tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
@@ -93,17 +93,17 @@ module ImportProjectsTask
         end
 
         if airtable_project[:project_name].blank?
-          proj.import_errors << "this project lacks a name"
+          proj.flags << "this project lacks a name"
         end
         if proj.legal_structures.blank?
-          proj.import_errors << "this project lacks a legal structure"
+          proj.flags << "this project lacks a legal structure"
         end
         if proj.progcode_github_project_link == nil
-          proj.import_errors << "this project lacks a link to a github repository"
+          proj.flags << "this project lacks a link to a github repository"
         end
 
         proj.mission_aligned = true
-        proj.import_errors.uniq!
+        proj.flags.uniq!
         proj.save(:validate => false)
       end
     end

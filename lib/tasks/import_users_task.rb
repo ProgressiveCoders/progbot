@@ -2,6 +2,7 @@ require_relative '../../config/environment'
 require_relative '../../app/models/user'
 require_relative '../../app/models/airtable_user'
 require_relative '../../app/models/slack_bot'
+require_relative '../slack_helpers'
 
 module ImportUsersTask
   class Syncer
@@ -33,7 +34,7 @@ module ImportUsersTask
       SlackBot.client
       User.all.each do |u|
         next if u.email.blank? || u.slack_userid.present?
-        slack_user = SlackBot.lookup_by_email(u.email.downcase)
+        slack_user = SlackHelpers.lookup_by_email(u.email.downcase)
         next if slack_user.blank?
         u.slack_userid = slack_user.id
         u.save(:validate => false)
