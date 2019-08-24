@@ -115,6 +115,7 @@ class Volunteering < ApplicationRecord
     else
       if !project.flags.include?('this project lacks a lead')
         project.flags << 'this project lacks a lead'
+        project.save
       end
 
       if !coordinators.empty?
@@ -124,6 +125,7 @@ class Volunteering < ApplicationRecord
       else
         if !project.flags.include?('this project lacks a coordinator')
           project.flags << 'this project lacks a coordinator'
+          project.save
         end
       end
     end

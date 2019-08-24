@@ -23,7 +23,7 @@ class Project < ApplicationRecord
 
   after_create :send_new_project_slack_notification
   
-  # after_create :send_new_project_notification_emails
+  after_create :send_new_project_notification_emails
 
   after_save :remove_blank_values
   audited
