@@ -18,24 +18,37 @@ ActiveAdmin.register Project do
   index do
     selectable_column
     column :name
-    column :status
+    column :status do |project|
+      project.status.join(', ')
+    end
     column :description do |project|
       span project.description.try(:truncate, 30), :title => project.description
     end
-    column :lead do |project|
-      project.leads.map(&:name).to_sentence
+    column :leads do |project|
+      project.leads.map(&:slack_username).to_sentence
     end
-    column :website do |project|
-      project.website.try(:truncate, 20)
-    end
-    column :slack_channel
-    column :stacks do |project|
-      span project.stacks.map(&:name).to_sentence
+    column :progcode_coordinators do |project|
+      project.progcode_coordinators.map(&:slack_username).to_sentence
     end
     column :volunteers do |project|
       c = project.volunteers.count
       span "#{c} volunteer#{c == 1 ? '' : 's'}"
     end
+    column :slack_channel do |project|
+      if project.slack_channel
+        if project.slack_channel_id
+          link_to '#' + project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + project.slack_channel_id
+        else
+          project.slack_channel
+        end
+      end
+    end
+    column :stacks do |project|
+      project.stacks.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
+    end
+    column :mission_aligned
+    column :flagged?
+    column :updated_at
     actions
   end
 
