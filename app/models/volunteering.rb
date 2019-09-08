@@ -149,5 +149,15 @@ class Volunteering < ApplicationRecord
     }), testing = testing)
   end
 
+  def nested_label
+    if self.user.slack_username
+      "#{self.user.slack_username} (#{self.state})"
+    elsif self.user.name
+      "#{self.user.name} (#{self.state})"
+    elsif self.user.slack_userid
+      "#{self.user.slack_userid} (#{self.state})"
+    end
+  end
+
 
 end
