@@ -119,12 +119,19 @@ ActiveAdmin.register Project do
   controller do 
 
     def update
+      old_volunteering_ids = resource.volunteering_ids.clone
       resource.assign_attributes(permitted_params['project'])
       if resource.mission_aligned_changed?
         mission_aligned_changed = true
         mission_aligned_was = resource.mission_aligned_status(resource.mission_aligned_was)
       else
         mission_aligned_changed = false
+      end
+
+      new_volunteerings = resource.volunteerings.pluck(:id) - old_volunteering_ids
+
+      if new_volunteerings.any?
+        new_volunteerings.each{|v| Volunteering.find(v).set_active!(ENV['AASM_OVERRIDE'])}
       end
 
       if resource.save
@@ -156,16 +163,10 @@ ActiveAdmin.register Project do
 
       f.input :progcode_coordinator_ids, :label => "Progcode Coordinators", :as => :select, :collection => options_from_collection_for_select(User.all.pluck(:slack_username, :id), :second, :first, User.where(id: project.progcode_coordinator_ids).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :volunteers, :label => "Volunteers", :as => :select, :collection => options_from_collection_for_select(User.all.collect do |u|
-        project_volunteering_ids = u.volunteering_ids  & project.volunteering_ids
-        if project_volunteering_ids.any?
-          states = Volunteering.where(id: project_volunteering_ids).map{|v| v.state}.join(', ')
-          label = "#{u.label} (#{states})"
-        else
-          label = u.label
-        end
-        [label, u.id]
-      end, :second, :first, User.where(id: project.volunteers.pluck(:id)).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :volunteers, :label => "Volunteers: you can add or remove volunteers here.<br>Click #{link_to 'here', admin_volunteerings_path} to change the status of volunteers".html_safe, :as => :select, :collection => options_from_collection_for_select(collection_select_for_project_volunteers(project), :second, :first, User.where(id: project.volunteers.pluck(:id)).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
+      project.volunteers.each do |v|
+        'hi'
+      end
 
       f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
     end

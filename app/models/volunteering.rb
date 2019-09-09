@@ -106,7 +106,9 @@ class Volunteering < ApplicationRecord
     volunteer = self.user
     coordinators = self.project.progcode_coordinators
 
-    send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+    if volunteer.slack_userid
+      send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+    end
 
     if !leads.empty?
       leads.each do |lead|
