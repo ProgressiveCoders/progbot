@@ -6,9 +6,9 @@ class Project < ApplicationRecord
   attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
-  
+
   has_and_belongs_to_many :stacks, class_name: "Skill", join_table: "projects_skills"
-  
+
   has_and_belongs_to_many :tech_stack, -> { where tech: true }, class_name: "Skill", join_table: "projects_skills"
   has_and_belongs_to_many :non_tech_stack, -> { where tech: !true }, class_name: "Skill", join_table: "projects_skills"
 
@@ -18,21 +18,27 @@ class Project < ApplicationRecord
   has_many :active_volunteers, through: :active_volunteerings, source: 'user'
 
   validates_presence_of :name, :description, :tech_stack, :tech_stack_names
-  
+
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
   after_create :send_new_project_slack_notification
-  
+
   after_create :send_new_project_notification_emails
 
   after_save :remove_blank_values
+
+  scope :simple_search,   -> (q) do
+    q = "%#{q}%"
+    where("name ILIKE ? OR description ILIKE ?", q, q).order("created_at ASC")
+  end
+
   audited
   has_associated_audits
-  
+
   def self.projects_slack_channel
     "CLUDUR2MD"
   end
-  
+
   def leads
     lead_ids.blank? ? [] : User.where(:id => self.lead_ids)
   end
@@ -40,7 +46,11 @@ class Project < ApplicationRecord
   def progcode_coordinators
     progcode_coordinator_ids.blank? ? [] : User.where(:id => self.progcode_coordinator_ids)
   end
-  
+
+  def all_contributors
+    leads + active_volunteers + progcode_coordinators
+  end
+
   def leads=(users)
     self.lead_ids = users.map(&:id)
   end
@@ -56,7 +66,7 @@ class Project < ApplicationRecord
       self.tech_stack.map { |stack| stack.name }
     end
   end
-  
+
 
   def non_tech_stack_names=(stack_names)
     self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)

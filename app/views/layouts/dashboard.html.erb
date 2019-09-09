@@ -18,8 +18,10 @@
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">ProgBot Dashboard</a>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-      
+      <%= simple_form_for :search, url: dashboard_search_path, html: { class: "w-100"}, method: :get do |f| %>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" name="q">
+      <% end %>
+
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
           <a class="nav-link" href="/sign_out">Sign out</a>
@@ -63,12 +65,12 @@
                 </a>
               </li>
               <li class="nav-item">
-                
+
                 <a class="nav-link" href="<%= all_dashboard_projects_path %>">
                   <span data-feather="layers"></span>
                   All Projects
                 </a>
-              </li>   
+              </li>
             </ul>
           </div>
         </nav>
