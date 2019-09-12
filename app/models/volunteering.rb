@@ -32,7 +32,7 @@ class Volunteering < ApplicationRecord
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
-    event :apply do
+    event :apply, after: :send_volunteering_email do
         transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
@@ -98,6 +98,20 @@ class Volunteering < ApplicationRecord
 
   def relevant?
     ['signed_up', 'invited', 'active'].include?(self.state)
+  end
+
+  def send_volunteering_email
+    project = self.project
+    user = self.user
+
+    if project.leads.any? && project.leads.pluck(:email).any?
+      EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+    else 
+      if !project.flags.include?('this project lacks a lead')
+        project.flags << 'this project lacks a lead'
+        project.save
+      end
+    end
   end
 
   def send_volunteering_updates

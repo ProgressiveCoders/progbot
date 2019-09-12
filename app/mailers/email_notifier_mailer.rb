@@ -35,6 +35,11 @@ class EmailNotifierMailer < ApplicationMailer
       mail(to: @user.email, subject: 'We Have Updated Your Application')
     end
 
+    def new_volunteer_email
+      byebug
+      mail(to: params[:emails], subject: 'You Have a New Volunteer!')
+    end
+
     private
 
     def check_testing_status(prod_target = 'admin@progcode.org')
