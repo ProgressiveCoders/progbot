@@ -32,7 +32,7 @@ class Volunteering < ApplicationRecord
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
-    event :apply do
+    event :apply, after: :send_volunteering_email do
         transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
@@ -100,13 +100,29 @@ class Volunteering < ApplicationRecord
     ['signed_up', 'invited', 'active'].include?(self.state)
   end
 
+  def send_volunteering_email
+    project = self.project
+    user = self.user
+
+    if project.leads.any? && project.leads.pluck(:email).any?
+      EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+    else 
+      if !project.flags.include?('this project lacks a lead')
+        project.flags << 'this project lacks a lead'
+        project.save
+      end
+    end
+  end
+
   def send_volunteering_updates
     leads = self.project.leads
     project = self.project
     volunteer = self.user
     coordinators = self.project.progcode_coordinators
 
-    send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+    if volunteer.slack_userid
+      send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+    end
 
     if !leads.empty?
       leads.each do |lead|
@@ -147,6 +163,16 @@ class Volunteering < ApplicationRecord
         title_link: title_link
       ]
     }), testing = testing)
+  end
+
+  def nested_label
+    if self.user.slack_username
+      "#{self.user.slack_username} (#{self.state})"
+    elsif self.user.name
+      "#{self.user.name} (#{self.state})"
+    elsif self.user.slack_userid
+      "#{self.user.slack_userid} (#{self.state})"
+    end
   end
 
 

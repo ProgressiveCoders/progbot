@@ -78,4 +78,14 @@ class User < ApplicationRecord
       ]
     })
   end
+
+  def label
+    if self.slack_username
+      "#{self.slack_username}"
+    elsif self.name
+      "#{self.name}"
+    elsif self.slack_userid
+      "#{self.slack_userid}"
+    end
+  end
 end

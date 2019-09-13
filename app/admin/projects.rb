@@ -13,29 +13,42 @@ ActiveAdmin.register Project do
 # end
 
   permit_params :name, :status, :description, :website,
-                :slack_channel, :mission_aligned, skill_ids: [], volunteer_ids: [], lead_ids: []
+                :slack_channel, :mission_aligned, :skill_ids => [], :volunteer_ids => [], :lead_ids => [], :progcode_coordinator_ids => [], :volunteerings_attributes => [:user_id]
 
   index do
     selectable_column
     column :name
-    column :status
+    column :status do |project|
+      project.status.join(', ')
+    end
     column :description do |project|
       span project.description.try(:truncate, 30), :title => project.description
     end
-    column :lead do |project|
-      project.leads.map(&:name).to_sentence
+    column :leads do |project|
+      project.leads.map(&:slack_username).to_sentence
     end
-    column :website do |project|
-      project.website.try(:truncate, 20)
-    end
-    column :slack_channel
-    column :stacks do |project|
-      span project.stacks.map(&:name).to_sentence
+    column :progcode_coordinators do |project|
+      project.progcode_coordinators.map(&:slack_username).to_sentence
     end
     column :volunteers do |project|
       c = project.volunteers.count
       span "#{c} volunteer#{c == 1 ? '' : 's'}"
     end
+    column :slack_channel do |project|
+      if project.slack_channel
+        if project.slack_channel_id
+          link_to '#' + project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + project.slack_channel_id
+        else
+          project.slack_channel
+        end
+      end
+    end
+    column :stacks do |project|
+      project.stacks.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
+    end
+    column :mission_aligned
+    column :flagged?
+    column :updated_at
     actions
   end
 
@@ -48,15 +61,57 @@ ActiveAdmin.register Project do
       row :mission_aligned
       row :description
       row :website
+      row :repository
+      row :progcode_github_project_link
       row :slack_channel
       row :leads do
         span project.leads.map(&:slack_username).to_sentence
       end
-      row "Skills" do
-        span project.stacks.map(&:name).to_sentence
+      row :progcode_coordinators do
+        span project.progcode_coordinators.map(&:slack_username).to_sentence
       end
       row :volunteers do
-        span project.volunteers.map(&:name).to_sentence
+        span project.volunteerings.map{|v| v.nested_label}.to_sentence
+      end
+      row "Tech Stack" do
+        span project.tech_stack.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
+      end
+      row "Non Tech Stack" do
+        span project.non_tech_stack.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
+      end
+      row "Needs Categories" do
+        span project.needs_categories.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
+      end
+      row :mission_accomplished
+      row :full_release_features
+      row :needs_pain_points_narrative
+      row :project_applications do
+        span project.project_applications.join(', ')
+      end
+      row :active_contributors
+      row :org_structure
+      row :legal_structures do
+        span project.legal_structures.join(', ')
+      end
+      row :oss_license_types do
+        span project.oss_license_types.join(', ')
+      end
+      row :values_screening
+      row :business_models do
+        span project.business_models.join(', ')
+      end
+      row :working_doc
+      row :project_mgmt_url
+      row :software_license_url
+      row :attachments
+      row :master_channel_list do
+        span project.master_channel_list.join(', ')
+      end
+      row :project_created
+      row :created_at
+      row :updated_at
+      row :flags do
+        span project.flags.join("<br>").html_safe
       end
     end
   end
@@ -64,12 +119,19 @@ ActiveAdmin.register Project do
   controller do 
 
     def update
+      old_volunteering_ids = resource.volunteering_ids.clone
       resource.assign_attributes(permitted_params['project'])
       if resource.mission_aligned_changed?
         mission_aligned_changed = true
         mission_aligned_was = resource.mission_aligned_status(resource.mission_aligned_was)
       else
         mission_aligned_changed = false
+      end
+
+      new_volunteerings = resource.volunteerings.pluck(:id) - old_volunteering_ids
+
+      if new_volunteerings.any?
+        new_volunteerings.each{|v| Volunteering.find(v).set_active!(ENV['AASM_OVERRIDE'])}
       end
 
       if resource.save
@@ -99,9 +161,14 @@ ActiveAdmin.register Project do
 
       f.input :lead_ids, :label => "Project Leads", :as => :select, :collection => options_from_collection_for_select(User.all.pluck(:slack_username, :id), :second, :first, User.where(id: project.lead_ids).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :progcode_coordinator_ids, :label => "Progcode Coordinators", :as => :select, :collection => options_from_collection_for_select(User.all.pluck(:slack_username, :id), :second, :first, User.where(id: project.progcode_coordinator_ids).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :volunteers, collection: User.all.map(&:slack_username), :selected => project.volunteers.map(&:slack_username), :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :volunteers, :label => "Volunteers: you can add or remove volunteers here.<br>Click #{link_to 'here', admin_volunteerings_path} to change the status of volunteers".html_safe, :as => :select, :collection => options_from_collection_for_select(collection_select_for_project_volunteers(project), :second, :first, User.where(id: project.volunteers.pluck(:id)).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
+      project.volunteers.each do |v|
+        'hi'
+      end
+
+      f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
     end
     f.actions
   end
