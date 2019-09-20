@@ -28,7 +28,7 @@ class Skill < ApplicationRecord
       self.all.select{|skill| skill.designate == designation }
     end
 
-    ransacker :by_tech_designation, { formatter: proc{ |string|
+    ransacker :by_tech_designation, { formatter: proc { |string|
       data = self.tech_designated(string).map(&:id)
       data = data.present? ? data : nil
     }, callable: proc { |parent|

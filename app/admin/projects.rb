@@ -12,8 +12,7 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :status, :description, :website,
-                :slack_channel, :mission_aligned, :skill_ids => [], :volunteer_ids => [], :lead_ids => [], :progcode_coordinator_ids => [], :volunteerings_attributes => [:user_id]
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], :volunteerings_attributes => [:user_id]
 
   index do
     selectable_column
@@ -46,11 +45,27 @@ ActiveAdmin.register Project do
     column :stacks do |project|
       project.stacks.map { |s| link_to s.name, admin_skill_path(s) }.join(', ').html_safe
     end
-    column :mission_aligned
+    column :mission_aligned_status do |project|
+      project.mission_aligned_status
+    end
     column :flagged?
     column :updated_at
     actions
   end
+
+  filter :name
+  filter :description
+  filter :slack_channel
+  filter :by_mission_aligned_status_in, label: "Mission Aligned Status", as: :select, collection: %w[Confirmed Rejected Pending]
+  filter :by_status_in, label: "Status", as: :select, collection: ProjectConstants::STATUSES, input_html: { multiple: true }
+  filter :needs_categories
+  filter :tech_stack
+  filter :non_tech_stack
+  filter :by_leads_in, label: "Leads", as: :string
+  filter :by_volunteers_in, label: "Volunteers", as: :string
+  filter :by_progcode_coordinators_in, label: "Progcode Coordinators", as: :string
+  filter :by_flagged_in, label: "Flagged?", as: :select, collection: %w[Yes No]
+
 
   show do
     attributes_table do
@@ -154,7 +169,7 @@ ActiveAdmin.register Project do
       f.input :description
       f.input :website
       f.input :slack_channel
-      f.input :mission_aligned
+      f.input :mission_aligned, :as => :select
     end
 
     f.inputs "Selections" do

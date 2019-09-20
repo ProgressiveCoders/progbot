@@ -99,8 +99,68 @@ class Project < ApplicationRecord
     elsif mission_aligned.nil?
       'pending'
     end
-
   end
+
+  def self.mission_aligned_designated(designation = 'pending')
+    self.all.select{ |project| project.mission_aligned_status == designation.downcase }
+  end
+
+  ransacker :by_mission_aligned_status, { formatter: proc { |string| 
+    data = self.mission_aligned_designated(string).map(&:id)
+    data = data.present? ? data : nil
+  }, callable: proc { |parent|
+    parent.table[:id]}}
+
+  
+  def self.status_designated(string)
+    self.all.select{ |project| project.status.include?(string) }
+  end
+
+  ransacker :by_status, { formatter: proc { |string|
+    data = self.status_designated(string).map(&:id)
+    data = data.present? ? data : nil }, callable: proc { |parent|
+    parent.table[:id]}}
+
+  def self.users_found(string, role)
+    self.all.select{ |project| project.send(role).pluck(:name, :slack_username, :email).join.match(string) }
+  end
+  
+  ransacker :by_leads, { formatter: proc { |string|
+    data = self.users_found(string, 'leads').map(&:id)
+    data = data.present? ? data : nil }, callable:
+    proc { |parent|
+    parent.table[:id]}}
+
+  ransacker :by_volunteers, { formatter: proc { |string|
+    data = self.users_found(string, 'volunteers').map(&:id)
+    data = data.present? ? data : nil }, callable:
+    proc { |parent|
+    parent.table[:id]}}
+
+  ransacker :by_progcode_coordinators, { formatter: proc { |string|
+    data = self.users_found(string, 'progcode_coordinators').map(&:id)
+    data = data.present? ? data : nil }, callable:
+    proc { |parent|
+    parent.table[:id]}}
+
+  def designate_flagged
+    case self.flagged?
+    when true
+      'Yes'
+    when false
+      'No'
+    end
+  end
+  
+  def self.flagged_designated(designation = 'No')
+    self.all.select{|project| project.designate_flagged == designation }
+  end
+
+  ransacker :by_flagged, { formatter: proc { |string|
+  data = self.flagged_designated(string).map(&:id)
+  data = data.present? ? data : nil }, callable:
+  proc { |parent|
+  parent.table[:id]}}
 
   def get_slack_channel_id(channel_name)
 

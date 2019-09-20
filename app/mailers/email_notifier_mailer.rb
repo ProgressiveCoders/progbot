@@ -36,7 +36,6 @@ class EmailNotifierMailer < ApplicationMailer
     end
 
     def new_volunteer_email
-      byebug
       mail(to: params[:emails], subject: 'You Have a New Volunteer!')
     end
 
