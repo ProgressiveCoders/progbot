@@ -29,6 +29,12 @@ ActiveAdmin.register Volunteering do
 
     end
 
+    filter :user, :label => "Volunteer", :collection => User.all.reject{|u| !u.label || u.label == ''}.sort_by{|u| u.label.downcase}.map{ |u| u.label }
+
+    filter :project, :collection => Project.all.sort_by{|p| p.name.downcase}
+
+    filter :state, as: :select, :collection => Volunteering.aasm.states.map(&:name).sort, :input_html => {multiple: true}
+
 
     form do |f|
         f.input :project, :input_html => {disabled: true, readonly: true}

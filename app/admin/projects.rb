@@ -12,7 +12,7 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], :volunteerings_attributes => [:user_id]
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], :volunteerings_attributes => [:user_id], :flags => []
 
   index do
     selectable_column
@@ -149,6 +149,8 @@ ActiveAdmin.register Project do
         new_volunteerings.each{|v| Volunteering.find(v).set_active!(ENV['AASM_OVERRIDE'])}
       end
 
+      resource.flags.reject!(&:empty?)
+
       if resource.save
         if mission_aligned_changed == true && resource.leads.any?
           resource.send_mission_aligned_changed_notification_email(mission_aligned_was)
@@ -165,15 +167,15 @@ ActiveAdmin.register Project do
   form do |f|
     f.inputs "Basic Info" do
       f.input :name
-      f.input :status
+      f.input :status, as: :select, collection: ProjectConstants::STATUSES, input_html: { multiple: true }
       f.input :description
       f.input :website
-      f.input :slack_channel
+      f.input :slack_channel, :as => :datalist, :collection => SlackHelpers.get_slack_channels.pluck(:name)
       f.input :mission_aligned, :as => :select
+      f.input :legal_structures, as: :select, :collection => Project::LEGAL_STRUCTURE, :input_html => { :multiple => true }, :include_blank  => false, :include_hidden => false
     end
 
-    f.inputs "Selections" do
-
+    f.inputs "Participants" do
       f.input :lead_ids, :label => "Project Leads", :as => :select, :collection => options_from_collection_for_select(User.all.pluck(:slack_username, :id), :second, :first, User.where(id: project.lead_ids).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
 
       f.input :progcode_coordinator_ids, :label => "Progcode Coordinators", :as => :select, :collection => options_from_collection_for_select(User.all.pluck(:slack_username, :id), :second, :first, User.where(id: project.progcode_coordinator_ids).pluck(:id)), :input_html => { multiple: true, size: 60, class: 'select2' }
@@ -182,8 +184,39 @@ ActiveAdmin.register Project do
       project.volunteers.each do |v|
         'hi'
       end
+    end
+    f.inputs "Stack" do
+      f.input :tech_stack, :collection => Skill.tech_skills, :input_html => { multiple: true, size: 60, class: 'select2' }
 
-      f.input :stacks, :input_html => { multiple: true, size: 60, class: 'select2' }
+      f.input :non_tech_stack, :collection => Skill.non_tech_skills, :input_html => { multiple: true, size: 60, class: 'select2' }
+
+      f.input :needs_categories, :input_html => { multiple: true, size: 60, class: 'select2' }
+    end
+
+    f.inputs "Additonal" do
+      f.input :mission_accomplished
+      f.input :needs_pain_points_narrative
+      f.input :org_structure, as: :select, :collection => Project::ORG_STRUCTURE, :include_blank => true
+      f.input :active_contributors
+      f.input :full_release_features
+      f.input :project_mgmt_url
+      f.input :repository
+      f.input :software_license_url
+      f.input :values_screening, as: :select, :collection => Project::VALUES_SCREENING, :include_blank => true
+      f.input :working_doc
+      f.input :business_models, as: :select, :collection => Project::BUSINESS_MODEL, :input_html => { :multiple => true }, :include_blank => true, :include_hidden => false
+      f.input :oss_license_types, as: :select, :collection => Project::OSS_LICENSE_TYPE, :input_html => { :multiple => true }, :include_blank  => true, :include_hidden => false
+      f.input :project_applications, as: :select, :collection => Project::PROJECT_APPLICATIONS, :input_html => { :multiple => true, class: 'select2' }, :include_blank => true, :include_hidden => false
+      f.input :attachments
+      f.input :progcode_github_project_link
+      f.input :master_channel_list
+    end
+
+    f.inputs "Flags" do
+      project.flags.each do |flag|
+        f.input :flags, :label => false, :input_html => {value: flag, name: 'project[flags][]' }
+      end
+      f.input :flags, :label => false, :input_html => {value: '', placeholder: 'Flag an issue with this project', name: 'project[flags][]' }
     end
     f.actions
   end
