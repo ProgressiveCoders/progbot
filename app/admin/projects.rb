@@ -12,14 +12,11 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], :volunteerings_attributes => [:user_id], :flags => []
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
 
   index do
     selectable_column
     column :name
-    column :status do |project|
-      project.status.join(', ')
-    end
     column :description do |project|
       span project.description.try(:truncate, 30), :title => project.description
     end
@@ -28,10 +25,6 @@ ActiveAdmin.register Project do
     end
     column :progcode_coordinators do |project|
       project.progcode_coordinators.map(&:slack_username).to_sentence
-    end
-    column :volunteers do |project|
-      c = project.volunteers.count
-      span "#{c} volunteer#{c == 1 ? '' : 's'}"
     end
     column :slack_channel do |project|
       if project.slack_channel
@@ -58,13 +51,15 @@ ActiveAdmin.register Project do
   filter :slack_channel
   filter :by_mission_aligned_status_in, label: "Mission Aligned Status", as: :select, collection: %w[Confirmed Rejected Pending]
   filter :by_status_in, label: "Status", as: :select, collection: ProjectConstants::STATUSES, input_html: { multiple: true }
-  filter :needs_categories
-  filter :tech_stack
-  filter :non_tech_stack
-  filter :by_leads_in, label: "Leads", as: :string
-  filter :by_volunteers_in, label: "Volunteers", as: :string
-  filter :by_progcode_coordinators_in, label: "Progcode Coordinators", as: :string
+  filter :needs_categories, input_html: { multiple: true }
+  filter :tech_stack, input_html: { multiple: true }
+  filter :non_tech_stack, input_html: { multiple: true }
+  filter :by_leads_in, label: "Lead", placeholder: "Search by name, email, or slack userid", as: :string
+  filter :by_volunteers_in, label: "Volunteer",placeholder: "Search by name, email, or slack userid", as: :string
+  filter :by_progcode_coordinators_in, label: "Progcode Coordinator", placeholder: "Search by name, email, or slack userid", as: :string
   filter :by_flagged_in, label: "Flagged?", as: :select, collection: %w[Yes No]
+  filter :created_at
+  filter :updated_at
 
 
   show do
@@ -133,6 +128,22 @@ ActiveAdmin.register Project do
 
   controller do 
 
+    def create
+      resource.assign_attributes(permitted_params['project'])
+
+      volunteerings = resource.volunteerings.pluck(:id)
+
+      if volunteerings.any?
+        volunteerings.each{|v| Volunteering.find(v).set_active!(ENV['AASM_OVERRIDE'])}
+      end
+
+      resource.flags.reject!(&:empty?)
+
+      resource.save(:validate => false)
+
+      redirect_to admin_project_path(resource)
+    end
+
     def update
       old_volunteering_ids = resource.volunteering_ids.clone
       resource.assign_attributes(permitted_params['project'])
@@ -151,17 +162,13 @@ ActiveAdmin.register Project do
 
       resource.flags.reject!(&:empty?)
 
-      if resource.save
+      resource.save(:validate => false)
         if mission_aligned_changed == true && resource.leads.any?
           resource.send_mission_aligned_changed_notification_email(mission_aligned_was)
           resource.send_mission_aligned_changed_slack_notifications(mission_aligned_was)
         end
-        redirect_to admin_project_path(resource)
-      else
-        render :edit
-      end
+      redirect_to admin_project_path(resource)
     end
-
   end
 
   form do |f|

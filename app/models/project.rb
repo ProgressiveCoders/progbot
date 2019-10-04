@@ -122,7 +122,7 @@ class Project < ApplicationRecord
     parent.table[:id]}}
 
   def self.users_found(string, role)
-    self.all.select{ |project| project.send(role).pluck(:name, :slack_username, :email).join.match(string) }
+    self.all.select{ |project| project.send(role).pluck(:name, :slack_username, :email).join.include?(string) }
   end
   
   ransacker :by_leads, { formatter: proc { |string|
