@@ -1,11 +1,14 @@
 
 class User < ApplicationRecord
   include Rails.application.routes.url_helpers
+  include UserConstants
 
   attr_accessor :tech_skill_names, :non_tech_skill_names
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
   has_and_belongs_to_many :non_tech_skills, -> { where tech: false }, class_name: "Skill"
+
+  has_and_belongs_to_many :skills
 
   validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
   validates_acceptance_of :read_code_of_conduct

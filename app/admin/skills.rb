@@ -33,6 +33,8 @@ end
 
 filter :by_tech_designation_in, label: "Tech Skill?", as: :select, collection: %w[ Yes No Unassigned ]
 filter :name_cont, label: 'Name'
+filter :created_at
+filter :updated_at
 
 form do |f|
   f.inputs do
