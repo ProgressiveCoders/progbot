@@ -1,11 +1,14 @@
 
 class User < ApplicationRecord
   include Rails.application.routes.url_helpers
+  include UserConstants
 
   attr_accessor :tech_skill_names, :non_tech_skill_names
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
   has_and_belongs_to_many :non_tech_skills, -> { where tech: false }, class_name: "Skill"
+
+  has_and_belongs_to_many :skills
 
   validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
   validates_acceptance_of :read_code_of_conduct
@@ -79,5 +82,15 @@ class User < ApplicationRecord
         title_link: admin_user_url(self, :only_path => false),
       ]
     })
+  end
+
+  def label
+    if self.slack_username
+      "#{self.slack_username}"
+    elsif self.name
+      "#{self.name}"
+    elsif self.slack_userid
+      "#{self.slack_userid}"
+    end
   end
 end

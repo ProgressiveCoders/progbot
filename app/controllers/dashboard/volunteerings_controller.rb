@@ -13,10 +13,10 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
 
     def create
       @volunteering = Volunteering.create(:project_id => volunteering_params[:project_id], :user_id => current_user.id)
+      @project = @volunteering.project
 
       if volunteering_params[:event] == 'apply'
         @volunteering.apply!(current_user)
-        EmailNotifierMailer.new_volunteer_email.deliver_later
       end
 
       redirect_to dashboard_volunteerings_path

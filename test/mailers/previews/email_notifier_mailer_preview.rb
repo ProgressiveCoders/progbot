@@ -18,6 +18,10 @@ def project_mission_aligned_changed
   EmailNotifierMailer.with(project: Project.first, mission_aligned_was: "pending").project_mission_aligned_changed
 end
 
+def new_volunteer_email
+  EmailNotifierMailer.with(project: Project.find(1068), user: User.find(134), email: ['sdklos@gmail.com']).new_volunteer_email
+end
+
 def existing_user_signed_up
     
 end
