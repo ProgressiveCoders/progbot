@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   namespace :dashboard do
     root :to => 'base#index'
     get 'base/index'
+    post "/search", to: "base#search"
+    get "/search", to: "base#search"
     resource :user, only: [:edit, :update]
     resources :skills, only: [:index, :show]
     resources :projects do
