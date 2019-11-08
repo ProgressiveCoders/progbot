@@ -23,6 +23,11 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   
   def show
     @project = Project.find(params[:id])
+    if @project.slack_channel_id.present?
+      @channel = @project.slack_channel_id
+    elsif @project.slack_channel.present?
+      @channel = @project.slack_channel
+    end
   end
 
   def edit
