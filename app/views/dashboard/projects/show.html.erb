@@ -23,7 +23,7 @@
   <% if resource.slack_channel_id.present? %>
     <% channel = resource.slack_channel_id %>
   <% else %>
-    <% channel = resource._channel %>
+    <% channel = resource.slack_channel %>
   <% end %>
   <p><b>Slack Channel:slack</b></p>
   <p><%= link_to "##{resource.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{channel}" %></p>
