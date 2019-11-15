@@ -341,6 +341,7 @@ DEPENDENCIES
   devise
   draper
   figaro
+  httparty
   inherited_resources
   jbuilder (~> 2.5)
   jquery-rails
