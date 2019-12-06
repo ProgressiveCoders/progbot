@@ -47,7 +47,7 @@
             <div class="col-md-4">
               <div class="mb-4">
                 <h5>Slack Channel</h5>
-                <p><%= link_to( '#' + resource.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + resource.slack_channel_id) unless resource.slack_channel.blank? %></p>
+                <p><%= @channel ? link_to( "##{resource.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{@channel}") : "None entered" %></p>
               </div>
             </div>
           </div>
