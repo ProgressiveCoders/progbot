@@ -17,6 +17,7 @@ gem 'airrecord'
 
 # Plus integrations with:
 gem 'devise'
+gem 'doorkeeper'
 gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'

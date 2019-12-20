@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  use_doorkeeper
   namespace :dashboard do
     root :to => 'base#index'
     get 'base/index'
@@ -21,6 +22,11 @@ Rails.application.routes.draw do
   put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
 
+  namespace :hooks do
+    post 'zapier/receive_airtable_updates'
+    get 'zapier/test_connection'
+  end
+
   unauthenticated do
     root :to => 'welcome#home'
   end
@@ -39,7 +45,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, except: [:index, :destroy, :show]
-
 
   post 'slack/search'
 
