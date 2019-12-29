@@ -16,6 +16,8 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if resource.is_a?(AdminUser)
       admin_dashboard_path
+    elsif resource.is_a?(HookUser)
+      zapier_home_path
     elsif resource.valid?
       if !resource.optin
         users_registration_path
