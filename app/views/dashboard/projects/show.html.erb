@@ -1,77 +1,133 @@
-
-<h1><%= resource.name %></h1>
-
-<% if !resource.leads.include?(current_user)%>
-  <% if resource.volunteers.include?(current_user)%>
-    <%= link_to "Manage your Volunteering", edit_dashboard_volunteering_path(Volunteering.get_volunteering_id(project = resource, user = current_user))  %>
-  <% else %>
-    <%= link_to "Volunteer for this Project", new_dashboard_volunteering_path(:project_id => resource.id) %>
-  <% end %>
-<% end %>
-
-<p><b>Status:</b></p>
-<ul>
-  <% resource.status.each do |status|%>
-    <li><%= status %></li>
-  <% end %>
-</ul>
-
-<p><b>Description:</b></p>
-<p><%= resource.description %></p>
-
-<% if resource.slack_channel.present? %>
-  <% if resource.slack_channel_id.present? %>
-    <% channel = resource.slack_channel_id %>
-  <% else %>
-    <% channel = resource._channel %>
-  <p><b>Slack Channel:slack</b></p>
-  <p><%= link_to "##{resource.slack_channel}", "#{slack://channel?team=T1KR8AG7J&id=}#{channel}" %></p>
-<% end %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <!-- project card -->
+      <div class="card d-block">
+        <div class="card-body">
+          <div class="dropdown float-right">
+            <% if !resource.leads.include?(current_user)%>
+              <% if resource.volunteers.include?(current_user)%>
+                <%= link_to "Manage your Volunteering", edit_dashboard_volunteering_path(Volunteering.get_volunteering_id(project = resource, user = current_user)), class: "btn btn-success"  %>
+              <% else %>
+                <%= link_to "Volunteer for this Project", new_dashboard_volunteering_path(:project_id => resource.id), class: "btn btn-success" %>
+              <% end %>
+            <% end %>
+          </div>
+          <!-- project title-->
+          <h3 class="mt-0">
+            <%= resource.name %>
+          </h3>
+          <div id="statuses">
+            <% resource.status.each do |status|%>
+              <span class="badge badge-secondary mb-3"><%= status %></span>
+            <% end %>
+          </div>
 
 
-<% contributor_attributes(resource).each do |key, values| %>
-  <% if values.present? %>
-    <p><b><%= key.humanize %></b></p>
-    <ul>
-    <% values.each do |value| %>
 
-      <li><%= link_to value.name, 'slack://user?team=T1KR8AG7J&id=' + value.slack_userid %></li>
-      
-    <% end %>
-    </ul>
-  <% end %>
-<% end %>
+          <h5 class="mt-5">Project Overview:</h5>
 
-<p><b>Tech Stack:</b></p>
-  <ul>
-    <% resource.tech_stack.each do |skill| %>
-      <li><%= link_to skill.name, [:dashboard, skill] %></li>
-    <% end %>
-  </ul>
+          <p class="text-muted mb-4">
+            <%= simple_format resource.description %>
+          </p>
 
-<p><b>Non-Tech Stack:</b></p>
-  <ul>
-    <% resource.non_tech_stack.each do |skill| %>
-      <li><%= link_to skill.name, [:dashboard, skill] %></li>
-    <% end %>
-  </ul>
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Created Date</h5>
+                <p><%= resource.created_at.to_date %> <small class="text-muted"><%= resource.created_at.strftime("%I:%M %p") %></small></p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Updated Date</h5>
+                <p><%= resource.updated_at.to_date %> <small class="text-muted"><%= resource.updated_at.strftime("%I:%M %p") %></small></p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Slack Channel</h5>
+                <p><%= @channel ? link_to( "##{resource.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{@channel}") : "None entered" %></p>
+              </div>
+            </div>
+          </div>
 
-<p><b>Needs Categories:</b></p>
-  <ul>
-    <% resource.needs_categories.each do |skill| %>
-      <li><%= link_to skill.name, [:dashboard, skill] %></li>
-    <% end %>
-  </ul>
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Tech Stack</h5>
+                <p class="" role="group">
+                  <% resource.tech_stack.each do |skill| %>
+                    <%= link_to skill.name, [:dashboard, skill], class: "btn btn-#{cycle_bs_classes} btn-sm mb-1" %>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Non-Tech Stack</h5>
+                <p class="" role="group">
+                  <% resource.non_tech_stack.each do |skill| %>
+                    <%= link_to skill.name, [:dashboard, skill], class: "btn btn-#{cycle_bs_classes} btn-sm mb-1" %>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-4">
+                <h5>Needs Categories</h5>
+                <p>
+                  <ul>
+                    <% resource.needs_categories.each do |skill| %>
+                      <li><%= link_to skill.name, [:dashboard, skill] %></li>
+                    <% end %>
+                  </ul>
 
+                </p>
+              </div>
+            </div>
+          </div>
 
-<% scrubbed_attributes(resource).each do |key, value| %>
-  <% if value.present? %>
-    <p><b><%= key.humanize %></b></p>
-    
-    <% if key.include?('url') || key.include?('link') || key == 'working_doc' || key == 'website' || key == 'repository' || key == 'attachments' %>
-      <p><%= link_to value, value %></p>
-    <% else %>
-      <p><%= value %></p>
-    <% end %>
-  <% end %>
-<% end %>
+          <div>
+            <h5>Volunteers:</h5>
+            <% resource.all_contributors.each do |cont| %>
+              <%= link_to cont.name, 'slack://user?team=T1KR8AG7J&id=' + cont.slack_userid %>
+            <% end %>
+          </div>
+
+        </div> <!-- end card-body-->
+
+      </div> <!-- end card-->
+
+      <!-- end card-->
+    </div> <!-- end col -->
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Info</h5>
+          <h6>Org Structure</h6>
+          <p><%= resource.org_structure %></p>
+          <hr />
+
+          <% scrubbed_attributes(resource).each do |key, value| %>
+            <% if value.present? %>
+              <h6><%= key.humanize %></h6>
+
+              <% if key.include?('url') || key.include?('link') || key == 'working_doc' || key == 'website' || key == 'repository' || key == 'attachments' %>
+                <p><%= link_to value, value %></p>
+              <% else %>
+                <p><%= value %></p>
+              <% end %>
+              <hr />
+            <% end %>
+
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+    <!-- end card-->
+  </div>
+</div>
+<!-- end row -->
