@@ -29,6 +29,7 @@ class HookUsers::SessionsController < Devise::SessionsController
         super
       }
       format.json {
+        byebug
         hook_user = HookUser.find_by_email(sign_in_params[:email])
 
         if hook_user && hook_user.valid_password?(sign_in_params[:password])

@@ -1,46 +1,27 @@
 class Hooks::ZapierController < ApplicationController
-  before_action :authenticate_hook_user
+  before_action -> { doorkeeper_authorize! :write }
 
   def receive_airtable_updates
    
   end
 
-  def test_connection
-    render json: {
-      name: 'susanna',
-      email: 'the'
-    }.to_json
-  end
-
   def home
-    render plain: "You are Home"
+    render json: {message: "You are Home"}.to_json
   end
 
   private
 
-  def authenticate_hook_user
-    if request.headers['Authorization'].present?
-      authenticate_or_request_with_http_token do |token|
-        begin
-          jwt_payload = JWT.decode(token, Rails.application.secrets.secret_key_base).first
-
-          @current_hook_user_id = jwt_payload['id']
-        rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-          head :unauthorized
-        end
-      end
-    end
+  def current_resource_owner
+    HookUser.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
   end
-
-  def authenticate_hook_user!(options = {})
-    head :unauthorized unless hook_user_signed_in?
-  end
-
+  
   def current_hook_user
-    @current_hook_user ||= super || HookUser.find(@current_hook_user_id)
+    current_resource_owner
   end
 
-  def signed_in?
-    @current_hook_user_id.present?
+  def authenticate_scope!
+    self.resource = send(:"current_#{resource_name}")
   end
+
+  
 end
