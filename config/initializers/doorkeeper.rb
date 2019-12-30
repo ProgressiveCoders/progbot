@@ -11,7 +11,7 @@ Doorkeeper.configure do
       # If you want to use named routes from your app you need
       # to call them on routes object eg.
       # routes.new_user_session_path
-      current_admin_user || warden.authenticate!(:scope => :admin_user)
+      current_hook_user || warden.authenticate!(:scope => :hook_user)
     end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
@@ -147,7 +147,7 @@ Doorkeeper.configure do
   # `grant_type` - the grant type of the request (see Doorkeeper::OAuth)
   # `scopes` - the requested scopes (see Doorkeeper::OAuth::Scopes)
   #
-  # use_refresh_token
+  use_refresh_token
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default: false) if you want to enforce ownership of

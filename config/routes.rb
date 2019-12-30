@@ -22,9 +22,12 @@ Rails.application.routes.draw do
   put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
 
-  namespace :hooks do
+  scope module: :hooks do
     post 'zapier/receive_airtable_updates'
-    get 'zapier/test_connection'
+    devise_for :hook_users, controllers: {
+      sessions: 'hook_users/sessions'
+    }
+    get 'zapier/home'
   end
 
   unauthenticated do
