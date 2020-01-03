@@ -1,8 +1,20 @@
 class Hooks::ZapierController < ApplicationController
   before_action -> { doorkeeper_authorize! :write }
 
-  def receive_airtable_updates
+  def airtable_update_project
    
+  end
+
+  def airtable_create_project
+    render json: {message: "Project Created roger"}
+  end
+  
+  def airtable_update_user
+
+  end
+
+  def airtable_create_user
+
   end
 
   def home

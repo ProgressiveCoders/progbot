@@ -25,10 +25,13 @@ Rails.application.routes.draw do
   get '/welcome/home' => 'welcome#home'
 
   scope module: :hooks do
-    post 'zapier/receive_airtable_updates'
+    post 'zapier/airtable_update_project'
+    post 'zapier/airtable_create_project'
+    post 'zapier/airtable_update_user'
+    post 'zapier/airtable_create_user'
     devise_for :hook_users, controllers: {
       sessions: 'hook_users/sessions'
-    }
+    }, :skip => :sessions
     get 'zapier/home'
   end
 
