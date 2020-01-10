@@ -21,9 +21,9 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
-  after_create :send_new_project_slack_notification
+  # after_create :send_new_project_slack_notification
 
-  after_create :send_new_project_notification_emails
+  after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
 
   after_save :remove_blank_values
 
@@ -34,6 +34,8 @@ class Project < ApplicationRecord
 
   audited
   has_associated_audits
+
+  attr_accessor :skip_new_project_notification_email
 
   def self.projects_slack_channel
     "CLUDUR2MD"
