@@ -21,7 +21,7 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
-  # after_create :send_new_project_slack_notification
+  after_create :send_new_project_slack_notification
 
   after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
 
@@ -99,8 +99,8 @@ class Project < ApplicationRecord
   end
 
   def remove_blank_values
-    self.status  = self.status.reject(&:empty?)
-    self.legal_structures = self.legal_structures.reject(&:empty?)
+    self.status  = self.status.try(:reject, &:empty?)
+    self.legal_structures = self.legal_structures.try(:reject, &:empty?)
   end
 
   def mission_aligned_status(mission_aligned = self.mission_aligned)
