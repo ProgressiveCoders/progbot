@@ -48,10 +48,10 @@ class Hooks::ZapierController < ApplicationController
 
   def build_attributes(project_params)
     {
-      description: project_params["Project Summary Text"], 
+      description: project_params["Project Summary TEXT"], 
       needs_pain_points_narrative: project_params["Needs / Pain Points - Narrative"],
       legal_structures: project_params["Legal structure"],
-      active_contributors: "Active Contributors (full time equivalent)",
+      active_contributors: project_params["Active Contributors (full time equivalent)"],
       business_models: project_params["Business model"],
       oss_license_types: project_params["OSS License Type"]
     }.merge(extract_fields(project_params))
@@ -64,20 +64,19 @@ class Hooks::ZapierController < ApplicationController
   
   def extract_fields(proj)
     hsh = {}.tap do |h|
-      proj.fields.keys.each do |key|
-        key = key.downcase
-        next if Project.column_for_attribute(key).table_name.blank?
-        if proj[key].is_a?(Array) && (!Project.column_for_attribute(key).array)
-          h[key] = proj[key].first
+      extracted_fields = proj.fields.keys -         ["Project Name", "Project Summary Text",
+        "Progcode Coordinator IDs", "Tech Stack", "Project Status", "Team Member IDs",
+        "Project Lead Slack ID", "Slack Channel", "Needs Categories", "Master Channel List", "Needs / Pain Points - Narrative", "Legal structure", "Active Contributors (full time equivalent)", "Business model", "OSS License Type"]
+      extracted_fields.each do |key|
+        downcased_key = key.downcase.gsub(" ", "_")
+        next if Project.column_for_attribute(downcased_key).table_name.blank?
+        if proj[key].is_a?(Array) && (!Project.column_for_attribute(downcased_key).array)
+          h[downcased_key] = proj[key].first
         else
-          h[key] = proj[key]
+          h[downcased_key] = proj[key]
         end
       end
-    end.except(
-      "Project Name", "Project Summary Text",
-      "Progcode Coordinator IDs", "Tech Stack", "Project Status", "Team Member IDs",
-      "Project Lead Slack ID", "Slack Channel", "Needs Categories", "Project Created", "Master Channel List", "Needs / Pain Points - Narrative", "Legal structure", "Active Contributors (full time equivalent)", "Business model", "OSS License Type"
-    )
+    end
   end
 
   def sync_attributes(airtable_project, proj)
