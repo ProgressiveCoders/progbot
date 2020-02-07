@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  use_doorkeeper
   namespace :dashboard do
     root :to => 'base#index'
     get 'base/index'
@@ -24,17 +23,6 @@ Rails.application.routes.draw do
   put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
 
-  scope module: :hooks do
-    post 'zapier/airtable_update_project'
-    post 'zapier/airtable_create_project'
-    post 'zapier/airtable_update_user'
-    post 'zapier/airtable_create_user'
-    devise_for :hook_users, controllers: {
-      sessions: 'hook_users/sessions'
-    }, :skip => :sessions
-    get 'zapier/home'
-  end
-
   unauthenticated do
     root :to => 'welcome#home'
   end
@@ -53,6 +41,7 @@ Rails.application.routes.draw do
   end
 
   resources :users, except: [:index, :destroy, :show]
+
 
   post 'slack/search'
 

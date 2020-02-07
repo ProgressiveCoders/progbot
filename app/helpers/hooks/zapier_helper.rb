@@ -1,2 +1,0 @@
-module Hooks::ZapierHelper
-end

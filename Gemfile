@@ -17,7 +17,6 @@ gem 'airrecord', '1.0.1'
 
 # Plus integrations with:
 gem 'devise'
-gem 'doorkeeper'
 gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'
@@ -62,7 +61,6 @@ gem "slack_chatter"
 gem "slack-ruby-client"
 
 gem 'sendgrid-ruby'
-gem 'httparty'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
