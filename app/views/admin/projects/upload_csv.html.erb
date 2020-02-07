@@ -1,0 +1,6 @@
+<h1>Import Project Data from Airtable</h1>
+<%= form_tag({:controller => 'admin/projects', :action => 'import_data'}, multipart: true) do %>
+    <%= file_field_tag :file, :class => "btn" %>
+    <%= hidden_field_tag :confirmation, "pending" %>
+    <%= submit_tag "Import", :class => "btn" %>
+<% end %>
