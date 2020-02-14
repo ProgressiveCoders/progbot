@@ -84,13 +84,21 @@ class User < ApplicationRecord
     })
   end
 
-  def label
+  def admin_label
     if self.slack_username
-      "#{self.slack_username}"
+      self.slack_username
     elsif self.name
-      "#{self.name}"
+      self.name
     elsif self.slack_userid
-      "#{self.slack_userid}"
+      self.slack_userid
+    end
+  end
+
+  def anonymized_handle
+    if self.slack_username
+      self.slack_username
+    else
+      self.id.to_s
     end
   end
 end

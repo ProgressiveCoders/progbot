@@ -29,7 +29,7 @@ ActiveAdmin.register Volunteering do
 
     end
 
-    filter :user, :label => "Volunteer", :collection => User.where(id: Volunteering.pluck(:user_id)).uniq.reject{|u| !u.label || u.label == ''}.sort_by{|u| u.label.downcase}.map{ |u| u.label }, :input_html => {multiple: true}
+    filter :user, :label => "Volunteer", :collection => User.where(id: Volunteering.pluck(:user_id)).uniq.reject{|u| !u.admin_label || u.admin_label == ''}.sort_by{|u| u.admin_label.downcase}.map{ |u| u.admin_label }, :input_html => {multiple: true}
 
     filter :project, :collection => Project.where(id: Volunteering.pluck(:project_id)).uniq.sort_by{|p| p.name.downcase}, :input_html => {multiple: true}
 

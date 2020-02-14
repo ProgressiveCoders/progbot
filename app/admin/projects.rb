@@ -178,11 +178,9 @@ ActiveAdmin.register Project do
 
     def import_data
       @projects = []
-      @errors = []
       @attributes = Project.column_names
       CSV.foreach(params[:file].path, headers: true) do |row|
         if row[0].present?
-          #just making sure it's not an empty airtable row as airtable tends to create empty rows
           airtable_id = row["Record ID"]
           proj = Project.find_or_initialize_by(airtable_id: airtable_id)
           airtable_project = AirtableProject.find(airtable_id)
@@ -191,11 +189,7 @@ ActiveAdmin.register Project do
         end
       end
 
-      if @errors.any?
-        render 'import_errors'
-      else
-        render 'import_success'
-      end
+      render 'import_success'
 
     end
 

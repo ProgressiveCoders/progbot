@@ -3,7 +3,7 @@ class Project < ApplicationRecord
   include SlackHelpers
   include Rails.application.routes.url_helpers
 
-  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
+  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names, :skip_new_project_notification_email
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
 
@@ -34,8 +34,6 @@ class Project < ApplicationRecord
 
   audited
   has_associated_audits
-
-  attr_accessor :skip_new_project_notification_email
 
   def self.projects_slack_channel
     "CLUDUR2MD"
@@ -242,7 +240,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def self.sync_with_airtable(airtable_project)
+  def sync_with_airtable(airtable_project)
     if self.new_record?
       self.skip_new_project_notification_email = true
     end
@@ -281,9 +279,13 @@ class Project < ApplicationRecord
       slack_ids = airtable_project.members.pluck("slack_id")
       volunteer_slack_ids = slack_ids.reject {|x| airtable_project.project_leads.pluck("slack_id").include?(x)}
       volunteers = User.where(:slack_userid => volunteer_slack_ids)
-      self.volunteers += volunteers
-      self.volunteers = self.volunteers.uniq
-      self.volunteerings.reject{|v| v.state == "active"}.each {|v| v.set_active!(ENV['AASM_OVERRIDE'])}
+      new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
+      volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
+      volunteerings.each do |v|
+        v.skip_sending_volunteering_updates = true
+        v.set_active!(ENV['AASM_OVERRIDE'])
+        v.skip_sending_volunteering_updates = false
+      end
       if volunteer_slack_ids.size > volunteers.size
         missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
         self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
@@ -294,11 +296,9 @@ class Project < ApplicationRecord
       self.flags << "this project lacks a coordinator"
     else
       airtable_project.progcode_coordinators.each do |coord|
-        user = User.where(slack_username: coord["Slack Handle"].gsub("@", "")).first
-        coord_id = user["slack_id"]
-        coordinator = User.find_by(:slack_userid => coord_id)
-        if coordinator == nil
-          self.flags << "progcode coordinator slack id #{coord_id} has no corresponding user"
+        coordinator = User.where(slack_username: coord["Slack Handle"].gsub("@", "")).first
+        unless coordinator.present?
+          self.flags << "progcode coordinator slack handle #{coord["Slack Handle"]} has no corresponding user"
         else
           self.progcode_coordinator_ids << coordinator.id
         end
