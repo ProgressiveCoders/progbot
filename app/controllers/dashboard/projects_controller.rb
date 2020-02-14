@@ -64,7 +64,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
   end
 
   def project_params
-    params.require(:project).permit(:name, :description, :website, :slack_channel, :airtable_id, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [])
+    params.require(:project).permit(:name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :tech_stack_names, :needs_category_names, :non_tech_stack_names, business_models: [],  legal_structures: [], oss_license_types: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [])
   end
 end
 
