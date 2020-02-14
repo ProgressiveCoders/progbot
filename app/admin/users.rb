@@ -16,6 +16,10 @@ permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
 :anonymous, :phone, :slack_username, :read_manifesto,
 :read_code_of_conduct, :optin, :hear_about_us, :verification_urls, :is_approved, :gender_pronouns, :additional_info, tech_skill_ids: [], non_tech_skill_ids: []
 
+action_item :bulk_import do
+  link_to "Bulk Import From Airtable", admin_users_upload_csv_path
+end
+
 
   index do
     selectable_column
@@ -88,6 +92,26 @@ permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
       resource.assign_attributes(permitted_params['user'])
       resource.save(:validate => false)
       redirect_to admin_user_path(resource)
+    end
+
+    def upload_csv
+
+    end
+
+    def import_data
+      @users = []
+      @attributes = ["id", "name", "email", "slack_username", "slack_userid", "created_at", "updated_at", "optin",  "is_approved", "airtable_id", "tech_skill_names", "non_tech_skill_names"]
+      CSV.foreach(params[:file].path, headers: true) do |row|
+        if row[0].present?
+          airtable_id = row["Record ID"]
+          user = User.find_or_initialize_by(airtable_id: airtable_id)
+          airtable_user = AirtableUser.find(airtable_id)
+          user.sync_with_airtable(airtable_user)
+          @users << user
+        end
+      end
+
+      render 'import_success'
     end
 
   end

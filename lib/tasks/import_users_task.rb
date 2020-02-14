@@ -11,7 +11,7 @@ module ImportUsersTask
         # Have we already imported this user?
         # I'll assume all names are last, first middle, so we
         # don't have to convert
-        if airtable_user[:contact_e_mail].blank?
+        if airtable_user["Contact E-Mail"].blank?
           puts "Email not in record: #{airtable_user.inspect}"
           next
         end

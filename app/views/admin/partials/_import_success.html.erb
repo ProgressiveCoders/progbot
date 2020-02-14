@@ -1,0 +1,30 @@
+<div class="list-head">
+  <div class="page-header page-header-002">
+    <h1>Projects Successfully Imported!</h1>
+  </div><!-- page-header -->
+  <div class="filter">
+    <h2><%= "#{resources.length} projects have been created/updated"  %></h2>
+  </div>
+</div>
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <% attributes.each do |attr| %>
+          <th scope="col"><%= attr %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <% if resources.any? %>
+      <tbody>
+        <% resources.each do |project| %>
+          <tr>
+            <% attributes.each do |attr| %>
+              <td><%= project[attr] %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    <% end %>
+  </table>
+</div>

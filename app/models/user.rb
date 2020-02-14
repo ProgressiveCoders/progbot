@@ -3,7 +3,7 @@ class User < ApplicationRecord
   include Rails.application.routes.url_helpers
   include UserConstants
 
-  attr_accessor :tech_skill_names, :non_tech_skill_names
+  attr_accessor :tech_skill_names, :non_tech_skill_names, :skip_slack_notification
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
   has_and_belongs_to_many :non_tech_skills, -> { where tech: false }, class_name: "Skill"
@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
   has_many :projects, through: :active_volunteerings, source: 'user'
 
-  after_create :send_slack_notification
+  after_create :send_slack_notification, unless: :skip_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
@@ -101,4 +101,33 @@ class User < ApplicationRecord
       self.id.to_s
     end
   end
+
+  def sync_with_airtable(airtable_user)
+    if self.new_record?
+      self.skip_slack_notification = true
+    end
+
+    tech_skills = Skill.where(name: airtable_user["Tech Skills"], tech: true)
+    non_tech_skills = Skill.where(name: airtable_user["Non-Tech Skills and Specialties"], tech: false)
+    self.assign_attributes(
+      tech_skills: tech_skills,
+      non_tech_skills: non_tech_skills, name: airtable_user["Name"],
+      email: airtable_user["Contact E-Mail"],
+      slack_username: airtable_user["Member Handle"],
+      optin: true, is_approved: true
+    )
+    self.save(:validate => false)
+    self.get_slack_userid
+  end
+
+  def get_slack_userid
+    unless self.email.blank? || self.slack_userid.present?
+      slack_user = SlackHelpers.lookup_by_email(self.email.downcase)
+      unless slack_user.blank?
+        self.slack_userid = slack_user.id
+        self.save(:validate => false)
+      end
+    end
+  end
+
 end
