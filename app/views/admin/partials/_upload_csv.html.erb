@@ -1,4 +1,4 @@
-<h1>Import <%= class_name %> Data from Airtable</h1>
+<h1>Import <%= controller_name.singularize.titleize %> Data from Airtable</h1>
 <%= form_tag({:controller => controller_path, :action => 'import_data'}, multipart: true) do %>
     <%= file_field_tag :file, :class => "btn" %>
     <%= hidden_field_tag :confirmation, "pending" %>
