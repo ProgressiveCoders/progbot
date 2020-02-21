@@ -102,6 +102,12 @@ class User < ApplicationRecord
     end
   end
 
+  def airtable_twin
+    if self.airtable_id.present?
+      AirtableUser.all(filter: "{Record ID} = #{self.airtable_id}").first
+    end
+  end
+
   def sync_with_airtable(airtable_user)
     if self.new_record?
       self.skip_slack_notification = true

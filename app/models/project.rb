@@ -21,6 +21,8 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
+  after_commit :push_changes_to_airtable
+
   after_create :send_new_project_slack_notification
 
   after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
@@ -238,6 +240,48 @@ class Project < ApplicationRecord
         ]
       }, testing = false)
     end
+  end
+
+  def push_changes_to_airtable
+    airtable_project = self.airtable_id.present? && AirtableProject.find(self.airtable_id).present? ? AirtableProject.find(self.airtable_id) : AirtableProject.new
+
+    airtable_project["Project Name"] = self.name
+    
+    self.status.try(:each) {|s| airtable_project["Project Status"] << s if !airtable_project["Project Status"].include?(s)}
+
+    self.leads.try(:each) do |l|
+      airtable_twin = l.airtable_twin
+      if airtable_twin.present? && !airtable_project.project_leads.include?(airtable_twin)
+        airtable_project.project_leads << airtable_twin
+      end
+    end
+
+    self.active_volunteers.try(:each) do |v|
+      airtable_twin = v.airtable_twin
+      if airtable_twin.present? && !airtable_project.members.include?(airtable_twin)
+        airtable_project.members << airtable_twin
+      end
+    end
+
+    self.progcode_coordinators.try(:each) do |c|
+      airtable_twin = c.airtable_twin
+      if airtable_twin.present?
+        base_manager = airtable_twin.airtable_base_manager
+        if base_manager.id.present? && !airtable_project.progcode_coordinators.include?(base_manager)
+          airtable_project.progcode_coordinators << base_manager
+        end
+      end
+    end
+
+    self.needs_category_names.try(:each) {|n| airtable_project["Needs Categories"] << n if !airtable_project["Needs Categories"].include?(n)}
+
+    self.tech_stack_names.each {|t| airtable_project["Tech Stack"] << t if !airtable_project["Tech Stack"].include?(t)}
+
+    
+
+
+
+    airtable_project.save("typecast" => true)
   end
 
   def sync_with_airtable(airtable_project)
