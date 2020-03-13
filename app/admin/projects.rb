@@ -12,7 +12,7 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
 
   action_item :bulk_import do
     link_to "Bulk Import From Airtable", admin_projects_upload_csv_path

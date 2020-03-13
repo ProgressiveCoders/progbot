@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191025012156) do
+ActiveRecord::Schema.define(version: 20200306023930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,7 +89,6 @@ ActiveRecord::Schema.define(version: 20191025012156) do
     t.datetime "project_created"
     t.string "project_mgmt_url"
     t.string "repository"
-    t.string "slack_channel_url"
     t.string "software_license_url"
     t.string "values_screening"
     t.string "working_doc"

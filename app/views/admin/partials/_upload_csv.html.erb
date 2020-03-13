@@ -2,5 +2,5 @@
 <%= form_tag({:controller => controller_path, :action => 'import_data'}, multipart: true) do %>
     <%= file_field_tag :file, :class => "btn" %>
     <%= hidden_field_tag :confirmation, "pending" %>
-    <%= submit_tag "Import", :class => "btn" %>
+    <%= submit_tag "Import", :class => "btn", :disabled => true %>
 <% end %>

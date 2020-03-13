@@ -41,6 +41,16 @@ class Project < ApplicationRecord
     "CLUDUR2MD"
   end
 
+  def slack_channel_for_url
+    if self.slack_channel_id.present?
+      self.slack_channel_id
+    elsif self.slack_channel.present?
+      self.slack_channel
+    else
+      nil
+    end
+  end
+
   def leads
     lead_ids.blank? ? [] : User.where(:id => self.lead_ids)
   end
@@ -246,6 +256,38 @@ class Project < ApplicationRecord
     airtable_project = self.airtable_id.present? && AirtableProject.find(self.airtable_id).present? ? AirtableProject.find(self.airtable_id) : AirtableProject.new
 
     airtable_project["Project Name"] = self.name
+
+    airtable_project["Project Summary TEXT"] = self.description
+
+    airtable_project["Website"] = self.website
+
+    airtable_project["Active Contributors (full time equivalent)"] = self.active_contributors
+
+    airtable_project["Full release features"] = self.full_release_features
+
+    airtable_project["Mission accomplished"] = self.mission_accomplished
+
+    airtable_project["Needs / Pain Points - Narrative"] = self.needs_pain_points_narrative
+
+    airtable_project["Org Structure"] = self.org_structure
+
+    airtable_project["Project Mgmt URL"] = self.project_mgmt_url
+
+    airtable_project["Repository"] = self.repository
+
+    airtable_project["Software License URL"] = self.software_license_url
+
+    airtable_project["Values Screening"] = self.values_screening
+
+    airtable_project["Working doc"] = self.working_doc
+
+    airtable_project["Attachments"] = self.attachments
+
+    airtable_project["ProgCode Github Project Link"] = self.progcode_github_project_link
+
+    if self.mission-aligned
+      airtable_project["Mission Aligned"] = true
+    end
     
     self.status.try(:each) {|s| airtable_project["Project Status"] << s if !airtable_project["Project Status"].include?(s)}
 
@@ -277,11 +319,15 @@ class Project < ApplicationRecord
 
     self.tech_stack_names.each {|t| airtable_project["Tech Stack"] << t if !airtable_project["Tech Stack"].include?(t)}
 
+    self.non_tech_stack_names.each {|n| airtable_project["Non-Tech Stack"] << n if !airtable_project["Non-Tech Stack"].include?(n)}
+
     
 
 
 
     airtable_project.save("typecast" => true)
+    self.airtable_id = airtable_project.id
+    self.save
   end
 
   def sync_with_airtable(airtable_project)

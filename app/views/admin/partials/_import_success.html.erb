@@ -17,10 +17,10 @@
     </thead>
     <% if resources.any? %>
       <tbody>
-        <% resources.each do |project| %>
+        <% resources.each do |resource| %>
           <tr>
             <% attributes.each do |attr| %>
-              <td><%= project[attr] %></td>
+              <td><%= resource[attr] %></td>
             <% end %>
           </tr>
         <% end %>

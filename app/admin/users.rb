@@ -100,12 +100,17 @@ end
 
     def import_data
       @users = []
-      @attributes = ["id", "name", "email", "slack_username", "slack_userid", "created_at", "updated_at", "optin",  "is_approved", "airtable_id", "tech_skill_names", "non_tech_skill_names"]
+      @attributes = User.column_names
       CSV.foreach(params[:file].path, headers: true) do |row|
         if row[0].present?
           airtable_id = row["Record ID"]
-          user = User.find_or_initialize_by(airtable_id: airtable_id)
           airtable_user = AirtableUser.find(airtable_id)
+          if User.where(airtable_id: airtable_id).present?
+            user = User.find_by(airtable_id: airtable_id)
+          else
+            user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
+            user.airtable_id = airtable_id
+          end
           user.sync_with_airtable(airtable_user)
           @users << user
         end
