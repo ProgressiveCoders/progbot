@@ -13,6 +13,10 @@ module SlackHelpers
       channels
     end
 
+    def self.get_channel_info(id)
+      client.channels_info(channel: id)
+    end
+
     def self.lookup_by_email(email)
       self.client.users_lookupByEmail(email: email).user
     rescue Slack::Web::Api::Errors::SlackError => e

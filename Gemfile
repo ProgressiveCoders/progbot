@@ -13,7 +13,8 @@ gem 'figaro'
 gem 'activeadmin'
 gem 'select2-rails'
 gem 'activeadmin-select2'
-gem 'airrecord', '1.0.1'
+gem 'airrecord', '1.0.5'
+gem 'net-http-persistent', '~> 2.9'
 
 # Plus integrations with:
 gem 'devise'
