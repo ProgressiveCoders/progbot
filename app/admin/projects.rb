@@ -12,7 +12,11 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :slack_channel_url, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
+
+  action_item :bulk_import do
+    link_to "Bulk Import From Airtable", admin_projects_upload_csv_path
+  end
 
   index do
     selectable_column
@@ -169,6 +173,28 @@ ActiveAdmin.register Project do
         end
       redirect_to admin_project_path(resource)
     end
+
+    def upload_csv
+
+    end
+
+    def import_data
+      @projects = []
+      @attributes = Project.column_names
+      CSV.foreach(params[:file].path, headers: true) do |row|
+        if row[0].present?
+          airtable_id = row["Record ID"]
+          proj = Project.find_or_initialize_by(airtable_id: airtable_id)
+          airtable_project = AirtableProject.find(airtable_id)
+          proj.sync_with_airtable(airtable_project)
+          @projects << proj
+        end
+      end
+
+      render 'import_success'
+
+    end
+
   end
 
   form do |f|

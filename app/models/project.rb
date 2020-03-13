@@ -3,7 +3,7 @@ class Project < ApplicationRecord
   include SlackHelpers
   include Rails.application.routes.url_helpers
 
-  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names
+  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names, :skip_new_project_notification_email
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
 
@@ -21,9 +21,11 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
+  after_commit :push_changes_to_airtable
+
   after_create :send_new_project_slack_notification
 
-  after_create :send_new_project_notification_emails
+  after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
 
   after_save :remove_blank_values
 
@@ -37,6 +39,16 @@ class Project < ApplicationRecord
 
   def self.projects_slack_channel
     "CLUDUR2MD"
+  end
+
+  def slack_channel_for_url
+    if self.slack_channel_id.present?
+      self.slack_channel_id
+    elsif self.slack_channel.present?
+      self.slack_channel
+    else
+      nil
+    end
   end
 
   def leads
@@ -97,8 +109,8 @@ class Project < ApplicationRecord
   end
 
   def remove_blank_values
-    self.status  = self.status.reject(&:empty?)
-    self.legal_structures = self.legal_structures.reject(&:empty?)
+    self.status  = self.status.try(:reject, &:empty?)
+    self.legal_structures = self.legal_structures.try(:reject, &:empty?)
   end
 
   def mission_aligned_status(mission_aligned = self.mission_aligned)
@@ -237,6 +249,224 @@ class Project < ApplicationRecord
           title_link: dashboard_project_url(self)
         ]
       }, testing = false)
+    end
+  end
+
+  def push_changes_to_airtable
+    airtable_project = self.airtable_id.present? && AirtableProject.find(self.airtable_id).present? ? AirtableProject.find(self.airtable_id) : AirtableProject.new
+
+    airtable_project["Project Name"] = self.name
+
+    airtable_project["Project Summary TEXT"] = self.description
+
+    airtable_project["Website"] = self.website
+
+    airtable_project["Active Contributors (full time equivalent)"] = self.active_contributors
+
+    airtable_project["Full release features"] = self.full_release_features
+
+    airtable_project["Mission accomplished"] = self.mission_accomplished
+
+    airtable_project["Needs / Pain Points - Narrative"] = self.needs_pain_points_narrative
+
+    airtable_project["Org Structure"] = self.org_structure
+
+    airtable_project["Project Mgmt URL"] = self.project_mgmt_url
+
+    airtable_project["Repository"] = self.repository
+
+    airtable_project["Software License URL"] = self.software_license_url
+
+    airtable_project["Values Screening"] = self.values_screening
+
+    airtable_project["Working doc"] = self.working_doc
+
+    airtable_project["Attachments"] = self.attachments
+
+    airtable_project["ProgCode Github Project Link"] = self.progcode_github_project_link
+
+    if self.mission-aligned
+      airtable_project["Mission Aligned"] = true
+    end
+    
+    self.status.try(:each) {|s| airtable_project["Project Status"] << s if !airtable_project["Project Status"].include?(s)}
+
+    self.leads.try(:each) do |l|
+      airtable_twin = l.airtable_twin
+      if airtable_twin.present? && !airtable_project.project_leads.include?(airtable_twin)
+        airtable_project.project_leads << airtable_twin
+      end
+    end
+
+    self.active_volunteers.try(:each) do |v|
+      airtable_twin = v.airtable_twin
+      if airtable_twin.present? && !airtable_project.members.include?(airtable_twin)
+        airtable_project.members << airtable_twin
+      end
+    end
+
+    self.progcode_coordinators.try(:each) do |c|
+      airtable_twin = c.airtable_twin
+      if airtable_twin.present?
+        base_manager = airtable_twin.airtable_base_manager
+        if base_manager.id.present? && !airtable_project.progcode_coordinators.include?(base_manager)
+          airtable_project.progcode_coordinators << base_manager
+        end
+      end
+    end
+
+    self.needs_category_names.try(:each) {|n| airtable_project["Needs Categories"] << n if !airtable_project["Needs Categories"].include?(n)}
+
+    self.tech_stack_names.each {|t| airtable_project["Tech Stack"] << t if !airtable_project["Tech Stack"].include?(t)}
+
+    self.non_tech_stack_names.each {|n| airtable_project["Non-Tech Stack"] << n if !airtable_project["Non-Tech Stack"].include?(n)}
+
+    
+
+
+
+    airtable_project.save("typecast" => true)
+    self.airtable_id = airtable_project.id
+    self.save
+  end
+
+  def sync_with_airtable(airtable_project)
+    if self.new_record?
+      self.skip_new_project_notification_email = true
+    end
+
+    if airtable_project["Project Name"].blank?
+      self.flags << "this project lacks a name"
+    else
+      self.name = airtable_project["Project Name"]
+    end
+    
+    if airtable_project["Project Status"].blank?
+      self.flags << "this project lacks a status"
+    else
+      airtable_project["Project Status"].each do |status|
+        self.status << status
+      end
+    end
+    self.status = self.status.uniq
+
+    if !airtable_project.project_leads.present?
+      self.flags << "this project lacks a lead"
+    else
+      airtable_project.project_leads.each do |project_lead|
+        slack_id = project_lead["slack_id"]
+        lead = User.find_by(:slack_userid => slack_id)
+        if lead == nil
+          self.flags << "project lead slack id #{slack_id} has no corresponding user"
+        else
+          self.lead_ids << lead.id
+        end
+      end
+    end
+    self.lead_ids = self.lead_ids.uniq
+
+    if airtable_project.members.present?
+      slack_ids = airtable_project.members.pluck("slack_id")
+      volunteer_slack_ids = slack_ids.reject {|x| airtable_project.project_leads.pluck("slack_id").include?(x)}
+      volunteers = User.where(:slack_userid => volunteer_slack_ids)
+      new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
+      volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
+      volunteerings.each do |v|
+        v.skip_sending_volunteering_updates = true
+        v.set_active!(ENV['AASM_OVERRIDE'])
+        v.skip_sending_volunteering_updates = false
+      end
+      if volunteer_slack_ids.size > volunteers.size
+        missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
+        self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
+      end
+    end
+
+    if !airtable_project.progcode_coordinators.present?
+      self.flags << "this project lacks a coordinator"
+    else
+      airtable_project.progcode_coordinators.each do |coord|
+        coordinator = User.where(slack_username: coord["Slack Handle"].gsub("@", "")).first
+        unless coordinator.present?
+          self.flags << "progcode coordinator slack handle #{coord["Slack Handle"]} has no corresponding user"
+        else
+          self.progcode_coordinator_ids << coordinator.id
+        end
+      end
+    end
+    self.progcode_coordinator_ids = self.progcode_coordinator_ids.uniq
+
+    airtable_project["Needs Categories"].each do |category|
+      skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil)
+      self.needs_categories << skill unless self.needs_categories.include?(skill)
+    end unless airtable_project["Needs Categories"].blank?
+    
+    if airtable_project["Tech Stack"].blank?
+      self.flags << "this project lacks a tech stack"
+    else
+      airtable_project["Tech Stack"].each do |tech|
+        tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
+        self.tech_stack << tech_skill unless self.tech_stack.include?(tech_skill)
+      end
+    end
+
+    airtable_project.slack_channels.each do |channel|
+      self.slack_channel = channel["Channel Name"]
+    end unless !airtable_project.slack_channels.present?
+
+    airtable_project.master_channel_lists.each do |channel|
+      self.master_channel_list << channel["Channel Name"]
+    end unless !airtable_project.master_channel_lists.present?
+    self.master_channel_list = self.master_channel_list.uniq.compact
+    
+    self.assign_attributes(self.build_attributes(airtable_project))
+
+    if airtable_project.slack_channels.present?
+      self.get_slack_channel_id(airtable_project.slack_channels.first["Channel Name"])
+    end
+
+    if self.legal_structures.blank?
+      self.flags << "this project lacks a legal structure"
+    end
+    if self.progcode_github_project_link == nil
+      self.flags << "this project lacks a link to a github repository"
+    end
+
+    self.mission_aligned = true
+    self.flags.uniq!
+    self.save(:validate => false)
+  end
+
+  def build_attributes(airtable_project)
+    {
+      description: airtable_project["Project Summary TEXT"], 
+      needs_pain_points_narrative: airtable_project["Needs / Pain Points - Narrative"],
+      legal_structures: airtable_project["Legal structure"],
+      active_contributors: airtable_project["Active Contributors (full time equivalent)"],
+      business_models: airtable_project["Business model"],
+      oss_license_types: airtable_project["OSS License Type"]
+    }.merge(self.extract_fields(airtable_project))
+  end
+  
+  def extract_assoc(key, field)
+    return [] if self[key].blank?
+    self[key].map {|obj| obj[field] }
+  end
+  
+  def extract_fields(airtable_project)
+    hsh = {}.tap do |h|
+      extracted_fields = airtable_project.fields.keys - ["Project Name", "Project Summary Text",
+        "Progcode Coordinator IDs", "Tech Stack", "Project Status", "Team Member IDs",
+        "Project Lead Slack ID", "Slack Channel", "Needs Categories", "Master Channel List", "Needs / Pain Points - Narrative", "Legal structure", "Active Contributors (full time equivalent)", "Business model", "OSS License Type"]
+      extracted_fields.each do |key|
+        downcased_key = key.downcase.gsub(" ", "_")
+        next if Project.column_for_attribute(downcased_key).table_name.blank?
+        if airtable_project[key].is_a?(Array) && (!Project.column_for_attribute(downcased_key).array)
+          h[downcased_key] = airtable_project[key].first
+        else
+          h[downcased_key] = airtable_project[key]
+        end
+      end
     end
   end
 

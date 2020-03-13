@@ -13,7 +13,7 @@ class Volunteering < ApplicationRecord
   audited associated_with: :project
   audited associated_with: :user
 
-  attr_accessor :event
+  attr_accessor :event, :skip_sending_volunteering_updates
 
   aasm :column => 'state' do
     state :potential, initial: true
@@ -115,37 +115,38 @@ class Volunteering < ApplicationRecord
   end
 
   def send_volunteering_updates
-    leads = self.project.leads
-    project = self.project
-    volunteer = self.user
-    coordinators = self.project.progcode_coordinators
+    unless self.skip_sending_volunteering_updates
+      leads = self.project.leads
+      project = self.project
+      volunteer = self.user
+      coordinators = self.project.progcode_coordinators
 
-    if volunteer.slack_userid
-      send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
-    end
-
-    if !leads.empty?
-      leads.each do |lead|
-        send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
-      end
-    else
-      if !project.flags.include?('this project lacks a lead')
-        project.flags << 'this project lacks a lead'
-        project.save
+      if volunteer.slack_userid
+        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
       end
 
-      if !coordinators.empty?
-        coordinators.each do |coordinator|
-          send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
+      if !leads.empty?
+        leads.each do |lead|
+          send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
         end
       else
-        if !project.flags.include?('this project lacks a coordinator')
-          project.flags << 'this project lacks a coordinator'
+        if !project.flags.include?('this project lacks a lead')
+          project.flags << 'this project lacks a lead'
           project.save
         end
+
+        if !coordinators.empty?
+          coordinators.each do |coordinator|
+            send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
+          end
+        else
+          if !project.flags.include?('this project lacks a coordinator')
+            project.flags << 'this project lacks a coordinator'
+            project.save
+          end
+        end
       end
-    end
-       
+    end  
   end
 
   def send_slack_volunteering_notification(user:,title_link:,testing: true)

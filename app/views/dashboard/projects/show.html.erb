@@ -91,7 +91,11 @@
           <div>
             <h5>Volunteers:</h5>
             <% resource.all_contributors.each do |cont| %>
-              <%= link_to cont.name, 'slack://user?team=T1KR8AG7J&id=' + cont.slack_userid %>
+              <% if cont.slack_userid.present? %>
+                <%= link_to cont.anonymized_handle, 'slack://user?team=T1KR8AG7J&id=' + cont.slack_userid %>
+              <% else %>
+                <%= cont.anonymized_handle %>
+              <% end %>
             <% end %>
           </div>
 

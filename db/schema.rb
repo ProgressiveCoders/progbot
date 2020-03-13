@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190823022634) do
+ActiveRecord::Schema.define(version: 20200306023930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 20190823022634) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "active_contributors"
-    t.text "attachments"
     t.text "full_release_features"
     t.text "mission_accomplished"
     t.text "needs_pain_points_narrative"
@@ -90,21 +89,23 @@ ActiveRecord::Schema.define(version: 20190823022634) do
     t.datetime "project_created"
     t.string "project_mgmt_url"
     t.string "repository"
-    t.string "slack_channel_url"
     t.string "software_license_url"
     t.string "values_screening"
     t.string "working_doc"
     t.string "business_models", default: [], array: true
     t.string "legal_structures", default: [], array: true
     t.string "oss_license_types", default: [], array: true
-    t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "project_applications", default: [], array: true
+    t.text "attachments"
+    t.integer "progcode_coordinator_ids", default: [], array: true
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
     t.string "flags", default: [], array: true
     t.string "master_channel_list", default: [], array: true
     t.string "status", default: [], array: true
     t.string "slack_channel_id"
+    t.string "airtable_id"
+    t.index ["airtable_id"], name: "index_projects_on_airtable_id", unique: true
     t.index ["lead_ids"], name: "index_projects_on_lead_ids"
   end
 
@@ -161,6 +162,8 @@ ActiveRecord::Schema.define(version: 20190823022634) do
     t.string "uid"
     t.string "gender_pronouns"
     t.text "additional_info"
+    t.string "airtable_id"
+    t.index ["airtable_id"], name: "index_users_on_airtable_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

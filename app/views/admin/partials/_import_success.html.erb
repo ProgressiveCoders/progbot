@@ -1,0 +1,30 @@
+<div class="list-head">
+  <div class="page-header page-header-002">
+    <h1><%= controller_name.titleize %> Successfully Imported!</h1>
+  </div><!-- page-header -->
+  <div class="filter">
+    <h2><%= "#{resources.length} #{controller_name} have been created/updated"  %></h2>
+  </div>
+</div>
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <% attributes.each do |attr| %>
+          <th scope="col"><%= attr %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <% if resources.any? %>
+      <tbody>
+        <% resources.each do |resource| %>
+          <tr>
+            <% attributes.each do |attr| %>
+              <td><%= resource[attr] %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    <% end %>
+  </table>
+</div>
