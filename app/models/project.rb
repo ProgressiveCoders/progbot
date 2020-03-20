@@ -360,32 +360,30 @@ class Project < ApplicationRecord
     
     if airtable_project["Project Status"].blank?
       self.flags << "this project lacks a status"
-    else
-      airtable_project["Project Status"].each do |status|
-        self.status << status
-      end
     end
-    self.status = self.status.uniq
+    self.status = airtable_project["Project Status"]
 
     if !airtable_project.project_leads.present?
       self.flags << "this project lacks a lead"
+      lead_ids = []
     else
-      airtable_project.project_leads.each do |project_lead|
-        slack_id = project_lead["slack_id"]
-        lead = User.find_by(:slack_userid => slack_id)
+      lead_ids = airtable_project.project_leads.map do |project_lead|
+        airtable_id = project_lead["Record ID"]
+        lead = User.find_by(:airtable_id => airtable_id)
         if lead == nil
           self.flags << "project lead slack id #{slack_id} has no corresponding user"
+          nil
         else
-          self.lead_ids << lead.id
+          lead.id
         end
       end
+      self.lead_ids = lead_ids.compact
     end
-    self.lead_ids = self.lead_ids.uniq
 
     if airtable_project.members.present?
-      slack_ids = airtable_project.members.pluck("slack_id")
-      volunteer_slack_ids = slack_ids.reject {|x| airtable_project.project_leads.pluck("slack_id").include?(x)}
-      volunteers = User.where(:slack_userid => volunteer_slack_ids)
+      airtable_ids = airtable_project.members.pluck("Record ID")
+      volunteer_airtable_ids = airtable_ids.reject {|x| airtable_project.project_leads.pluck("Record ID").include?(x)}
+      volunteers = User.where(:airtable_id => volunteer_airtable_ids)
       new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
       volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
       volunteerings.each do |v|
@@ -393,39 +391,61 @@ class Project < ApplicationRecord
         v.set_active!(ENV['AASM_OVERRIDE'])
         v.skip_sending_volunteering_updates = false
       end
+      former_member_airtable_ids = self.active_volunteers.pluck(:airtable_id) - Array(airtable_project.members.try(:pluck, "Record ID"))
+
+
       if volunteer_slack_ids.size > volunteers.size
         missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
         self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
       end
+
+      if former_member_airtable_ids.present?
+        former_member_ids = User.where(:airtable_id => former_member_airtable_ids).pluck(:id)
+        former_volunteerings = self.active_volunteerings.where(:user_id => former_member_ids)
+        former_volunteerings.each do |fv|
+          fv.skip_sending_volunteering_updates = true
+          fv.set_former!(ENV['AASM_OVERRIDE'])
+          v.skip_sending_volunteering_updates = false
+        end
+      end
+
     end
 
     if !airtable_project.progcode_coordinators.present?
       self.flags << "this project lacks a coordinator"
+      progcode_coordinator_ids = []
     else
-      airtable_project.progcode_coordinators.each do |coord|
+      progcode_coordinator_ids = 
+      airtable_project.progcode_coordinators.map do |coord|
         coordinator = User.where(slack_username: coord["Slack Handle"].gsub("@", "")).first
         unless coordinator.present?
           self.flags << "progcode coordinator slack handle #{coord["Slack Handle"]} has no corresponding user"
+          nil
         else
-          self.progcode_coordinator_ids << coordinator.id
+          coordinator.id
         end
       end
     end
-    self.progcode_coordinator_ids = self.progcode_coordinator_ids.uniq
+    self.progcode_coordinator_ids = progcode_coordinator_ids.compact
 
-    airtable_project["Needs Categories"].each do |category|
-      skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil)
-      self.needs_categories << skill unless self.needs_categories.include?(skill)
-    end unless airtable_project["Needs Categories"].blank?
+    if airtable_project["Needs Categories"].blank?
+      needs_category_ids = []
+    else
+      needs_category_ids = airtable_project["Needs Categories"].map do |category|
+        Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil).id
+      end
+    end
+    self.needs_category_ids = needs_category_ids
     
     if airtable_project["Tech Stack"].blank?
       self.flags << "this project lacks a tech stack"
+      tech_stack_ids = []
     else
-      airtable_project["Tech Stack"].each do |tech|
-        tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
-        self.tech_stack << tech_skill unless self.tech_stack.include?(tech_skill)
+      tech_stack_ids = airtable_project["Tech Stack"].map do |tech|
+        Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true).id
       end
     end
+    self.tech_stack_ids = tech_stack_ids
 
     if airtable_project.slack_channel.present?
       if airtable_project.slack_channel["Channel ID"].present?
@@ -439,10 +459,10 @@ class Project < ApplicationRecord
       end
     end
 
-    airtable_project.master_channel_lists.each do |channel|
-      self.master_channel_list << channel["Channel Name"]
-    end unless airtable_project.master_channel_lists.blank?
-    self.master_channel_list = self.master_channel_list.uniq.compact
+    master_channel_names = airtable_project.master_channel_lists.map { |channel|
+      channel["Channel Name"] }
+    
+    self.master_channel_list = master_channel_names.compact
     
     self.assign_attributes(self.build_attributes(airtable_project))
 
