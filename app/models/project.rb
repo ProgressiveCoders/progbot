@@ -377,8 +377,8 @@ class Project < ApplicationRecord
           lead.id
         end
       end
-      self.lead_ids = lead_ids.compact
     end
+    self.lead_ids = lead_ids.compact
 
     if airtable_project.members.present?
       airtable_ids = airtable_project.members.pluck("Record ID")
