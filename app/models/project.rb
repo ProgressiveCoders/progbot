@@ -303,58 +303,41 @@ class Project < ApplicationRecord
       airtable_project["Mission Aligned"] = true
     end
     
-    self.status.try(:each) {|s| airtable_project["Project Status"] << s if !airtable_project["Project Status"].include?(s)}
+    airtable_project["Project Status"] = self.status
 
-    self.business_models.try(:each) {|b| airtable_project["Business model"] << b if !airtable_project["Business model"].include?(b)}
+    airtable_project["Business model"]  = self.business_models
 
-    self.legal_structures.try(:each) {|l| airtable_project["Legal structure"] << l if !airtable_project["Legal structure"].include?(l)}
+    airtable_project["Legal structure"]  = self.legal_structures
 
-    self.oss_license_types.try(:each) {|o| airtable_project["OSS License Type"] << o if !airtable_project["OSS License Type"].include?(o)}
+    airtable_project["OSS License Type"] = self.oss_license_types
 
-    self.project_applications.try(:each) {|a| airtable_project["Project Applications"] << a if !airtable_project["Project Applications"].include?(a)}
+    airtable_project["Project Applications"] = self.project_applications
 
-    self.leads.try(:each) do |l|
-      airtable_twin = l.airtable_twin
-      if airtable_twin.present? && !airtable_project.project_leads.include?(airtable_twin)
-        airtable_project.project_leads << airtable_twin
-      end
-    end
+    airtable_project.project_leads = self.leads.map {|l| l.airtable_twin}.compact
 
-    self.active_volunteers.try(:each) do |v|
-      airtable_twin = v.airtable_twin
-      if airtable_twin.present? && !airtable_project.members.include?(airtable_twin)
-        airtable_project.members << airtable_twin
-      end
-    end
+    airtable_project.members = self.active_volunteers.map {|v| v.airtable_twin }.compact
 
-    self.progcode_coordinators.try(:each) do |c|
-      airtable_twin = c.airtable_twin
-      if airtable_twin.present?
-        base_manager = airtable_twin.airtable_base_manager
-        if base_manager.id.present? && !airtable_project.progcode_coordinators.include?(base_manager)
-          airtable_project.progcode_coordinators << base_manager
-        end
-      end
-    end
+    airtable_project.progcode_coordinators = self.progcode_coordinators.map { |c| c.airtable_twin.try(:airtable_base_manager) }.compact
 
     airtable_project["Needs Categories"] = self.needs_category_names
 
-    # self.needs_category_names.each {|n| airtable_project["Needs Categories"] << n if !airtable_project["Needs Categories"].include?(n)}
-
     airtable_project["Tech Stack"] = self.tech_stack_names
-
-    # self.tech_stack_names.each {|t| airtable_project["Tech Stack"] << t if !airtable_project["Tech Stack"].include?(t)}
 
     airtable_project["Non-Tech Stack"] = self.non_tech_stack_names
 
-    # self.non_tech_stack_names.each {|n| airtable_project["Non-Tech Stack"] << n if !airtable_project["Non-Tech Stack"].include?(n)}
-
-    self.master_channel_list.try(:each) {|m| airtable_project.master_channel_lists << AirtableChannelList.all.detect{|x| x["Channel Name"] == m} }
+    airtable_master_channel_ids = self.master_channel_list.map {|m| AirtableChannelList.all.detect{|x| x["Channel Name"] == m}.id }
+    if airtable_master_channel_ids.present?
+      airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)
+    end
 
     if self.slack_channel_id.present?
-      airtable_project.slack_channel = AirtableChannelList.all.detect{|x| x["Channel ID"] == self.slack_channel_id}
+      airtable_channel = AirtableChannelList.all.detect{|x| x["Channel ID"] == self.slack_channel_id}
     elsif self.slack_channel.present?
-      airtable_project.slack_channel = AirtableChannelList.all.detect{|x| x["Channel Name"] == self.slack_channel}
+      airtable_channel = AirtableChannelList.all.detect{|x| x["Channel Name"] == self.slack_channel}
+    end
+    if airtable_channel.present?
+      airtable_project.slack_channel = 
+     AirtableChannelList.find(airtable_channel.id)
     end
 
     airtable_project.save(typecast: true)
