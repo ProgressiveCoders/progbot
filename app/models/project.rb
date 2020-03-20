@@ -267,6 +267,8 @@ class Project < ApplicationRecord
 
   def push_changes_to_airtable
     all_airtable_projects = AirtableProject.all
+    all_slack_channels = AirtableChannelList.all
+
     airtable_project = self.airtable_id.present? && all_airtable_projects.detect{|x| x.id == self.airtable_id}.present? ? all_airtable_projects.detect{|x| x.id == self.airtable_id} : AirtableProject.new
 
     airtable_project["Project Name"] = self.name
@@ -325,15 +327,15 @@ class Project < ApplicationRecord
 
     airtable_project["Non-Tech Stack"] = self.non_tech_stack_names
 
-    airtable_master_channel_ids = self.master_channel_list.map {|m| AirtableChannelList.all.detect{|x| x["Channel Name"] == m}.id }
+    airtable_master_channel_ids = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}.id }
     if airtable_master_channel_ids.present?
       airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)
     end
 
     if self.slack_channel_id.present?
-      airtable_channel = AirtableChannelList.all.detect{|x| x["Channel ID"] == self.slack_channel_id}
+      airtable_channel = all_slack_channels.detect{|x| x["Channel ID"] == self.slack_channel_id}
     elsif self.slack_channel.present?
-      airtable_channel = AirtableChannelList.all.detect{|x| x["Channel Name"] == self.slack_channel}
+      airtable_channel = all_slack_channels.detect{|x| x["Channel Name"] == self.slack_channel}
     end
     if airtable_channel.present?
       airtable_project.slack_channel = 
