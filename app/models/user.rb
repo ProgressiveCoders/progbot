@@ -104,7 +104,7 @@ class User < ApplicationRecord
 
   def airtable_twin
     if self.airtable_id.present?
-      AirtableUser.all(filter: "{Record ID} = #{self.airtable_id}").first
+      AirtableUser.all.detect{|x| x["Record ID"] == self.airtable_id}
     end
   end
 

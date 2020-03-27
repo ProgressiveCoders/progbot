@@ -70,7 +70,7 @@ ActiveAdmin.register Project do
     attributes_table do
       row :name
       row :status do
-        span project.status.join(', ')
+        span project.status.try(:join, ', ')
       end
       row :mission_aligned
       row :description
@@ -100,32 +100,32 @@ ActiveAdmin.register Project do
       row :full_release_features
       row :needs_pain_points_narrative
       row :project_applications do
-        span project.project_applications.join(', ')
+        span project.project_applications.try(:join, ', ')
       end
       row :active_contributors
       row :org_structure
       row :legal_structures do
-        span project.legal_structures.join(', ')
+        span project.legal_structures.try(:join, ', ')
       end
       row :oss_license_types do
-        span project.oss_license_types.join(', ')
+        span project.oss_license_types.try(:join, ', ')
       end
       row :values_screening
       row :business_models do
-        span project.business_models.join(', ')
+        span project.business_models.try(:join, ', ')
       end
       row :working_doc
       row :project_mgmt_url
       row :software_license_url
       row :attachments
       row :master_channel_list do
-        span project.master_channel_list.join(', ')
+        span project.master_channel_list.try(:join, ', ')
       end
       row :project_created
       row :created_at
       row :updated_at
       row :flags do
-        span project.flags.join("<br>").html_safe
+        span project.flags.try(:join, "<br>").try(:html_safe)
       end
     end
   end

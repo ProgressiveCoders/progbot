@@ -21,7 +21,7 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
-  after_commit :push_changes_to_airtable
+  before_save :push_changes_to_airtable
 
   after_create :send_new_project_slack_notification
 
@@ -198,6 +198,19 @@ class Project < ApplicationRecord
     return nil
   end
 
+  def get_slack_channel_name(channel_id)
+    channel_info = SlackHelpers.get_channel_info(channel_id)
+
+    unless channel_info.blank?
+      self.slack_channel = channel_info.channel.name
+    end
+
+  rescue Slack::Web::Api::Errors::SlackError => e
+    puts "SlackBot:  Channel does not exist"
+    return nil
+
+  end
+
   def get_ids_from_names(tech_names, non_tech_names, needs_category_names)
     self.tech_stack = Skill.where(:name => tech_names)
     self.non_tech_stack = Skill.where(:name => non_tech_names)
@@ -253,7 +266,10 @@ class Project < ApplicationRecord
   end
 
   def push_changes_to_airtable
-    airtable_project = self.airtable_id.present? && AirtableProject.find(self.airtable_id).present? ? AirtableProject.find(self.airtable_id) : AirtableProject.new
+    all_airtable_projects = AirtableProject.all
+    all_slack_channels = AirtableChannelList.all
+
+    airtable_project = self.airtable_id.present? && all_airtable_projects.detect{|x| x.id == self.airtable_id}.present? ? all_airtable_projects.detect{|x| x.id == self.airtable_id} : AirtableProject.new
 
     airtable_project["Project Name"] = self.name
 
@@ -285,49 +301,50 @@ class Project < ApplicationRecord
 
     airtable_project["ProgCode Github Project Link"] = self.progcode_github_project_link
 
-    if self.mission-aligned
+    if self.mission_aligned
       airtable_project["Mission Aligned"] = true
     end
     
-    self.status.try(:each) {|s| airtable_project["Project Status"] << s if !airtable_project["Project Status"].include?(s)}
+    airtable_project["Project Status"] = self.status
 
-    self.leads.try(:each) do |l|
-      airtable_twin = l.airtable_twin
-      if airtable_twin.present? && !airtable_project.project_leads.include?(airtable_twin)
-        airtable_project.project_leads << airtable_twin
-      end
+    airtable_project["Business model"]  = self.business_models
+
+    airtable_project["Legal structure"]  = self.legal_structures
+
+    airtable_project["OSS License Type"] = self.oss_license_types
+
+    airtable_project["Project Applications"] = self.project_applications
+
+    airtable_project.project_leads = self.leads.map {|l| l.airtable_twin}.compact
+
+    airtable_project.members = self.active_volunteers.map {|v| v.airtable_twin }.compact
+
+    airtable_project.progcode_coordinators = self.progcode_coordinators.map { |c| c.airtable_twin.try(:airtable_base_manager) }.compact
+
+    airtable_project["Needs Categories"] = self.needs_category_names
+
+    airtable_project["Tech Stack"] = self.tech_stack_names
+
+    airtable_project["Non-Tech Stack"] = self.non_tech_stack_names
+
+    airtable_master_channel_ids = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}.id }
+    if airtable_master_channel_ids.present?
+      airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)
     end
 
-    self.active_volunteers.try(:each) do |v|
-      airtable_twin = v.airtable_twin
-      if airtable_twin.present? && !airtable_project.members.include?(airtable_twin)
-        airtable_project.members << airtable_twin
-      end
+    if self.slack_channel_id.present?
+      airtable_channel = all_slack_channels.detect{|x| x["Channel ID"] == self.slack_channel_id}
+    elsif self.slack_channel.present?
+      airtable_channel = all_slack_channels.detect{|x| x["Channel Name"] == self.slack_channel}
+    end
+    if airtable_channel.present?
+      airtable_project.slack_channel = 
+     AirtableChannelList.find(airtable_channel.id)
     end
 
-    self.progcode_coordinators.try(:each) do |c|
-      airtable_twin = c.airtable_twin
-      if airtable_twin.present?
-        base_manager = airtable_twin.airtable_base_manager
-        if base_manager.id.present? && !airtable_project.progcode_coordinators.include?(base_manager)
-          airtable_project.progcode_coordinators << base_manager
-        end
-      end
-    end
-
-    self.needs_category_names.try(:each) {|n| airtable_project["Needs Categories"] << n if !airtable_project["Needs Categories"].include?(n)}
-
-    self.tech_stack_names.each {|t| airtable_project["Tech Stack"] << t if !airtable_project["Tech Stack"].include?(t)}
-
-    self.non_tech_stack_names.each {|n| airtable_project["Non-Tech Stack"] << n if !airtable_project["Non-Tech Stack"].include?(n)}
-
-    
-
-
-
-    airtable_project.save("typecast" => true)
+    airtable_project.save(typecast: true)
     self.airtable_id = airtable_project.id
-    self.save
+
   end
 
   def sync_with_airtable(airtable_project)
@@ -343,32 +360,30 @@ class Project < ApplicationRecord
     
     if airtable_project["Project Status"].blank?
       self.flags << "this project lacks a status"
-    else
-      airtable_project["Project Status"].each do |status|
-        self.status << status
-      end
     end
-    self.status = self.status.uniq
+    self.status = airtable_project["Project Status"]
 
     if !airtable_project.project_leads.present?
       self.flags << "this project lacks a lead"
+      lead_ids = []
     else
-      airtable_project.project_leads.each do |project_lead|
-        slack_id = project_lead["slack_id"]
-        lead = User.find_by(:slack_userid => slack_id)
+      lead_ids = airtable_project.project_leads.map do |project_lead|
+        airtable_id = project_lead["Record ID"]
+        lead = User.find_by(:airtable_id => airtable_id)
         if lead == nil
           self.flags << "project lead slack id #{slack_id} has no corresponding user"
+          nil
         else
-          self.lead_ids << lead.id
+          lead.id
         end
       end
     end
-    self.lead_ids = self.lead_ids.uniq
+    self.lead_ids = lead_ids.compact
 
     if airtable_project.members.present?
-      slack_ids = airtable_project.members.pluck("slack_id")
-      volunteer_slack_ids = slack_ids.reject {|x| airtable_project.project_leads.pluck("slack_id").include?(x)}
-      volunteers = User.where(:slack_userid => volunteer_slack_ids)
+      airtable_ids = airtable_project.members.pluck("Record ID")
+      volunteer_airtable_ids = airtable_ids.reject {|x| airtable_project.project_leads.pluck("Record ID").include?(x)}
+      volunteers = User.where(:airtable_id => volunteer_airtable_ids)
       new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
       volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
       volunteerings.each do |v|
@@ -376,54 +391,80 @@ class Project < ApplicationRecord
         v.set_active!(ENV['AASM_OVERRIDE'])
         v.skip_sending_volunteering_updates = false
       end
-      if volunteer_slack_ids.size > volunteers.size
-        missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
+      former_member_airtable_ids = self.active_volunteers.pluck(:airtable_id) - Array(airtable_project.members.try(:pluck, "Record ID"))
+
+
+      if volunteer_airtable_ids.size > volunteers.size
+        missing = volunteer_airtable_ids - volunteers.map(&:slack_userid).compact
         self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
       end
+
+      if former_member_airtable_ids.present?
+        former_member_ids = User.where(:airtable_id => former_member_airtable_ids).pluck(:id)
+        former_volunteerings = self.active_volunteerings.where(:user_id => former_member_ids)
+        former_volunteerings.each do |fv|
+          fv.skip_sending_volunteering_updates = true
+          fv.set_former!(ENV['AASM_OVERRIDE'])
+          v.skip_sending_volunteering_updates = false
+        end
+      end
+
     end
 
     if !airtable_project.progcode_coordinators.present?
       self.flags << "this project lacks a coordinator"
+      progcode_coordinator_ids = []
     else
-      airtable_project.progcode_coordinators.each do |coord|
+      progcode_coordinator_ids = 
+      airtable_project.progcode_coordinators.map do |coord|
         coordinator = User.where(slack_username: coord["Slack Handle"].gsub("@", "")).first
         unless coordinator.present?
           self.flags << "progcode coordinator slack handle #{coord["Slack Handle"]} has no corresponding user"
+          nil
         else
-          self.progcode_coordinator_ids << coordinator.id
+          coordinator.id
         end
       end
     end
-    self.progcode_coordinator_ids = self.progcode_coordinator_ids.uniq
+    self.progcode_coordinator_ids = progcode_coordinator_ids.compact
 
-    airtable_project["Needs Categories"].each do |category|
-      skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil)
-      self.needs_categories << skill unless self.needs_categories.include?(skill)
-    end unless airtable_project["Needs Categories"].blank?
+    if airtable_project["Needs Categories"].blank?
+      needs_category_ids = []
+    else
+      needs_category_ids = airtable_project["Needs Categories"].map do |category|
+        Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil).id
+      end
+    end
+    self.needs_category_ids = needs_category_ids
     
     if airtable_project["Tech Stack"].blank?
       self.flags << "this project lacks a tech stack"
+      tech_stack_ids = []
     else
-      airtable_project["Tech Stack"].each do |tech|
-        tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
-        self.tech_stack << tech_skill unless self.tech_stack.include?(tech_skill)
+      tech_stack_ids = airtable_project["Tech Stack"].map do |tech|
+        Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true).id
+      end
+    end
+    self.tech_stack_ids = tech_stack_ids
+
+    if airtable_project.slack_channel.present?
+      if airtable_project.slack_channel["Channel ID"].present?
+        self.slack_channel_id = airtable_project.slack_channel["Channel ID"]
+
+        self.get_slack_channel_name(self.slack_channel_id)
+      elsif airtable_project.slack_channel["Channel Name"].present?
+        self.slack_channel = airtable_project.slack_channel["Channel Name"]
+
+        self.get_slack_channel_id(self.slack_channel)
       end
     end
 
-    airtable_project.slack_channels.each do |channel|
-      self.slack_channel = channel["Channel Name"]
-    end unless !airtable_project.slack_channels.present?
-
-    airtable_project.master_channel_lists.each do |channel|
-      self.master_channel_list << channel["Channel Name"]
-    end unless !airtable_project.master_channel_lists.present?
-    self.master_channel_list = self.master_channel_list.uniq.compact
+    master_channel_names = airtable_project.master_channel_lists.map { |channel|
+      channel["Channel Name"] }
+    
+    self.master_channel_list = master_channel_names.compact
     
     self.assign_attributes(self.build_attributes(airtable_project))
-
-    if airtable_project.slack_channels.present?
-      self.get_slack_channel_id(airtable_project.slack_channels.first["Channel Name"])
-    end
 
     if self.legal_structures.blank?
       self.flags << "this project lacks a legal structure"
