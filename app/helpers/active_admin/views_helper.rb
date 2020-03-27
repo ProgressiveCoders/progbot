@@ -6,9 +6,9 @@ module ActiveAdmin::ViewsHelper
     User.all.collect do |u|
       if proj_volunteer_ids.include?(u.id)
         state = Volunteering.where(:user_id => u.id).where(:project_id => project.id).take.state
-        label = link_to "#{u.admin_label} (#{state})", edit_admin_volunteering_path()
+        label = "#{u.admin_label} (#{state})"
       else
-        label = "#{u.label}"
+        label = "#{u.admin_label}"
       end
       [label, u.id]
     end

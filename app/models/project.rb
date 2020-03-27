@@ -394,8 +394,8 @@ class Project < ApplicationRecord
       former_member_airtable_ids = self.active_volunteers.pluck(:airtable_id) - Array(airtable_project.members.try(:pluck, "Record ID"))
 
 
-      if volunteer_slack_ids.size > volunteers.size
-        missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
+      if volunteer_airtable_ids.size > volunteers.size
+        missing = volunteer_airtable_ids - volunteers.map(&:slack_userid).compact
         self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
       end
 
