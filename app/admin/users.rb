@@ -100,7 +100,7 @@ end
 
     def import_data
       @users = []
-      @attributes = User.column_names
+      @attributes = UserConstants::COLUMN_NAMES_FOR_DISPLAY
       CSV.foreach(params[:file].path, headers: true) do |row|
         if row[0].present?
           airtable_id = row["Record ID"]

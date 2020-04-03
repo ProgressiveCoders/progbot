@@ -23,4 +23,11 @@ module SlackHelpers
       puts "SlackBot:  Email not found: #{email}"
       return nil
     end
+
+    def self.lookup_by_slack_id(slack_id)
+      self.client.users_info(user: slack_id).user.profile
+    rescue Slack::Web::Api::Errors::SlackError => e
+      puts "SlackBot:  ID not found: #{slack_id}"
+      return nil
+    end
 end
