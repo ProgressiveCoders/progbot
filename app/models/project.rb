@@ -1,9 +1,9 @@
 class Project < ApplicationRecord
   include ProjectConstants
-  include SlackHelpers
+  include Syncable
   include Rails.application.routes.url_helpers
 
-  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names, :skip_new_project_notification_email
+  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names, :skip_new_project_notification_email, :skip_new_project_slack_notification, :skip_push_to_airtable
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
 
@@ -21,13 +21,13 @@ class Project < ApplicationRecord
 
   validates :legal_structures, :presence => true, :allow_blank => false, :if => :new_record?
 
-  before_save :push_changes_to_airtable
+  before_save :push_changes_to_airtable, unless: :skip_push_to_airtable
 
-  after_create :send_new_project_slack_notification
+  after_create :send_new_project_slack_notification, unless: :skip_new_project_slack_notification
 
   after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
 
-  after_save :remove_blank_values
+  before_save :remove_blank_values
 
   scope :simple_search,   -> (q) do
     q = "%#{q}%"
@@ -39,6 +39,40 @@ class Project < ApplicationRecord
 
   def self.projects_slack_channel
     "CLUDUR2MD"
+  end
+
+  def self.matching_airtable_attributes
+    {
+      "Project Name" => :name,
+      "Project Summary TEXT" => :description,
+      "Website" => :website,
+      "Active Contributors (full time equivalent)" => :active_contributors,
+      "Full release features" => :full_release_features,
+      "Mission accomplished" => :mission_accomplished,
+      "Needs / Pain Points - Narrative" => :needs_pain_points_narrative,
+      "Org Structure" => :org_structure,
+      "Project Mgmt URL" => :project_mgmt_url,
+      "Repository" => :repository,
+      "Software License URL" => :software_license_url,
+      "Values Screening" => :values_screening,
+      "Working doc" => :working_doc,
+      "Attachments" => :attachments,
+      "ProgCode Github Project Link" => :progcode_github_project_link,
+      "Project Status" => :status,
+      "Business model" => :business_models,
+      "Legal structure" => :legal_structures,
+      "OSS License Type" => :oss_license_types,
+      "Project Applications" => :project_applications,
+      "Needs Categories" => :needs_category_names,
+      "Tech Stack" => :tech_stack_names,
+      "Non-Tech Stack" => :non_tech_stack_names
+    }
+  end
+
+  def self.matching_airtable_boolean_attributes
+    {
+      "Mission Aligned" => :mission_aligned
+    }
   end
 
   def slack_channel_for_url
@@ -266,102 +300,52 @@ class Project < ApplicationRecord
   end
 
   def push_changes_to_airtable
-    all_airtable_projects = AirtableProject.all
-    all_slack_channels = AirtableChannelList.all
-
-    airtable_project = self.airtable_id.present? && all_airtable_projects.detect{|x| x.id == self.airtable_id}.present? ? all_airtable_projects.detect{|x| x.id == self.airtable_id} : AirtableProject.new
-
-    airtable_project["Project Name"] = self.name
-
-    airtable_project["Project Summary TEXT"] = self.description
-
-    airtable_project["Website"] = self.website
-
-    airtable_project["Active Contributors (full time equivalent)"] = self.active_contributors
-
-    airtable_project["Full release features"] = self.full_release_features
-
-    airtable_project["Mission accomplished"] = self.mission_accomplished
-
-    airtable_project["Needs / Pain Points - Narrative"] = self.needs_pain_points_narrative
-
-    airtable_project["Org Structure"] = self.org_structure
-
-    airtable_project["Project Mgmt URL"] = self.project_mgmt_url
-
-    airtable_project["Repository"] = self.repository
-
-    airtable_project["Software License URL"] = self.software_license_url
-
-    airtable_project["Values Screening"] = self.values_screening
-
-    airtable_project["Working doc"] = self.working_doc
-
-    airtable_project["Attachments"] = self.attachments
-
-    airtable_project["ProgCode Github Project Link"] = self.progcode_github_project_link
-
-    if self.mission_aligned
-      airtable_project["Mission Aligned"] = true
-    end
     
-    airtable_project["Project Status"] = self.status
+    self.remove_blank_values
+    
+    super do |airtable_project|
+      all_slack_channels = AirtableChannelList.all
 
-    airtable_project["Business model"]  = self.business_models
+      airtable_project.project_leads = self.leads.map {|l| l.airtable_twin}.compact
 
-    airtable_project["Legal structure"]  = self.legal_structures
+      airtable_project.members = self.active_volunteers.map {|v| v.airtable_twin }.compact
 
-    airtable_project["OSS License Type"] = self.oss_license_types
+      airtable_project.progcode_coordinators = self.progcode_coordinators.map { |c| c.airtable_twin.try(:airtable_base_manager) }.compact
 
-    airtable_project["Project Applications"] = self.project_applications
+      airtable_master_channel_ids = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}.id }
 
-    airtable_project.project_leads = self.leads.map {|l| l.airtable_twin}.compact
+      if airtable_master_channel_ids.present?
+        airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)
+      end
 
-    airtable_project.members = self.active_volunteers.map {|v| v.airtable_twin }.compact
+      if self.slack_channel_id.present?
+        airtable_channel = all_slack_channels.detect{|x| x["Channel ID"] == self.slack_channel_id}
+      elsif self.slack_channel.present?
+        airtable_channel = all_slack_channels.detect{|x| x["Channel Name"] == self.slack_channel}
+      end
 
-    airtable_project.progcode_coordinators = self.progcode_coordinators.map { |c| c.airtable_twin.try(:airtable_base_manager) }.compact
-
-    airtable_project["Needs Categories"] = self.needs_category_names
-
-    airtable_project["Tech Stack"] = self.tech_stack_names
-
-    airtable_project["Non-Tech Stack"] = self.non_tech_stack_names
-
-    airtable_master_channel_ids = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}.id }
-    if airtable_master_channel_ids.present?
-      airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)
+      if airtable_channel.present?
+        airtable_project.slack_channel = 
+      AirtableChannelList.find(airtable_channel.id)
+      end
     end
-
-    if self.slack_channel_id.present?
-      airtable_channel = all_slack_channels.detect{|x| x["Channel ID"] == self.slack_channel_id}
-    elsif self.slack_channel.present?
-      airtable_channel = all_slack_channels.detect{|x| x["Channel Name"] == self.slack_channel}
-    end
-    if airtable_channel.present?
-      airtable_project.slack_channel = 
-     AirtableChannelList.find(airtable_channel.id)
-    end
-
-    airtable_project.save(typecast: true)
-    self.airtable_id = airtable_project.id
-
   end
 
   def sync_with_airtable(airtable_project)
+    self.skip_push_to_airtable = true
+
     if self.new_record?
       self.skip_new_project_notification_email = true
+      self.skip_new_project_slack_notification = true
     end
 
     if airtable_project["Project Name"].blank?
       self.flags << "this project lacks a name"
-    else
-      self.name = airtable_project["Project Name"]
     end
     
     if airtable_project["Project Status"].blank?
       self.flags << "this project lacks a status"
     end
-    self.status = airtable_project["Project Status"]
 
     if !airtable_project.project_leads.present?
       self.flags << "this project lacks a lead"
@@ -429,23 +413,23 @@ class Project < ApplicationRecord
     self.progcode_coordinator_ids = progcode_coordinator_ids.compact
 
     if airtable_project["Needs Categories"].blank?
-      needs_category_ids = []
+      self.needs_category_ids = []
     else
-      needs_category_ids = airtable_project["Needs Categories"].map do |category|
-        Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil).id
-      end
+      self.need_category_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Needs Categories"], tech: false)
     end
-    self.needs_category_ids = needs_category_ids
     
     if airtable_project["Tech Stack"].blank?
       self.flags << "this project lacks a tech stack"
-      tech_stack_ids = []
+      self.tech_stack_ids = []
     else
-      tech_stack_ids = airtable_project["Tech Stack"].map do |tech|
-        Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true).id
-      end
+      self.tech_stack_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Tech Stack"], tech: true)
     end
-    self.tech_stack_ids = tech_stack_ids
+
+    if airtable_project["Non-Tech Stack"].blank?
+      self.non_tech_stack_ids = []
+    else
+      self.non_tech_stack_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Non-Tech Stack"], tech: false)
+    end
 
     if airtable_project.slack_channel.present?
       if airtable_project.slack_channel["Channel ID"].present?
@@ -469,6 +453,7 @@ class Project < ApplicationRecord
     if self.legal_structures.blank?
       self.flags << "this project lacks a legal structure"
     end
+
     if self.progcode_github_project_link == nil
       self.flags << "this project lacks a link to a github repository"
     end
@@ -476,10 +461,13 @@ class Project < ApplicationRecord
     self.mission_aligned = true
     self.flags.uniq!
     self.save(:validate => false)
+    self.skip_push_to_airtable = false
   end
 
   def build_attributes(airtable_project)
     {
+      name: airtable_project["Project Name"],
+      status: airtable_project["Project Status"],
       description: airtable_project["Project Summary TEXT"], 
       needs_pain_points_narrative: airtable_project["Needs / Pain Points - Narrative"],
       legal_structures: airtable_project["Legal structure"],
