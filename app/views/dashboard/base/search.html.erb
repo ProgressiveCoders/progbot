@@ -4,14 +4,26 @@
   <div class="row">
     <h3 class="mt-5"><%= type %></h3>
     <hr />
-    <% res.each do |obj| %>
-      <div class="card w-100 mt-4">
-        <div class="card-body">
-          <h5 class="card-title"><%= link_to obj.name, [:dashboard, obj] %></h5>
-          <p class="card-text"><%= obj.try(:description) %></p>
+    <% if type != :users %>
+      <% res.each do |obj| %>
+        <div class="card w-100 mt-4">
+          <div class="card-body">
+            <h5 class="card-title"><%= link_to obj.name, [:dashboard, obj] %></h5>
+            <p class="card-text"><%= obj.try(:description) %></p>
+          </div>
         </div>
-      </div>
 
+      <% end %>
+    <% else %>
+      <% res.each do |obj| %>
+        <div class="card w-100 mt-4">
+          <div class="card-body">
+            <h5 class="card-title"><%= link_to "##{obj.id}", [:dashboard, obj] %></h5>
+            <p class="card-text">Skills: <%= obj.skills.pluck(:name).sort.join(", ") %></p>
+          </div>
+        </div>
+
+      <% end %>
     <% end %>
   </div>
   <% end %>

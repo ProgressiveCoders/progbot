@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     get 'base/index'
     post "/search", to: "base#search"
     get "/search", to: "base#search"
-    resource :user, only: [:edit, :update]
+    resource :user, only: [:edit, :update, :index, :show]
     resources :skills, only: [:index, :show]
     resources :projects do
       get 'all', :on => :collection
