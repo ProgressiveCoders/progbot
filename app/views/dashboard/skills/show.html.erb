@@ -20,7 +20,7 @@
             <small><%= time_ago_in_words(project.created_at) %> ago</small>
           </div>
           <p class="mb-1"><%= project.description.try(:truncate, 300) %></p>
-          <small>Slack Channel: <%= project.slack_channel_for_url? link_to ( "##{project.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{project.slack_channel_for_url}") : "None entered" %></small>
+          <small>Slack Channel: <%= project.slack_channel_for_url.present? ? link_to("##{project.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{project.slack_channel_for_url}") : "None entered" %></small>
         </div>
 
       <% end %>
@@ -37,7 +37,7 @@
             <small>3 days ago</small>
           </div>
           <p class="mb-1"><%= project.description.try(:truncate, 300) %></p>
-          <small>Slack Channel: <%= project.slack_channel_for_url? link_to ( "##{project.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{project.slack_channel_for_url}") : "None entered" %></small>
+          <small>Slack Channel: <%= project.slack_channel_for_url.present? ? link_to("##{project.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{project.slack_channel_for_url}") : "None entered" %></small>
         </div>
       <% end %>
       <%= content_tag(:p, "No Projects Need This Skill Now", :class => "alert alert-success") if resource.project_needs.blank? %>
