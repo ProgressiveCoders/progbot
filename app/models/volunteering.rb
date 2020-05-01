@@ -22,37 +22,37 @@ class Volunteering < ApplicationRecord
     state :active
     state :former
 
-    after_all_transitions :send_volunteering_updates
     
-    event :set_active do
+    
+    event :set_active, after: :send_volunteering_updates do
       transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
     end
 
-    event :set_former do
+    event :set_former, after: :send_volunteering_updates do
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
-    event :apply, after: :send_volunteering_email do
+    event :apply, after: [:send_volunteering_updates, :send_volunteering_email] do
         transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
-    event :recruit do
+    event :recruit, after: :send_recruitment_messages do
         transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
     end
 
-    event :withdraw do
+    event :withdraw, after: :send_volunteering_updates do
       transitions from: [:signed_up, :invited], to: :potential, guard: :user_can_withdraw?
     end
 
-    event :confirm, guard: :user_can_confirm? do
+    event :confirm, after: :send_volunteering_updates, guard: :user_can_confirm? do
         transitions from: [:signed_up, :invited], to: :active
     end
 
-    event :leave do
+    event :leave, after: :send_volunteering_updates do
       transitions from: :active, to: :former, guard: :user_is_volunteer?
     end
 
-    event :remove do
+    event :remove, after: :send_volunteering_updates do
       transitions from: :active, to: :former, guard: :user_is_lead?
     end
 
@@ -147,6 +147,41 @@ class Volunteering < ApplicationRecord
         end
       end
     end  
+  end
+
+  def send_recruitment_messages
+    # unless self.skip_sending_volunteering_updates
+    #   leads = self.project.leads
+    #   project = self.project
+    #   volunteer = self.user
+    #   coordinators = self.project.progcode_coordinators
+
+    #   if volunteer.slack_userid
+    #     send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+    #   end
+
+    #   if !leads.empty?
+    #     leads.each do |lead|
+    #       send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
+    #     end
+    #   else
+    #     if !project.flags.include?('this project lacks a lead')
+    #       project.flags << 'this project lacks a lead'
+    #       project.save
+    #     end
+
+    #     if !coordinators.empty?
+    #       coordinators.each do |coordinator|
+    #         send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
+    #       end
+    #     else
+    #       if !project.flags.include?('this project lacks a coordinator')
+    #         project.flags << 'this project lacks a coordinator'
+    #         project.save
+    #       end
+    #     end
+    #   end
+    # end
   end
 
   def send_slack_volunteering_notification(user:,title_link:,testing: true)

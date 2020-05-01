@@ -5,7 +5,7 @@ class UserSearch
 
   def call
     User.
-      select(:id, :email, :slack_username, :slack_userid).
+      select(:id, :secure_token).
       where(optin: true).
       joins(:skills).
       where("skills.name ILIKE ANY(ARRAY[?])", @params).distinct

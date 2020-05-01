@@ -4,6 +4,8 @@ class User < ApplicationRecord
   include UserConstants
   include Syncable
 
+  has_secure_token :secure_token
+
   attr_accessor :tech_skill_names, :non_tech_skill_names, :skip_slack_notification, :skip_push_to_airtable
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
@@ -111,6 +113,10 @@ class User < ApplicationRecord
 
   def non_tech_skill_names=(skill_names)
     self.non_tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
+  end
+
+  def skill_names_for_display
+    self.skills.pluck(:name).sort.join(", ")
   end
 
   def relevant_volunteerings

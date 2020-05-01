@@ -18,8 +18,8 @@
       <% res.each do |obj| %>
         <div class="card w-100 mt-4">
           <div class="card-body">
-            <h5 class="card-title"><%= link_to "##{obj.id}", [:dashboard, obj] %></h5>
-            <p class="card-text">Skills: <%= obj.skills.pluck(:name).sort.join(", ") %></p>
+            <%= link_to "Recruit this User", dashboard_volunteerings_new_recruit_path(:temporary_token => obj.secure_token), class: "btn btn-success" %>
+            <p class="card-text">Skills: <%= obj.skill_names_for_display %></p>
           </div>
         </div>
 

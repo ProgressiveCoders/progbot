@@ -5,17 +5,21 @@ Rails.application.routes.draw do
     get 'base/index'
     post "/search", to: "base#search"
     get "/search", to: "base#search"
-    resource :user, only: [:edit, :update, :index, :show]
+    resource :user, only: [:edit, :update]
     resources :skills, only: [:index, :show]
     resources :projects do
       get 'all', :on => :collection
     end
-    resources :volunteerings, only: [:index, :new, :create, :update, :edit]
+    resources :volunteerings, only: [:index, :create, :update, :edit]
   end
 
   scope :existing do
     resources :users, only: [:show]
   end
+
+  get 'dashboard/volunteerings/new_signup' => 'dashboard/volunteerings#new_signup'
+
+  get 'dashboard/volunteerings/new_recruit' => 'dashboard/volunteerings#new_recruit'
 
   get '/welcome/dashboard' => 'welcome#dashboard'
   get '/users/registration' => 'users#registration'
