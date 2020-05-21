@@ -134,6 +134,26 @@ class User < ApplicationRecord
     })
   end
 
+  def has_slack?
+    self.slack_userid.present? || self.slack_username.present?
+  end
+
+  def get_slack_details
+    if self.has_slack?
+      if self.slack_userid.blank?
+        self.get_slack_userid
+        self.save(:validate => false)
+      elsif self.slack_username.blank?
+        self.get_slack_username
+        self.save(:validate => false)
+      end
+    else
+      nil
+    end
+  end
+    
+
+
   def admin_label
     if self.slack_username
       self.slack_username

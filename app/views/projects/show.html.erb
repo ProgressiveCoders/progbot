@@ -15,7 +15,6 @@
     <p><b><%= key.humanize %></b></p>
     <ul>
     <% values.each do |value| %>
-
       <li><%= link_to value.name, 'slack://user?team=T1KR8AG7J&id=' + value.slack_userid %></li>
       
     <% end %>

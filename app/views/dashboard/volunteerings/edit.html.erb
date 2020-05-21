@@ -1,8 +1,31 @@
-<h1>Volunteer: <%= link_to @user.slack_username, 'slack://user?team=T1KR8AG7J&id=' + @user.slack_userid %></h1>
+<h1>Volunteer: <%= ["signed_up", "active"].include?(resource.state) ? link_to @user.slack_username, 'slack://user?team=T1KR8AG7J&id=' + @user.slack_userid : "Anonymous" %></h1>
 
 <h1>Project: <%= link_to @project.name, dashboard_project_path(@project) %>
 
+#       -link to project’s slack channel
+# -link to project in progbot
+# -project lead’s slack id
+# -project lead’s email address
+# -go here to accept or reject this recruitment
+
 <h1>Status: <%= resource.state.humanize %></h1>
+
+<h2>Project Contact Information:</h2>
+  <ul>
+    <% if @project.slack_channel.present? %>
+      <li>Project Slack Channel: <%= link_to @project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + @project.slack_channel %></li>
+    <% end %>
+    <% if @project.leads.present?%>
+      <li>Project Lead Slack Info: </li>
+        <ul>
+          <% @project.leads.each do |l| %>
+            <% if l.has_slack? %>
+              <% l.get_slack_details %>
+              <%= %>
+              <li></li>
+    
+    <li>Project Lead Email Info: </li> 
+  </ul>
 
 <h2>Volunteer's Tech Skills:</h2>
 

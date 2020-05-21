@@ -150,15 +150,20 @@ class Volunteering < ApplicationRecord
   end
 
   def send_recruitment_messages
-    # unless self.skip_sending_volunteering_updates
-    #   leads = self.project.leads
-    #   project = self.project
-    #   volunteer = self.user
-    #   coordinators = self.project.progcode_coordinators
+    unless self.skip_sending_volunteering_updates
+      leads = self.project.leads
+      project = self.project
+      volunteer = self.user
 
-    #   if volunteer.slack_userid
-    #     send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
-    #   end
+      attachments = [
+        pretext: "Volunteering Recruitment",
+        title: "Invitation to join #{self.project.name}",
+        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot"
+      ]
+
+      if volunteer.slack_userid
+        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+      end
 
     #   if !leads.empty?
     #     leads.each do |lead|
@@ -181,17 +186,21 @@ class Volunteering < ApplicationRecord
     #       end
     #     end
     #   end
-    # end
+    end
   end
 
-  def send_slack_volunteering_notification(user:,title_link:,testing: true)
+  def default_slack_attachment
+    [
+      pretext: "Volunteering Updated",
+      title: "#{self.user.slack_username}'s volunteering for #{self.project.name} has been updated",
+      text: "#{self.user.slack_username}'s status has been changed from #{self.aasm.from_state} to #{self.aasm.to_state}. Click the link to view more details in ProgBot."
+    ]
+  end
+
+  def send_slack_volunteering_notification(user:,title_link:,testing: true, attachments: self.default_slack_attachment)
     base_params = {
       channel: user.slack_userid,
-      attachments: [
-        pretext: "Volunteering Updated",
-        title: "#{self.user.slack_username}'s volunteering for #{self.project.name} has been updated",
-        text: "#{self.user.slack_username}'s status has been changed from #{self.aasm.from_state} to #{self.aasm.to_state}. Click the link to view more details in ProgBot."
-      ]
+      attachments: attachments
     }
 
     SlackBot.send_message(SlackBot.merge_params(base_params, {

@@ -1,5 +1,8 @@
 class Dashboard::VolunteeringsController < Dashboard::BaseController
     inherit_resources
+    include ProjectsHelper
+
+    before_action :get_contributor_slack_information, only: :edit
 
     def index
       @volunteerings = current_user.relevant_volunteerings.select {|v| v.valid?}
@@ -50,7 +53,6 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
     end
 
     def update
-
       case volunteering_params[:event]
       when 'apply'
         resource.apply!(current_user)
@@ -74,6 +76,16 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
 
     def volunteering_params
       params.require(:volunteering).permit(:user_id, :project_id, :event, :secure_token)
+    end
+
+    def get_contributor_slack_information
+      contributor_attributes(resource.project).each do |key, values|
+        if values.present?
+          values.each do |v|
+            v.get_slack_details
+          end
+        end
+      end
     end
 
 end
