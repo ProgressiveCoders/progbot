@@ -15,12 +15,6 @@ class Dashboard::UsersController < Dashboard::BaseController
     end
   end
 
-  def show
-    
-  end
-
-
-
   protected
     def resource
       current_user
