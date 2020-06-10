@@ -17,8 +17,11 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
     def new_recruit
       @volunteering = Volunteering.new
       @available_projects = current_user.projects.where(:mission_aligned => true)
-      @token = params[:temporary_token]
-      @skill_names = User.find_by(:secure_token => params[:temporary_token]).skill_names_for_display
+      @user = User.find_by(:secure_token => params[:temporary_token])
+      @user.secure_token = User.generate_unique_secure_token
+      @user.save(:validate => false)
+      @token = @user.secure_token
+      @skill_names = @user.skill_names_for_display
     end
 
     def create
