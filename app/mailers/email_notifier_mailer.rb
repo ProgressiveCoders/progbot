@@ -39,6 +39,12 @@ class EmailNotifierMailer < ApplicationMailer
       mail(to: params[:emails], subject: 'You Have a New Volunteer!')
     end
 
+    def new_recruit_email
+      @volunteering = params[:volunteering]
+      mail(to: @user.email, subject: "Invitation to join #{@project.name}")
+
+    end
+
     private
 
     def check_testing_status(prod_target = 'admin@progcode.org')

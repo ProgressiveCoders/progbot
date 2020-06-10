@@ -12,7 +12,8 @@ ActiveAdmin.register Project do
 #   permitted
 # end
 
-  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
+  permit_params :name, :description, :website, :slack_channel, :active_contributors, :project_created, :mission_accomplished, :needs_pain_points_narrative, :org_structure, :project_mgmt_url, :summary_test, :repository, :software_license_url, :values_screening, :working_doc, :full_release_features, :attachments, :mission_aligned, :progcode_github_project_link,
+  business_models: [],  legal_structures: [], oss_license_types: [], progcode_coordinator_ids: [], project_applications: [],  volunteer_ids: [], lead_ids: [], status: [], master_channel_list: [], volunteerings_attributes:[ :user_id], flags: [], tech_stack_ids: [], non_tech_stack_ids: [], needs_category_ids: []
 
   action_item :bulk_import do
     link_to "Bulk Import From Airtable", admin_projects_upload_csv_path
@@ -242,7 +243,7 @@ ActiveAdmin.register Project do
       f.input :project_applications, as: :select, :collection => Project::PROJECT_APPLICATIONS, :input_html => { :multiple => true, class: 'select2' }, :include_blank => true, :include_hidden => false
       f.input :attachments
       f.input :progcode_github_project_link
-      f.input :master_channel_list
+      f.input :master_channel_list, :as => :select, :collection => SlackHelpers.get_slack_channels.pluck(:name), :input_html => { :multiple => true, size: 60, class: 'select2' }, :include_blank => true, :include_hidden => false
     end
 
     f.inputs "Flags" do

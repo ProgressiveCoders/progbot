@@ -32,12 +32,20 @@ class Volunteering < ApplicationRecord
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
-    event :apply, after: [:send_volunteering_updates, :send_volunteering_email] do
-        transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
+    event :apply do
+      after do
+        send_volunteering_email
+        send_volunteering_updates
+      end
+      transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
-    event :recruit, after: :send_recruitment_messages do
-        transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
+    event :recruit do
+      after do
+        send_recruitment_messages
+        send_volunteering_email
+      end
+      transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
     end
 
     event :withdraw, after: :send_volunteering_updates do
@@ -105,7 +113,10 @@ class Volunteering < ApplicationRecord
     user = self.user
 
     if project.leads.any? && project.leads.pluck(:email).any?
-      EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+      if self.state == "signed_up"
+        EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+      elsif self.state == "invited"
+        EmailNotifierMailer.with().new_recruit_email.deliver_later
     else 
       if !project.flags.include?('this project lacks a lead')
         project.flags << 'this project lacks a lead'
@@ -157,35 +168,33 @@ class Volunteering < ApplicationRecord
 
       attachments = [
         pretext: "Volunteering Recruitment",
-        title: "Invitation to join #{self.project.name}",
-        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot"
+        title: "Invitation to join #{self.project.name}"
       ]
 
+      volunteer_attachments = attachments[0].merge(
+        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")
+
+      lead_attachments = attachments[0].merge(
+        text: "An anonymous user from ProgBot has been sent the following slack message: A project lead for #{self.project.ame} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")
+
       if volunteer.slack_userid
-        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self.id), attachments: volunteer_attachments)
       end
 
-    #   if !leads.empty?
-    #     leads.each do |lead|
-    #       send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
-    #     end
-    #   else
-    #     if !project.flags.include?('this project lacks a lead')
-    #       project.flags << 'this project lacks a lead'
-    #       project.save
-    #     end
+      if volunteer.email
+        EmailNotifierMailer.with(user: volunteer, project: project, volunteering: self).new_recruit_email.deliver_later
+      end
 
-    #     if !coordinators.empty?
-    #       coordinators.each do |coordinator|
-    #         send_slack_volunteering_notification(user: coordinator, title_link: admin_volunteering_url(self))
-    #       end
-    #     else
-    #       if !project.flags.include?('this project lacks a coordinator')
-    #         project.flags << 'this project lacks a coordinator'
-    #         project.save
-    #       end
-    #     end
-    #   end
+      if leads.present?
+        leads.each do |l|
+          if l.slack_userid
+            send_slack_volunteering_notification(user: l, title_link: edit_dashboard_volunteering_url(self.id), attachments: lead_attachments)
+          end
+          if l.email
+            EmailNotifierMailer.with(user: l, project: project, volunteering: self).new_recruit_email.deliver_later
+          end
+        end
+      end
     end
   end
 
