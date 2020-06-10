@@ -40,11 +40,7 @@ class Volunteering < ApplicationRecord
       transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
-    event :recruit do
-      after do
-        send_recruitment_messages
-        send_volunteering_email
-      end
+    event :recruit, after: :send_recruitment_messages do
       transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
     end
 
@@ -115,8 +111,7 @@ class Volunteering < ApplicationRecord
     if project.leads.any? && project.leads.pluck(:email).any?
       if self.state == "signed_up"
         EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
-      elsif self.state == "invited"
-        EmailNotifierMailer.with().new_recruit_email.deliver_later
+      end
     else 
       if !project.flags.include?('this project lacks a lead')
         project.flags << 'this project lacks a lead'
@@ -171,11 +166,11 @@ class Volunteering < ApplicationRecord
         title: "Invitation to join #{self.project.name}"
       ]
 
-      volunteer_attachments = attachments[0].merge(
-        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")
+      volunteer_attachments = [attachments[0].merge(
+        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")]
 
-      lead_attachments = attachments[0].merge(
-        text: "An anonymous user from ProgBot has been sent the following slack message: A project lead for #{self.project.ame} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")
+      lead_attachments = [attachments[0].merge(
+        text: "An anonymous user from ProgBot has been sent the following slack message: A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")]
 
       if volunteer.slack_userid
         send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self.id), attachments: volunteer_attachments)
@@ -206,7 +201,7 @@ class Volunteering < ApplicationRecord
     ]
   end
 
-  def send_slack_volunteering_notification(user:,title_link:,testing: true, attachments: self.default_slack_attachment)
+  def send_slack_volunteering_notification(user:,title_link:,testing: false, attachments: self.default_slack_attachment)
     base_params = {
       channel: user.slack_userid,
       attachments: attachments
