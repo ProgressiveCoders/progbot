@@ -110,7 +110,7 @@ class Volunteering < ApplicationRecord
 
     if project.leads.any? && project.leads.pluck(:email).any?
       if self.state == "signed_up"
-        EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+        EmailNotifierMailer.with(user: user, project: project, volunteering: self, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
       end
     else 
       if !project.flags.include?('this project lacks a lead')
@@ -133,7 +133,7 @@ class Volunteering < ApplicationRecord
 
       if !leads.empty?
         leads.each do |lead|
-          send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
+          send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_volunteering_url(self))
         end
       else
         if !project.flags.include?('this project lacks a lead')
