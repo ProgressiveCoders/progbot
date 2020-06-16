@@ -22,37 +22,41 @@ class Volunteering < ApplicationRecord
     state :active
     state :former
 
-    after_all_transitions :send_volunteering_updates
     
-    event :set_active do
+    
+    event :set_active, after: :send_volunteering_updates do
       transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
     end
 
-    event :set_former do
+    event :set_former, after: :send_volunteering_updates do
       transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
-    event :apply, after: :send_volunteering_email do
-        transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
+    event :apply do
+      after do
+        send_volunteering_email
+        send_volunteering_updates
+      end
+      transitions from: [:potential, :former], to: :signed_up, guard: :user_is_not_lead?
     end
     
-    event :recruit do
-        transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
+    event :recruit, after: :send_recruitment_messages do
+      transitions from: [:potential, :former], to: :invited, guard: :user_is_lead?
     end
 
-    event :withdraw do
+    event :withdraw, after: :send_volunteering_updates do
       transitions from: [:signed_up, :invited], to: :potential, guard: :user_can_withdraw?
     end
 
-    event :confirm, guard: :user_can_confirm? do
+    event :confirm, after: :send_volunteering_updates, guard: :user_can_confirm? do
         transitions from: [:signed_up, :invited], to: :active
     end
 
-    event :leave do
+    event :leave, after: :send_volunteering_updates do
       transitions from: :active, to: :former, guard: :user_is_volunteer?
     end
 
-    event :remove do
+    event :remove, after: :send_volunteering_updates do
       transitions from: :active, to: :former, guard: :user_is_lead?
     end
 
@@ -105,7 +109,9 @@ class Volunteering < ApplicationRecord
     user = self.user
 
     if project.leads.any? && project.leads.pluck(:email).any?
-      EmailNotifierMailer.with(user: user, project: project, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+      if self.state == "signed_up"
+        EmailNotifierMailer.with(user: user, project: project, volunteering: self, emails: project.leads.pluck(:email)).new_volunteer_email.deliver_later
+      end
     else 
       if !project.flags.include?('this project lacks a lead')
         project.flags << 'this project lacks a lead'
@@ -127,7 +133,7 @@ class Volunteering < ApplicationRecord
 
       if !leads.empty?
         leads.each do |lead|
-          send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_project_url(project))
+          send_slack_volunteering_notification(user: lead, title_link: edit_dashboard_volunteering_url(self))
         end
       else
         if !project.flags.include?('this project lacks a lead')
@@ -149,14 +155,56 @@ class Volunteering < ApplicationRecord
     end  
   end
 
-  def send_slack_volunteering_notification(user:,title_link:,testing: true)
+  def send_recruitment_messages
+    unless self.skip_sending_volunteering_updates
+      leads = self.project.leads
+      project = self.project
+      volunteer = self.user
+
+      attachments = [
+        pretext: "Volunteering Recruitment",
+        title: "Invitation to join #{self.project.name}"
+      ]
+
+      volunteer_attachments = [attachments[0].merge(
+        text: "A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")]
+
+      lead_attachments = [attachments[0].merge(
+        text: "An anonymous user from ProgBot has been sent the following slack message: A project lead for #{self.project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click the link to view more details in ProgBot")]
+
+      if volunteer.slack_userid
+        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self.id), attachments: volunteer_attachments)
+      end
+
+      if volunteer.email
+        EmailNotifierMailer.with(user: volunteer, project: project, volunteering: self).new_recruit_email.deliver_later
+      end
+
+      if leads.present?
+        leads.each do |l|
+          if l.slack_userid
+            send_slack_volunteering_notification(user: l, title_link: edit_dashboard_volunteering_url(self.id), attachments: lead_attachments)
+          end
+          if l.email
+            EmailNotifierMailer.with(user: l, project: project, volunteering: self).new_recruit_email.deliver_later
+          end
+        end
+      end
+    end
+  end
+
+  def default_slack_attachment
+    [
+      pretext: "Volunteering Updated",
+      title: "#{self.user.slack_username}'s volunteering for #{self.project.name} has been updated",
+      text: "#{self.user.slack_username}'s status has been changed from #{self.aasm.from_state} to #{self.aasm.to_state}. Click the link to view more details in ProgBot."
+    ]
+  end
+
+  def send_slack_volunteering_notification(user:,title_link:,testing: false, attachments: self.default_slack_attachment)
     base_params = {
       channel: user.slack_userid,
-      attachments: [
-        pretext: "Volunteering Updated",
-        title: "#{self.user.slack_username}'s volunteering for #{self.project.name} has been updated",
-        text: "#{self.user.slack_username}'s status has been changed from #{self.aasm.from_state} to #{self.aasm.to_state}. Click the link to view more details in ProgBot."
-      ]
+      attachments: attachments
     }
 
     SlackBot.send_message(SlackBot.merge_params(base_params, {

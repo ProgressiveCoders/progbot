@@ -10,12 +10,16 @@ Rails.application.routes.draw do
     resources :projects do
       get 'all', :on => :collection
     end
-    resources :volunteerings, only: [:index, :new, :create, :update, :edit]
+    resources :volunteerings, only: [:index, :create, :update, :edit]
   end
 
   scope :existing do
     resources :users, only: [:show]
   end
+
+  get 'dashboard/volunteerings/new_signup' => 'dashboard/volunteerings#new_signup'
+
+  get 'dashboard/volunteerings/new_recruit' => 'dashboard/volunteerings#new_recruit'
 
   get '/welcome/dashboard' => 'welcome#dashboard'
   get '/users/registration' => 'users#registration'

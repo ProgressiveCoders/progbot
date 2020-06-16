@@ -4,6 +4,8 @@ class User < ApplicationRecord
   include UserConstants
   include Syncable
 
+  has_secure_token :secure_token
+
   attr_accessor :tech_skill_names, :non_tech_skill_names, :skip_slack_notification, :skip_push_to_airtable
   belongs_to :referer, class_name: "User", optional: true
   has_and_belongs_to_many :tech_skills, -> { where tech: true }, class_name: "Skill"
@@ -113,6 +115,10 @@ class User < ApplicationRecord
     self.non_tech_skill_ids = Skill.where(name: skill_names.split(", ")).pluck(:id)
   end
 
+  def skill_names_for_display
+    self.skills.pluck(:name).sort.join(", ")
+  end
+
   def relevant_volunteerings
     self.volunteerings.select { |v| v.relevant? }
   end
@@ -127,6 +133,26 @@ class User < ApplicationRecord
       ]
     })
   end
+
+  def has_slack?
+    self.slack_userid.present? || self.slack_username.present?
+  end
+
+  def get_slack_details
+    if self.has_slack?
+      if self.slack_userid.blank?
+        self.get_slack_userid
+        self.save(:validate => false)
+      elsif self.slack_username.blank?
+        self.get_slack_username
+        self.save(:validate => false)
+      end
+    else
+      nil
+    end
+  end
+    
+
 
   def admin_label
     if self.slack_username

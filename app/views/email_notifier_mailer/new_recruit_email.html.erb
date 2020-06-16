@@ -1,0 +1,7 @@
+<% if @project.leads.include?(@user) %>
+  <h2 style="line-height:32px;">An anonymous user from ProgBot has been sent the following email:</h2>
+<% end %>
+
+<h2 style="line-height:32px;"><%= "You Have Been Recruited to Join  #{@project.name}!" %></h2>
+
+<p><%= "A project lead for #{@project.name} has seen your skills in Progbot's anonymized directory and invites you to join the project! Click" %> <%= link_to 'here', edit_dashboard_volunteering_url(@volunteering) %> to view more details in ProgBot.</p>

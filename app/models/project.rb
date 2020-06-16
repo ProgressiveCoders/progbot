@@ -312,7 +312,9 @@ class Project < ApplicationRecord
 
       airtable_project.progcode_coordinators = self.progcode_coordinators.map { |c| c.airtable_twin.try(:airtable_base_manager) }.compact
 
-      airtable_master_channel_ids = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}.id }
+      master_channels = self.master_channel_list.map {|m| all_slack_channels.detect{|x| x["Channel Name"] == m}}
+
+      airtable_master_channel_ids = master_channels.compact.map{|x| x.id}
 
       if airtable_master_channel_ids.present?
         airtable_project.master_channel_lists = AirtableChannelList.find_many(airtable_master_channel_ids)

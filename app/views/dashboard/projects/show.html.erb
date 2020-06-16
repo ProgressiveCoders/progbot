@@ -9,7 +9,7 @@
               <% if resource.volunteers.include?(current_user)%>
                 <%= link_to "Manage your Volunteering", edit_dashboard_volunteering_path(Volunteering.get_volunteering_id(project = resource, user = current_user)), class: "btn btn-success"  %>
               <% else %>
-                <%= link_to "Volunteer for this Project", new_dashboard_volunteering_path(:project_id => resource.id), class: "btn btn-success" %>
+                <%= link_to "Volunteer for this Project", dashboard_volunteerings_new_signup_path(:project_id => resource.id), class: "btn btn-success" %>
               <% end %>
             <% end %>
           </div>

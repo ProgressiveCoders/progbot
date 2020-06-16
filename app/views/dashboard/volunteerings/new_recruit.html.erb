@@ -1,0 +1,16 @@
+<% if @available_projects.present? %>
+  <h1>Recruit a User to Your Project</h1>
+  <%= simple_form_for([:dashboard, @volunteering], :url => { :action => "create" }) do |f| %>
+
+  <%= f.hidden_field :secure_token, :value => @token %>
+  <%= f.hidden_field :event, :value => 'recruit' %>
+  <%= f.input :project_id, collection: @available_projects, label: "Choose One of Your Projects", hint: "You can only recruit volunteers to approved projects of which you are a lead. If you have any questions about this, contact <a href='mailto:admin@progcode.org'>admin@progcode.org</a>".html_safe %>
+
+  <%= f.hint "By clicking the button below, you are recruiting a user possessing the skills <strong>#{@skill_names}</strong> to participate in the selected project. This user will receive a message via slack and e-mail inviting them to join the project. They will be given the e-mail addresses and slack usernames of all project leads should they wish to make contact. You will receive a copy of this invitation.".html_safe %>
+
+  <%= f.button :submit, "Recruit" %>
+
+  <% end %>
+<% else %>
+  <p>In order to recruit a volunteer, you must be the lead on a project that has been approved as mission aligned. Think there's been a mistake? Contact <a href="mailto:admin@progcode.org">admin@progcode.org</a>.</p>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200306023930) do
+ActiveRecord::Schema.define(version: 20200501014828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,10 +163,12 @@ ActiveRecord::Schema.define(version: 20200306023930) do
     t.string "gender_pronouns"
     t.text "additional_info"
     t.string "airtable_id"
+    t.string "secure_token"
     t.index ["airtable_id"], name: "index_users_on_airtable_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["secure_token"], name: "index_users_on_secure_token", unique: true
   end
 
   create_table "volunteerings", force: :cascade do |t|

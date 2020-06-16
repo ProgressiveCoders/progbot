@@ -15,8 +15,6 @@ class Dashboard::UsersController < Dashboard::BaseController
     end
   end
 
-
-
   protected
     def resource
       current_user

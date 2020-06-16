@@ -1,8 +1,34 @@
-<h1>Volunteer: <%= link_to @user.slack_username, 'slack://user?team=T1KR8AG7J&id=' + @user.slack_userid %></h1>
+<h1>Volunteer: <%= ["signed_up", "active"].include?(resource.state) ? (link_to @user.slack_username, "slack://user?team=T1KR8AG7J&id=#{@user.slack_userid}") : "Anonymous" %></h1>
 
-<h1>Project: <%= link_to @project.name, dashboard_project_path(@project) %>
+<h1>Project: <%= link_to @project.name, dashboard_project_path(@project.id) %>
 
 <h1>Status: <%= resource.state.humanize %></h1>
+
+<h2>Project Contact Information:</h2>
+  <ul>
+    <% if @project.slack_channel.present? %>
+      <li>Project Slack Channel: <%= link_to @project.slack_channel, 'slack://channel?team=T1KR8AG7J&id=' + @project.slack_channel %></li>
+    <% end %>
+    <% contributor_attributes(@project).each do |key, values|%>
+      <% if ['leads', 'progcode_coordinators'].include?(key) %>
+        <% if values.present? %>
+          <li><%= key.humanize %>:
+            <ul>
+              <% values.each do |v| %>
+                <% if v.has_slack? %>
+                  <li>Slack: <%= link_to v.slack_username, 'slack://user?team=T1KR8AG7J&id=' + v.slack_userid %></li>
+                <% end %>
+                <% if v.email.present? %>
+                  <li>Email: <%=mail_to v.email %></li>
+                <% end %>
+              <% end %>
+            </ul>
+          </li>
+        <% end %>
+      <% end %>
+    <% end %>
+
+  </ul>
 
 <h2>Volunteer's Tech Skills:</h2>
 
@@ -22,8 +48,8 @@
 
 <%= simple_form_for([:dashboard, resource]) do |f| %>
 
-<%= f.input :event, :label => 'Edit Status', collection: resource.aasm.events({permitted: true}, current_user).map(&:name)  %>
+  <%= f.input :event, :label => 'Edit Status', collection: resource.aasm.events({permitted: true}, current_user).map(&:name) %>
 
-<%= f.button :submit %>
+  <%= f.button :submit %>
 
 <% end %>

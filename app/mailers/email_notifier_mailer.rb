@@ -3,7 +3,7 @@ class EmailNotifierMailer < ApplicationMailer
 
     layout 'email_notifier'
 
-    before_action { @user, @project = params[:user], params[:project] }
+    before_action { @user, @project, @volunteering = params[:user], params[:project], params[:volunteering] }
     before_action :set_attachment_source
 
     def new_user_admin_notification
@@ -37,6 +37,11 @@ class EmailNotifierMailer < ApplicationMailer
 
     def new_volunteer_email
       mail(to: params[:emails], subject: 'You Have a New Volunteer!')
+    end
+
+    def new_recruit_email
+      mail(to: @user.email, subject: "Invitation to join #{@project.name}")
+
     end
 
     private
