@@ -270,7 +270,7 @@ class Project < ApplicationRecord
         title_link: admin_project_url(self),
         text: "This project is pending admin approval."
       ]
-    }, testing = false)
+    }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
   end
 
   def send_mission_aligned_changed_slack_notifications(mission_aligned_was)
@@ -283,7 +283,7 @@ class Project < ApplicationRecord
           text: "The mission aligned status of your project, #{self.name} has changed from #{mission_aligned_was} to #{self.mission_aligned_status}.",
           title_link: dashboard_projects_url
         ]
-      }, testing = true)
+      }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
     end
 
     if self.mission_aligned
@@ -295,7 +295,7 @@ class Project < ApplicationRecord
           text: "Click the link above to view this project and to volunteer",
           title_link: dashboard_project_url(self)
         ]
-      }, testing = false)
+      }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
     end
   end
 

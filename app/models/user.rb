@@ -151,8 +151,6 @@ class User < ApplicationRecord
       nil
     end
   end
-    
-
 
   def admin_label
     if self.slack_username

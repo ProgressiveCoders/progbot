@@ -8,103 +8,13 @@ module ImportProjectsTask
     def sync
       
       AirtableProject.all.each do |airtable_project|
-        # Have we already imported this project?
         next if airtable_project[:project_name].blank?
         puts ("-" * 10) + "STARTING IMPORT FOR" + ("-" * 10)
         pp airtable_project
         puts ("-" * 20)
         proj = Project.find_or_initialize_by name: airtable_project[:project_name]
 
-        if airtable_project[:project_status].blank?
-          proj.flags << "this project lacks a status"
-        else
-          airtable_project[:project_status].each do |status|
-            proj.status << status
-          end
-        end
-        proj.status = proj.status.uniq
-
-        if airtable_project[:project_lead_slack_id].blank?
-          proj.flags << "this project lacks a lead"
-        else
-          airtable_project[:project_lead_slack_id].each do |slack_id|
-            lead = User.find_by(:slack_userid => slack_id)
-            if lead == nil
-              proj.flags << "project lead slack id #{slack_id} has no corresponding user"
-            else
-              proj.lead_ids << lead.id
-            end
-          end
-        end
-        proj.lead_ids = proj.lead_ids.uniq
-        
-        if !airtable_project[:team_member_ids].blank?
-          volunteer_slack_ids = airtable_project[:team_member_ids].reject {|x| !airtable_project[:project_lead_slack_id].blank? && airtable_project[:project_lead_slack_id].include?(x)}
-          volunteers = User.where(:slack_userid => volunteer_slack_ids)
-          proj.volunteers += volunteers
-          proj.volunteers = proj.volunteers.uniq
-          proj.volunteerings.reject{|v| v.state == "active"}.each {|v| v.set_active!(ENV['AASM_OVERRIDE'])}
-          if airtable_project[:team_member_ids].size != volunteers.size
-            missing = volunteer_slack_ids - volunteers.map(&:slack_userid).compact
-            proj.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
-          end
-        end
-
-
-        if airtable_project[:progcode_coordinator_ids].blank?
-          proj.flags << "this project lacks a coordinator"
-        else
-          airtable_project[:progcode_coordinator_ids].each do |coord_id|
-            coordinator = User.find_by(:slack_userid => coord_id)
-            if coordinator == nil
-              proj.flags << "progcode coordinator slack id #{coord_id} has no corresponding user"
-            else
-              proj.progcode_coordinator_ids << coordinator.id
-            end
-          end
-        end
-        proj.progcode_coordinator_ids = proj.progcode_coordinator_ids.uniq
-
-        airtable_project[:needs_categories].each do |category|
-          skill = Skill.where('lower(name) = ?', category.downcase).first_or_create(:name=>category, :tech=>nil)
-          proj.needs_categories << skill unless proj.needs_categories.include?(skill)
-        end unless airtable_project[:needs_categories].blank?
-        
-        if airtable_project[:tech_stack].blank?
-          proj.flags << "this project lacks a tech stack"
-        else
-          airtable_project[:tech_stack].each do |tech|
-            tech_skill = Skill.where('lower(name) = ?', tech.downcase).first_or_create(:name=>tech, :tech=>true)
-            proj.tech_stack << tech_skill unless proj.tech_stack.include?(tech_skill)
-          end
-        end
-
-        if airtable_project.column_mappings.include?(:master_channel_list)
-          airtable_project[:master_channel_list].each do |channel|
-            proj.master_channel_list << channel[:channel_name]
-          end unless airtable_project[:master_channel_list].blank?
-          proj.master_channel_list = proj.master_channel_list.uniq.compact
-        end
-        
-        proj.assign_attributes(build_attributes(airtable_project))
-
-        if airtable_project[:slack_channel]
-          proj.get_slack_channel_id(airtable_project[:slack_channel][0][:channel_name])
-        end
-
-        if airtable_project[:project_name].blank?
-          proj.flags << "this project lacks a name"
-        end
-        if proj.legal_structures.blank?
-          proj.flags << "this project lacks a legal structure"
-        end
-        if proj.progcode_github_project_link == nil
-          proj.flags << "this project lacks a link to a github repository"
-        end
-
-        proj.mission_aligned = true
-        proj.flags.uniq!
-        proj.save(:validate => false)
+        proj.sync_with_airtable(airtable_project)
       end
     end
     

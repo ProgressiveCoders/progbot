@@ -21,15 +21,13 @@ class Volunteering < ApplicationRecord
     state :invited
     state :active
     state :former
-
-    
     
     event :set_active, after: :send_volunteering_updates do
       transitions from: [:potential, :signed_up, :invited, :resigned, :removed, :former], to: :active, guard: :application_override?
     end
 
     event :set_former, after: :send_volunteering_updates do
-      transitions from: [:active, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
+      transitions from: [:potential, :signed_up, :invited, :active, :resigned, :removed], to: :former, guard: :application_override?
     end
     
     event :apply do
@@ -128,7 +126,7 @@ class Volunteering < ApplicationRecord
       coordinators = self.project.progcode_coordinators
 
       if volunteer.slack_userid
-        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: false)
+        send_slack_volunteering_notification(user: volunteer, title_link: edit_dashboard_volunteering_url(self), testing: cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
       end
 
       if !leads.empty?
@@ -201,7 +199,7 @@ class Volunteering < ApplicationRecord
     ]
   end
 
-  def send_slack_volunteering_notification(user:,title_link:,testing: false, attachments: self.default_slack_attachment)
+  def send_slack_volunteering_notification(user:,title_link:,testing: cast_string_to_boolean(ENV['NOTIFICATION_TESTING']), attachments: self.default_slack_attachment)
     base_params = {
       channel: user.slack_userid,
       attachments: attachments
