@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 20200501014828) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "active_contributors"
+    t.text "attachments"
     t.text "full_release_features"
     t.text "mission_accomplished"
     t.text "needs_pain_points_narrative"
@@ -95,9 +96,8 @@ ActiveRecord::Schema.define(version: 20200501014828) do
     t.string "business_models", default: [], array: true
     t.string "legal_structures", default: [], array: true
     t.string "oss_license_types", default: [], array: true
-    t.string "project_applications", default: [], array: true
-    t.text "attachments"
     t.integer "progcode_coordinator_ids", default: [], array: true
+    t.string "project_applications", default: [], array: true
     t.string "progcode_github_project_link"
     t.boolean "mission_aligned"
     t.string "flags", default: [], array: true
