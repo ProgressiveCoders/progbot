@@ -1,6 +1,7 @@
 class Volunteering < ApplicationRecord
   include AASM
   include Rails.application.routes.url_helpers
+  include Syncable
 
   belongs_to :user
   belongs_to :project

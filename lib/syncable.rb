@@ -24,5 +24,10 @@ module Syncable
 
   end
 
+
+  def cast_string_to_boolean(string)
+    ActiveModel::Type::Boolean.new.cast(string)
+  end
+
   
 end
