@@ -469,13 +469,14 @@ class Project < ApplicationRecord
   def build_attributes(airtable_project)
     {
       name: airtable_project["Project Name"],
-      status: airtable_project["Project Status"],
+      status: airtable_project["Project Status"].present? ? airtable_project["Project Status"] : [],
       description: airtable_project["Project Summary TEXT"], 
       needs_pain_points_narrative: airtable_project["Needs / Pain Points - Narrative"],
-      legal_structures: airtable_project["Legal structure"],
+      legal_structures: airtable_project["Legal structure"].present? ? airtable_project["Legal structure"] : [],
       active_contributors: airtable_project["Active Contributors (full time equivalent)"],
-      business_models: airtable_project["Business model"],
-      oss_license_types: airtable_project["OSS License Type"]
+      business_models: airtable_project["Business model"].present? ? airtable_project["Business model"] : [],
+      project_applications: airtable_project["Project Applications"].present? ? airtable_project["Project Applications"] : [],
+      oss_license_types: airtable_project["OSS License Type"].present? ? airtable_project["OSS License Type"] : []
     }.merge(self.extract_fields(airtable_project))
   end
   
