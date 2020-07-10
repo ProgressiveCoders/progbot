@@ -1,7 +1,7 @@
 require_relative '../../config/environment'
-require_relative '../../app/models/user'
-require_relative '../../app/models/airtable_user'
-require_relative '../../app/models/slack_bot'
+# require_relative '../../app/models/user'
+# require_relative '../../app/models/airtable_user'
+# require_relative '../../app/models/slack_bot'
 require_relative '../slack_helpers'
 
 module ImportUsersTask
@@ -15,18 +15,9 @@ module ImportUsersTask
           puts "Email not in record: #{airtable_user.inspect}"
           next
         end
-        user = User.find_or_initialize_by email: airtable_user[:contact_e_mail]
+        user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
 
-        tech_skills = Skill.where(name: airtable_user[:tech_skills], tech: true)
-        non_tech_skills = Skill.where(name: airtable_user[:non_tech_skills_and_specialties], tech: false)
-        user.assign_attributes(
-          tech_skills: tech_skills,
-          non_tech_skills: non_tech_skills,
-          email: airtable_user[:contact_e_mail],
-          slack_username: airtable_user[:slack_username],
-          optin: true
-        )
-        user.save(:validate => false)
+        user.sync_with_airtable(airtable_user)
       end
     end
     

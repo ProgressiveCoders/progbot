@@ -270,7 +270,7 @@ class Project < ApplicationRecord
         title_link: admin_project_url(self),
         text: "This project is pending admin approval."
       ]
-    }, testing = false)
+    }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
   end
 
   def send_mission_aligned_changed_slack_notifications(mission_aligned_was)
@@ -283,7 +283,7 @@ class Project < ApplicationRecord
           text: "The mission aligned status of your project, #{self.name} has changed from #{mission_aligned_was} to #{self.mission_aligned_status}.",
           title_link: dashboard_projects_url
         ]
-      }, testing = true)
+      }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
     end
 
     if self.mission_aligned
@@ -295,7 +295,7 @@ class Project < ApplicationRecord
           text: "Click the link above to view this project and to volunteer",
           title_link: dashboard_project_url(self)
         ]
-      }, testing = false)
+      }, testing = cast_string_to_boolean(ENV['NOTIFICATION_TESTING']))
     end
   end
 
@@ -357,7 +357,7 @@ class Project < ApplicationRecord
         airtable_id = project_lead["Record ID"]
         lead = User.find_by(:airtable_id => airtable_id)
         if lead == nil
-          self.flags << "project lead slack id #{slack_id} has no corresponding user"
+          self.flags << "project lead airtable id #{airtable_id} has no corresponding user"
           nil
         else
           lead.id
@@ -381,8 +381,8 @@ class Project < ApplicationRecord
 
 
       if volunteer_airtable_ids.size > volunteers.size
-        missing = volunteer_airtable_ids - volunteers.map(&:slack_userid).compact
-        self.flags += missing.map { |m| "volunteer slack id #{m} has no corresponding user" }
+        missing = volunteer_airtable_ids - volunteers.map(&:airtable_id).compact
+        self.flags += missing.map { |m| "volunteer slack id #{m.airtable_id} has no corresponding user" }
       end
 
       if former_member_airtable_ids.present?
@@ -417,7 +417,7 @@ class Project < ApplicationRecord
     if airtable_project["Needs Categories"].blank?
       self.needs_category_ids = []
     else
-      self.need_category_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Needs Categories"], tech: false)
+      self.needs_category_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Needs Categories"], tech: false)
     end
     
     if airtable_project["Tech Stack"].blank?

@@ -47,7 +47,7 @@ class EmailNotifierMailer < ApplicationMailer
     private
 
     def check_testing_status(prod_target = 'admin@progcode.org')
-      Rails.env.production? ? prod_target : 'sdklos@gmail.com'
+      Rails.env.production? ? prod_target : ENV['TEST_EMAIL_DESTINATION']
     end
 
     def set_attachment_source

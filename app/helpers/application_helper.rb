@@ -10,7 +10,6 @@ module ApplicationHelper
   end
   
   def bootstrap_alert_class(key, opts = {})
-    # debugger
     klass_name = %w(alert alert-dismissable)
     klass_name << case key.to_sym
     when :notice, :success
@@ -38,6 +37,10 @@ module ApplicationHelper
 
   def slack_channels_typeahead_source(channels)
     channels.map { |channel| { id: channel.id, value: channel.name } }
+  end
+
+  def cast_string_to_boolean(string)
+    ActiveModel::Type::Boolean.new.cast(string)
   end
 
 
