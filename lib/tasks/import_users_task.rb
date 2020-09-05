@@ -11,11 +11,17 @@ module ImportUsersTask
         # Have we already imported this user?
         # I'll assume all names are last, first middle, so we
         # don't have to convert
-        if airtable_user["Contact E-Mail"].blank?
-          puts "Email not in record: #{airtable_user.inspect}"
-          next
+        if airtable_user["slack_id"].blank?
+          puts "Slack ID not in record: #{airtable_user.inspect}"
+          if airtable_user["Contact E-Mail"].blank?
+            puts "Email not in record: #{airtable_user.inspect}"
+            next
+          else
+            user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
+          end
+        else
+          user = User.find_or_initialize_by slack_userid: airtable_user["slack_id"]
         end
-        user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
 
         user.sync_with_airtable(airtable_user)
       end

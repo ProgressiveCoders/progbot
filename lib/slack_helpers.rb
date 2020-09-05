@@ -30,4 +30,11 @@ module SlackHelpers
       puts "SlackBot:  ID not found: #{slack_id}"
       return nil
     end
+
+    def self.lookup_by_slack_username(slack_username)
+      self.client.users_info(user: "@#{slack_username}").user.profile
+    rescue Slack::Web::Api::Errors::SlackError => e
+      puts "SlackBot: username not found: #{slack_username}"
+      return nil
+    end
 end
