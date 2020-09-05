@@ -470,6 +470,7 @@ class Project < ApplicationRecord
     {
       name: airtable_project["Project Name"],
       status: airtable_project["Project Status"].present? ? airtable_project["Project Status"] : [],
+      airtable_id: airtable_project["Record ID"],
       description: airtable_project["Project Summary TEXT"], 
       needs_pain_points_narrative: airtable_project["Needs / Pain Points - Narrative"],
       legal_structures: airtable_project["Legal structure"].present? ? airtable_project["Legal structure"] : [],

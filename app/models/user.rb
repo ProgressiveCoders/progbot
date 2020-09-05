@@ -212,10 +212,15 @@ class User < ApplicationRecord
       additional_info: airtable_user["Additional Info"],
       anonymous: airtable_user["Anonymous"],
       read_manifesto: airtable_user["Read Manifesto"],
-      read_code_of_conduct: airtable_user["Read Code of Conduct"]
+      read_code_of_conduct: airtable_user["Read Code of Conduct"],
+      airtable_id: airtable_user["Record ID"]
     })
 
     self.is_approved = true
+
+    if self.email.blank? && self.has_slack?
+      self.get_email_from_slack
+    end
 
     if self.slack_userid.blank? && self.slack_username.present?
       self.get_slack_userid
@@ -228,14 +233,26 @@ class User < ApplicationRecord
     self.skip_push_to_airtable = false
   end
 
-  def get_slack_userid
-    unless self.email.blank? || self.slack_userid.present?
-      slack_user = SlackHelpers.lookup_by_email(self.email.downcase)
-      unless slack_user.blank?
-        self.slack_userid = slack_user.id
-        self.save(:validate => false)
-      end
+  def get_email_from_slack
+    if self.has_slack?
+      slack_user = SlackHelpers.lookup_by_slack_id(self.slack_userid || self.get_slack_userid)
+      self.email = slack_user.email
+      self.save(:validate => false)
     end
+    self.email  
+  end
+
+  def get_slack_userid
+    if self.email.present?
+      slack_user = SlackHelpers.lookup_by_email(self.email.downcase)
+    elsif self.slack_username.present?
+      slack_user = SlackHelpers.lookup_by_slack_username(self.slack_username.downcase)
+    end
+    unless slack_user.blank?
+      self.slack_userid = slack_user.id
+      self.save(:validate => false)
+    end
+    self.slack_userid
   end
 
   def get_slack_username
@@ -246,6 +263,7 @@ class User < ApplicationRecord
         self.save(:validate => false)
       end
     end
+    self.slack_username
   end
 
   def push_changes_to_airtable
