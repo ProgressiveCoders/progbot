@@ -218,8 +218,12 @@ class User < ApplicationRecord
 
     self.is_approved = true
 
-    if self.email.blank? && self.has_slack?
-      self.get_email_from_slack
+    if self.email.blank?
+      if self.has_slack?
+        self.get_email_from_slack
+      else
+        self.email = ""
+      end
     end
 
     if self.slack_userid.blank? && self.slack_username.present?
