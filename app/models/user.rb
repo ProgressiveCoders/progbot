@@ -240,7 +240,8 @@ class User < ApplicationRecord
   def get_email_from_slack
     if self.has_slack?
       slack_user = SlackHelpers.lookup_by_slack_id(self.slack_userid || self.get_slack_userid)
-      self.email = slack_user.email
+      email = slack_user.email || ""
+      self.email = email
       self.save(:validate => false)
     end
     self.email  
