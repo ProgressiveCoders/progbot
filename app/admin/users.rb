@@ -14,7 +14,7 @@ ActiveAdmin.register User do
 
 permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
 :anonymous, :phone, :slack_username, :read_manifesto,
-:read_code_of_conduct, :optin, :hear_about_us, :verification_urls, :is_approved, :gender_pronouns, :additional_info, tech_skill_ids: [], non_tech_skill_ids: [], flags: []
+:read_code_of_conduct, :optin, :hear_about_us, :verification_urls, :is_approved, :additional_info, :gender_pronouns, tech_skill_ids: [], non_tech_skill_ids: [], flags: []
 
 action_item :bulk_import do
   link_to "Bulk Import From Airtable", admin_users_upload_csv_path
@@ -137,7 +137,7 @@ end
       f.input :location
       f.input :phone
       f.input :referer
-      f.input :gender_pronouns, as: :select, collection: UserConstants::GENDER_PRONOUNS, input_html: { multiple: true }
+      f.input :gender_pronouns, as: :select, collection: UserConstants::GENDER_PRONOUNS
     end
 
     f.inputs "Essay Questions" do
@@ -160,7 +160,7 @@ end
       user.flags.each do |flag|
         f.input :flags, :label => false, :input_html => {value: flag, name: 'user[flags][]'}
       end
-      f.input :flags, :label => false, :input_html => {value: '', placeholder: 'Flag an issue with this user', name: 'project[flags][]'}
+      f.input :flags, :label => false, :input_html => {value: '', placeholder: 'Flag an issue with this user', name: 'user[flags][]'}
     end
 
     f.inputs "Admin Approval" do
