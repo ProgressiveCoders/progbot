@@ -11,6 +11,9 @@ module ImportUsersTask
         # Have we already imported this user?
         # I'll assume all names are last, first middle, so we
         # don't have to convert
+      if User.where(airtable_id: airtable_user.id).present?
+        user = User.find_by(airtable_id: airtable_user.id)
+      else
         if airtable_user["slack_id"].blank?
           puts "Slack ID not in record: #{airtable_user.inspect}"
           if airtable_user["Contact E-Mail"].blank?
@@ -22,6 +25,7 @@ module ImportUsersTask
         else
           user = User.find_or_initialize_by slack_userid: airtable_user["slack_id"]
         end
+      end
 
         user.sync_with_airtable(airtable_user)
       end

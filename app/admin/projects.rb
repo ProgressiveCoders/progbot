@@ -248,9 +248,9 @@ ActiveAdmin.register Project do
 
     f.inputs "Flags" do
       project.flags.each do |flag|
-        f.input :flags, :label => false, :input_html => {value: flag, name: 'project[flags][]' }
+        f.input :flags, :label => false, :input_html => {value: flag, name: 'project[flags][]'}
       end
-      f.input :flags, :label => false, :input_html => {value: '', placeholder: 'Flag an issue with this project', name: 'project[flags][]' }
+      f.input :flags, :label => false, :input_html => {value: '', placeholder: 'Flag an issue with this project', name: 'project[flags][]'}
     end
     f.actions
   end

@@ -37,6 +37,12 @@ class Project < ApplicationRecord
   audited
   has_associated_audits
 
+  ransacker :by_flagged, { formatter: proc { |string|
+  data = self.flagged_designated(string).map(&:id)
+  data = data.present? ? data : nil }, callable:
+  proc { |parent|
+  parent.table[:id]}}
+
   def self.projects_slack_channel
     "CLUDUR2MD"
   end
@@ -138,10 +144,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def flagged?
-    !self.flags.blank?
-  end
-
   def remove_blank_values
     self.status  = self.status.try(:reject, &:empty?)
     self.legal_structures = self.legal_structures.try(:reject, &:empty?)
@@ -199,27 +201,7 @@ class Project < ApplicationRecord
     proc { |parent|
     parent.table[:id]}}
 
-  def designate_flagged
-    case self.flagged?
-    when true
-      'Yes'
-    when false
-      'No'
-    end
-  end
-  
-  def self.flagged_designated(designation = 'No')
-    self.all.select{|project| project.designate_flagged == designation }
-  end
-
-  ransacker :by_flagged, { formatter: proc { |string|
-  data = self.flagged_designated(string).map(&:id)
-  data = data.present? ? data : nil }, callable:
-  proc { |parent|
-  parent.table[:id]}}
-
   def get_slack_channel_id(channel_name)
-
 
     channel = SlackHelpers.get_slack_channels.find {|channel| channel["name"] == channel_name}
 
