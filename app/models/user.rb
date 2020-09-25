@@ -235,7 +235,7 @@ class User < ApplicationRecord
       self.get_slack_username
     end
 
-    matches = AirtableUser.all.select {|u| u["Contact E-Mail"] == self.email} || AirtableUser.all.select {|u| u["slack_id"] == self.slack_userid}
+    matches = AirtableUser.all.select {|u| u["Contact E-Mail"] == self.email || u["slack_id"] == self.slack_userid}
     if matches.length > 1
       self.flags << "This user appears more than once in Airtable"
     end
