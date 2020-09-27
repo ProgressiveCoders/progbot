@@ -235,14 +235,15 @@ class User < ApplicationRecord
       self.get_slack_username
     end
 
-    matches = AirtableUser.all.select {|u| u["Contact E-Mail"] == self.email || u["slack_id"] == self.slack_userid}
-    if matches.length > 1
-      self.flags << "This user appears more than once in Airtable"
-    end
-
-    if User.where.not(id: self.id).where(email: self.email).present?
-      self.flags << "This user's email was left blank because there is already another user in the database with the email address #{self.email}. Please reconcile this issue manually in airtable and progbot"
-      self.email = nil
+    if self.email.present? || self.slack_userid.present?
+      matches = AirtableUser.all.select {|u| (self.email.present? && u["Contact E-Mail"] == self.email) || (self.slack_userid.present? && u["slack_id"] == self.slack_userid)}
+      if matches.length > 1
+        self.flags << "This user appears more than once in Airtable"
+      end
+      if self.email.present? && User.where.not(id: self.id).where(email: self.email).present?
+        self.flags << "This user's email was left blank because there is already another user in the database with the email address #{self.email}. Please reconcile this issue manually in airtable and progbot"
+        self.email = nil
+      end
     end
 
     self.flags.uniq!
