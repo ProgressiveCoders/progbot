@@ -29,6 +29,12 @@ class User < ApplicationRecord
   audited
   has_associated_audits
 
+  ransacker :by_flagged, { formatter: proc { |string|
+  data = self.flagged_designated(string).map(&:id)
+  data = data.present? ? data : nil }, callable:
+  proc { |parent|
+  parent.table[:id]}}
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
@@ -195,7 +201,6 @@ class User < ApplicationRecord
       self.non_tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user["Non-Tech Skills and Specialties"], tech: false)
     end
 
-
     self.assign_attributes({
       name: airtable_user["Name"],
       email: airtable_user["Contact E-Mail"],
@@ -230,6 +235,17 @@ class User < ApplicationRecord
       self.get_slack_username
     end
 
+    matches = AirtableUser.all.select {|u| u["Contact E-Mail"] == self.email || u["slack_id"] == self.slack_userid}
+    if matches.length > 1
+      self.flags << "This user appears more than once in Airtable"
+    end
+
+    if User.where.not(id: self.id).where(email: self.email).present?
+      self.flags << "This user's email was left blank because there is already another user in the database with the email address #{self.email}. Please reconcile this issue manually in airtable and progbot"
+      self.email = nil
+    end
+
+    self.flags.uniq!
     self.save(:validate => false)
 
     self.skip_push_to_airtable = false

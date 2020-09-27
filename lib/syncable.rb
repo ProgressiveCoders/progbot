@@ -1,4 +1,11 @@
 module Syncable
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def flagged_designated(designation = 'No')
+      self.all.select{|r| r.designate_flagged == designation }
+    end
+  end
 
   def push_changes_to_airtable
     class_name = self.class.name
@@ -20,14 +27,28 @@ module Syncable
     yield(airtable_object) if block_given?
 
     airtable_object.save(typecast: true)
-    self.airtable_id = airtable_object.id
 
+    if self.airtable_id != airtable_object.id
+      self.airtable_id = airtable_object.id
+      self.save(:validate => false)
+    end
   end
-
 
   def cast_string_to_boolean(string)
     ActiveModel::Type::Boolean.new.cast(string)
   end
 
+  def flagged?
+    !self.flags.blank?
+  end
+
+  def designate_flagged
+    case self.flagged?
+    when true
+      'Yes'
+    when false
+      'No'
+    end
+  end
   
 end
