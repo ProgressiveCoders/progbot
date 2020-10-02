@@ -25,6 +25,11 @@ module ImportUsersTask
         else
           user = User.find_or_initialize_by slack_userid: airtable_user["slack_id"]
         end
+        if user.airtable_id.present? && AirtableUser.all.detect{|airtable_user| airtable_user.id == user.airtable_id}.present?
+          next
+        else
+          user.airtable_id = airtable_user.id
+        end
       end
 
         user.sync_with_airtable(airtable_user)

@@ -217,8 +217,7 @@ class User < ApplicationRecord
       additional_info: airtable_user["Additional Info"],
       anonymous: airtable_user["Anonymous"],
       read_manifesto: airtable_user["Read Manifesto"],
-      read_code_of_conduct: airtable_user["Read Code of Conduct"],
-      airtable_id: airtable_user["Record ID"]
+      read_code_of_conduct: airtable_user["Read Code of Conduct"]
     })
 
     self.is_approved = true
