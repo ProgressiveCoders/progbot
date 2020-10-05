@@ -44,7 +44,7 @@ class User < ApplicationRecord
 
   def self.matching_airtable_attributes
     {
-      "Name" => :name,
+      ENV["AIRTABLE_USER_NAME_COLUMN"] => :name,
       "Contact E-Mail" => :email,
       "Join Reason" => :join_reason,
       "Overview" => :overview,
