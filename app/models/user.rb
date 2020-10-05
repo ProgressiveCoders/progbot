@@ -148,10 +148,8 @@ class User < ApplicationRecord
     if self.has_slack?
       if self.slack_userid.blank?
         self.get_slack_userid
-        self.save(:validate => false)
       elsif self.slack_username.blank?
         self.get_slack_username
-        self.save(:validate => false)
       end
     else
       nil
@@ -255,7 +253,6 @@ class User < ApplicationRecord
     if self.has_slack?
       slack_user = SlackHelpers.lookup_by_slack_id(self.slack_userid || self.get_slack_userid)
       self.email = slack_user.try(:email)
-      self.save(:validate => false)
     end
     self.email  
   end
@@ -268,7 +265,6 @@ class User < ApplicationRecord
     end
     unless slack_user.blank?
       self.slack_userid = slack_user.id
-      self.save(:validate => false)
     end
     self.slack_userid
   end
@@ -278,7 +274,6 @@ class User < ApplicationRecord
       slack_user = SlackHelpers.lookup_by_slack_id(self.slack_userid)
       unless slack_user.blank?
         self.slack_username = slack_user.display_name
-        self.save(:validate => false)
       end
     end
     self.slack_username

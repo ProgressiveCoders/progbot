@@ -86,6 +86,7 @@ class Dashboard::VolunteeringsController < Dashboard::BaseController
         if values.present?
           values.each do |v|
             v.get_slack_details
+            v.safe(:validate => false)
           end
         end
       end
