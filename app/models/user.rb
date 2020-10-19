@@ -55,7 +55,7 @@ class User < ApplicationRecord
       "Gender Pronouns" => :gender_pronouns,
       "Additional Info" => :additional_info,
       ENV["AIRTABLE_TECH_SKILLS_COLUMN"] => :tech_skill_names,
-      "Non-Tech Skills and Specialties" => :non_tech_skill_names
+      ENV["AIRTABLE_NON_TECH_SKILLS_COLUMN"] => :non_tech_skill_names
     }
   end
 
