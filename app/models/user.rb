@@ -54,7 +54,7 @@ class User < ApplicationRecord
       "Verification URLs" => :verification_urls,
       "Gender Pronouns" => :gender_pronouns,
       "Additional Info" => :additional_info,
-      "Tech Skills" => :tech_skill_names,
+      ENV["AIRTABLE_TECH_SKILLS_COLUMN"] => :tech_skill_names,
       "Non-Tech Skills and Specialties" => :non_tech_skill_names
     }
   end
