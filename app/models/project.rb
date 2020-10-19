@@ -364,7 +364,7 @@ class Project < ApplicationRecord
 
       if volunteer_airtable_ids.size > volunteers.size
         missing = volunteer_airtable_ids - volunteers.map(&:airtable_id).compact
-        self.flags += missing.map { |m| "volunteer slack id #{m.airtable_id} has no corresponding user" }
+        self.flags += missing.map { |m| "volunteer airtable id #{m} has no corresponding user" }
       end
 
       if former_member_airtable_ids.present?
