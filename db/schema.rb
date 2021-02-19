@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200501014828) do
+ActiveRecord::Schema.define(version: 20210219040742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 20200501014828) do
 
   create_table "users", force: :cascade do |t|
     t.string "name"
-    t.string "email", default: "", null: false
+    t.string "email"
     t.text "join_reason"
     t.text "overview"
     t.string "location"
@@ -164,6 +164,16 @@ ActiveRecord::Schema.define(version: 20200501014828) do
     t.text "additional_info"
     t.string "airtable_id"
     t.string "secure_token"
+    t.string "flags", default: [], array: true
+    t.boolean "welcome_email_sent"
+    t.boolean "attended_onboarding"
+    t.boolean "slack_invite_sent"
+    t.boolean "requested_additional_verification"
+    t.boolean "decline_membership"
+    t.boolean "irs_email_sent"
+    t.text "internal_notes"
+    t.boolean "contributor"
+    t.string "referrer_name"
     t.index ["airtable_id"], name: "index_users_on_airtable_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"
