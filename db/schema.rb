@@ -174,6 +174,7 @@ ActiveRecord::Schema.define(version: 20210219040742) do
     t.text "internal_notes"
     t.boolean "contributor"
     t.string "referrer_name"
+    t.text "skills_and_experience"
     t.index ["airtable_id"], name: "index_users_on_airtable_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["referer_id"], name: "index_users_on_referer_id"

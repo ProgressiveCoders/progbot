@@ -9,5 +9,6 @@ class AddFieldsToUsers < ActiveRecord::Migration[5.1]
     add_column :users, :internal_notes, :text
     add_column :users, :contributor, :boolean
     add_column :users, :referrer_name, :string
+    add_column :users, :skills_and_experience, :text
   end
 end
