@@ -20,9 +20,9 @@ class User < ApplicationRecord
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
   has_many :projects, through: :active_volunteerings, source: 'user'
 
-  # before_save :push_changes_to_airtable, unless: :skip_push_to_airtable
+  before_save :push_changes_to_airtable, unless: :skip_push_to_airtable
 
-  # after_create :send_slack_notification, unless: :skip_slack_notification
+  after_create :send_slack_notification, unless: :skip_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
