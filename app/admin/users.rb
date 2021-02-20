@@ -121,7 +121,6 @@ end
     end
 
     def import_data
-      byebug
       @users = []
       @attributes = UserConstants::COLUMN_NAMES_FOR_DISPLAY
       CSV.foreach(params[:file].path, headers: true) do |row|
