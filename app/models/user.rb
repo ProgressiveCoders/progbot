@@ -180,7 +180,7 @@ class User < ApplicationRecord
     end
   end
 
-  def sync_with_airtable(airtable_user)
+  def sync_with_airtable(airtable_user, airtable_table)
     self.skip_push_to_airtable = true
 
     if self.new_record?
@@ -199,41 +199,77 @@ class User < ApplicationRecord
       self.non_tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user["Non-Tech Skills and Specialties"], tech: false)
     end
 
-    self.assign_attributes({
-      name: airtable_user["Name"],
-      email: airtable_user["Contact E-Mail"],
-      slack_username: airtable_user["Member Handle"],
-      slack_userid: airtable_user["slack_id"],
-      optin: airtable_user["Optin"],
-      join_reason: airtable_user["Join Reason"],
-      overview: airtable_user["Overview"],
-      location: airtable_user["Location"],
-      phone: airtable_user["Phone"],
-      hear_about_us: airtable_user["Hear About Us"],
-      verification_urls: airtable_user["Verification URLs"],
-      gender_pronouns: airtable_user["Gender Pronouns"],
-      additional_info: airtable_user["Additional Info"],
-      anonymous: airtable_user["Anonymous"],
-      read_manifesto: airtable_user["Read Manifesto"],
-      read_code_of_conduct: airtable_user["Read Code of Conduct"]
-    })
+    if airtable_table == "prog apps"
 
-    self.is_approved = true
+      self.assign_attributes({
+        name: airtable_user["Name"],
+        email: airtable_user["Contact E-Mail"],
+        slack_username: airtable_user["Member Handle"],
+        slack_userid: airtable_user["slack_id"],
+        optin: airtable_user["Optin"],
+        join_reason: airtable_user["Join Reason"],
+        overview: airtable_user["Overview"],
+        location: airtable_user["Location"],
+        phone: airtable_user["Phone"],
+        hear_about_us: airtable_user["Hear About Us"],
+        verification_urls: airtable_user["Verification URLs"],
+        gender_pronouns: airtable_user["Gender Pronouns"],
+        additional_info: airtable_user["Additional Info"],
+        anonymous: airtable_user["Anonymous"],
+        read_manifesto: airtable_user["Read Manifesto"],
+        read_code_of_conduct: airtable_user["Read Code of Conduct"]
+      })
 
-    if self.email.blank?
-      if self.has_slack?
-        self.get_email_from_slack
+      self.is_approved = true
+
+      if self.email.blank?
+        if self.has_slack?
+          self.get_email_from_slack
+        end
       end
-    end
 
-    if self.slack_userid.blank? && self.slack_username.present?
-      self.get_slack_userid
-    elsif self.slack_userid.present? && self.slack_username.blank?
-      self.get_slack_username
+      if self.slack_userid.blank? && self.slack_username.present?
+        self.get_slack_userid
+      elsif self.slack_userid.present? && self.slack_username.blank?
+        self.get_slack_username
+      end
+
+    elsif airtable_table == "admin"
+      self.assign_attributes({
+        name: airtable_user["Name"],
+        read_code_of_conduct: airtable_user["Read Code of Conduct"],
+        anonymous: airtable_user["I prefer to remain anonymous."],
+        welcome_email_sent: airtable_user["Welcome E-mail Sent"],
+        attended_onboarding: airtable_user["Attended Onboarding"],
+        slack_invite_sent: airtable_user["Slack invite sent?"],
+        requested_additional_verification: airtable_user["Requested additional verification"],
+        decline_membership: airtable_user["Declime Membership"],
+        irs_email_sent: airtable_user["IRS Email Sent"],
+        internal_notes: airtable_user["Internal Notes"],
+        contributor: airtable_user["Contributor?"],
+        email: airtable_user["Contact E-Mail"],
+        verification_urls: airtable_user["Verification URLs"],
+        hear_about_us: airtable_user["How did you hear about us?"],
+        referrer_name: airtable_user["Name of ProgCode member who referred you."],
+        skills_and_experience: airtable_user["Skills and Relevant Experience (Tech or Non-Tech)"],
+        join_reason: airtable_user["Bio"],
+        phone: airtable_user["Phone"],
+        optin: airtable_user["Opt In to Anonymized Member Directory"],
+        location: airtable_user["Location"],
+        read_manifesto: airtable_user["Read Manifesto"]
+      })
+
+      if self.decline_membership
+        self.is_approved = false
+      elsif self.welcome_email_sent
+        self.is_approved = true
+      end
+
     end
 
     if self.email.present? || self.slack_userid.present?
-      matches = AirtableUser.all.select {|u| (self.email.present? && u["Contact E-Mail"] == self.email) || (self.slack_userid.present? && u["slack_id"] == self.slack_userid)}
+      all_airtable_users = airtable_table == 'admin' ? AirtableUserFromAdmin.all : AirtableUser.all 
+      matches = all_airtable_users.select {|u| (self.email.present? && u["Contact E-Mail"] == self.email) || (self.slack_userid.present? && u["slack_id"] == self.slack_userid)}
       if matches.length > 1
         self.flags << "This user appears more than once in Airtable"
       end

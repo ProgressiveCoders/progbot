@@ -32,19 +32,22 @@ module ImportUsersTask
         end
       end
 
-        user.sync_with_airtable(airtable_user)
+        user.sync_with_airtable(airtable_user, 'prog apps')
       end
     end
-    
-    def sync_slack_ids_for_users
-      SlackBot.client
-      User.all.each do |u|
-        next if u.email.blank? || u.slack_userid.present?
-        slack_user = SlackHelpers.lookup_by_email(u.email.downcase)
-        next if slack_user.blank?
-        u.slack_userid = slack_user.id
-        u.save(:validate => false)
+
+    def admin_sync
+      AirtableUserFromAdmin.all.each do |airtable_user|
+        if airtable_user["Contact E-Mail"].blank?
+          puts "Email not in record: #{airtable_user.inspect}"
+          next
+        else
+          user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
+
+          user.sync_with_airtable(airtable_user, 'admin')
+        end
       end
     end
+
   end
 end
