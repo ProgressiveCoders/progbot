@@ -13,8 +13,8 @@ class User < ApplicationRecord
 
   has_and_belongs_to_many :skills
 
-  validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
-  validates_acceptance_of :read_code_of_conduct
+  # validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
+  # validates_acceptance_of :read_code_of_conduct
 
   has_many :volunteerings, dependent: :destroy
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
@@ -22,7 +22,7 @@ class User < ApplicationRecord
 
   before_save :push_changes_to_airtable, unless: :skip_push_to_airtable
 
-  after_create :send_slack_notification, unless: :skip_slack_notification
+  # after_create :send_slack_notification, unless: :skip_slack_notification
 
   devise :omniauthable, omniauth_providers: [:slack]
 
@@ -44,16 +44,16 @@ class User < ApplicationRecord
 
   def self.matching_airtable_attributes
     {
-      ENV["AIRTABLE_USER_NAME_COLUMN"] => :name,
+      # ENV["AIRTABLE_USER_NAME_COLUMN"] => :name,
       "Contact E-Mail" => :email,
-      "Join Reason" => :join_reason,
-      "Overview" => :overview,
-      "Location" => :location,
-      "Phone" => :phone,
-      "Hear About Us" => :hear_about_us,
-      "Verification URLs" => :verification_urls,
-      "Gender Pronouns" => :gender_pronouns,
-      "Additional Info" => :additional_info,
+      # "Join Reason" => :join_reason,
+      # "Overview" => :overview,
+      # "Location" => :location,
+      # "Phone" => :phone,
+      # "Hear About Us" => :hear_about_us,
+      # "Verification URLs" => :verification_urls,
+      # "Gender Pronouns" => :gender_pronouns,
+      # "Additional Info" => :additional_info,
       ENV["AIRTABLE_TECH_SKILLS_COLUMN"] => :tech_skill_names,
       ENV["AIRTABLE_NON_TECH_SKILLS_COLUMN"] => :non_tech_skill_names
     }
@@ -61,9 +61,9 @@ class User < ApplicationRecord
 
   def self.matching_airtable_boolean_attributes 
     {
-      "Anonymous" => :anonymous,
-      "Read Manifesto" => :read_manifesto,
-      "Read Code of Conduct" => :read_code_of_conduct,
+      # "Anonymous" => :anonymous,
+      # "Read Manifesto" => :read_manifesto,
+      # "Read Code of Conduct" => :read_code_of_conduct,
       "Optin" => :optin,
       "Is Approved" => :is_approved
     }  

@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     get 'base/index'
     post "/search", to: "base#search"
     get "/search", to: "base#search"
-    resource :user, only: [:edit, :update]
+    # resource :user, only: [:edit, :update]
     resources :skills, only: [:index, :show]
     resources :projects do
       get 'all', :on => :collection
@@ -13,18 +13,18 @@ Rails.application.routes.draw do
     resources :volunteerings, only: [:index, :create, :update, :edit]
   end
 
-  scope :existing do
-    resources :users, only: [:show]
-  end
+  # scope :existing do
+  #   resources :users, only: [:show]
+  # end
 
   get 'dashboard/volunteerings/new_signup' => 'dashboard/volunteerings#new_signup'
 
   get 'dashboard/volunteerings/new_recruit' => 'dashboard/volunteerings#new_recruit'
 
-  get '/welcome/dashboard' => 'welcome#dashboard'
+  # get '/welcome/dashboard' => 'welcome#dashboard'
   get '/users/registration' => 'users#registration'
   get 'users/new/confirmation' => 'users#confirmation'
-  put 'users/update' => 'users#update'
+  # put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
 
   unauthenticated do
@@ -68,7 +68,6 @@ Rails.application.routes.draw do
   post 'admin/users/bulk_post', to: 'admin/users#bulk_post', as: :admin_users_bulk_post
 
   devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
 
 
 
