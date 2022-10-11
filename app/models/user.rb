@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :skills
 
   # validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
-  # validates_acceptance_of :read_code_of_conduct
+  validates_acceptance_of :read_code_of_conduct
 
   has_many :volunteerings, dependent: :destroy
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
@@ -63,7 +63,7 @@ class User < ApplicationRecord
     {
       # "Anonymous" => :anonymous,
       # "Read Manifesto" => :read_manifesto,
-      # "Read Code of Conduct" => :read_code_of_conduct,
+      "Read Code of Conduct" => :read_code_of_conduct,
       "Optin" => :optin,
       "Is Approved" => :is_approved
     }  
@@ -91,9 +91,9 @@ class User < ApplicationRecord
         self.slack_username = user_info['profile']['real_name']
       end
     end
-    if self.name == nil || self.name != user_info['profile']['real_name']
-      self.name = user_info['profile']['real_name']
-    end
+    # if self.name == nil || self.name != user_info['profile']['real_name']
+    #   self.name = user_info['profile']['real_name']
+    # end
   end
 
   def tech_skill_names
@@ -129,16 +129,16 @@ class User < ApplicationRecord
     self.volunteerings.select { |v| v.relevant? }
   end
 
-  def send_slack_notification
-    SlackBot.send_message({
-      channel: "#recruitment",
-      attachments: [
-        pretext: 'New User Signup',
-        title: "A New User Has Signed Up: #{self.name}:::#{self.email}",
-        title_link: admin_user_url(self, :only_path => false),
-      ]
-    })
-  end
+  # def send_slack_notification
+  #   SlackBot.send_message({
+  #     channel: "#recruitment",
+  #     attachments: [
+  #       pretext: 'New User Signup',
+  #       title: "A New User Has Signed Up: #{self.name}:::#{self.email}",
+  #       title_link: admin_user_url(self, :only_path => false),
+  #     ]
+  #   })
+  # end
 
   def has_slack?
     self.slack_userid.present? || self.slack_username.present?
@@ -159,8 +159,6 @@ class User < ApplicationRecord
   def admin_label
     if self.slack_username
       self.slack_username
-    elsif self.name
-      self.name
     elsif self.slack_userid
       self.slack_userid
     end
@@ -187,35 +185,35 @@ class User < ApplicationRecord
       self.skip_slack_notification = true
     end
 
-    if airtable_user["Tech Skills"].blank?
+    if airtable_user[ENV['AIRTABLE_TECH_SKILLS_COLUMN']].blank?
       self.tech_skill_ids = []
     else
-      self.tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user["Tech Skills"], tech: true)
+      self.tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user[ENV['AIRTABLE_TECH_SKILLS_COLUMN']], tech: true)
     end
 
-    if airtable_user["Non-Tech Skills and Specialties"].blank?
+    if airtable_user[ENV['AIRTABLE_NON_TECH_SKILLS_COLUMN']].blank?
       self.non_tech_skill_ids = []
     else
-      self.non_tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user["Non-Tech Skills and Specialties"], tech: false)
+      self.non_tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user[ENV['AIRTABLE_NON_TECH_SKILLS_COLUMN']], tech: false)
     end
 
     self.assign_attributes({
-      name: airtable_user["Name"],
+      # name: airtable_user["Name"],
       email: airtable_user["Contact E-Mail"],
       slack_username: airtable_user["Member Handle"],
       slack_userid: airtable_user["slack_id"],
-      optin: airtable_user["Optin"],
-      join_reason: airtable_user["Join Reason"],
-      overview: airtable_user["Overview"],
-      location: airtable_user["Location"],
-      phone: airtable_user["Phone"],
-      hear_about_us: airtable_user["Hear About Us"],
-      verification_urls: airtable_user["Verification URLs"],
-      gender_pronouns: airtable_user["Gender Pronouns"],
-      additional_info: airtable_user["Additional Info"],
-      anonymous: airtable_user["Anonymous"],
-      read_manifesto: airtable_user["Read Manifesto"],
-      read_code_of_conduct: airtable_user["Read Code of Conduct"]
+      optin: airtable_user["Optin"]
+      # join_reason: airtable_user["Join Reason"],
+      # overview: airtable_user["Overview"],
+      # location: airtable_user["Location"],
+      # phone: airtable_user["Phone"],
+      # hear_about_us: airtable_user["Hear About Us"],
+      # verification_urls: airtable_user["Verification URLs"],
+      # gender_pronouns: airtable_user["Gender Pronouns"],
+      # additional_info: airtable_user["Additional Info"],
+      # anonymous: airtable_user["Anonymous"],
+      # read_manifesto: airtable_user["Read Manifesto"],
+      # read_code_of_conduct: airtable_user["Read Code of Conduct"]
     })
 
     self.is_approved = true
