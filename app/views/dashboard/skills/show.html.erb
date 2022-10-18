@@ -16,7 +16,7 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="using" role="tabpanel" aria-labelledby="home-tab">
     <div class="list-group">
-      <% resource.projects.each do |project| %>
+      <% @projects_having.each do |project| %>
         <div href="<%= url_for [:dashboard, project] %>" class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1"><%= link_to project.name, [:dashboard, project] %></h5>
@@ -27,13 +27,13 @@
         </div>
 
       <% end %>
-      <%= content_tag(:p, "No Projects Use This Skill Now", :class => "alert alert-success") if resource.projects.blank? %>
+      <%= content_tag(:p, "No Projects Use This Skill Now", :class => "alert alert-success") if @projects_having.blank? %>
     </div>
   </div>
   <div class="tab-pane fade" id="needs" role="tabpanel" aria-labelledby="profile-tab">
     
     <div class="list-group">
-      <% resource.project_needs.each do |project| %>
+      <% @projects_needing.each do |project| %>
         <div href="<%= url_for [:dashboard, project] %>" class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1"><%= link_to project.name, [:dashboard, project] %></h5>
@@ -43,7 +43,7 @@
           <small>Slack Channel: <%= project.slack_channel_for_url.present? ? link_to("##{project.slack_channel}", "slack://channel?team=T1KR8AG7J&id=#{project.slack_channel_for_url}") : "None entered" %></small>
         </div>
       <% end %>
-      <%= content_tag(:p, "No Projects Need This Skill Now", :class => "alert alert-success") if resource.project_needs.blank? %>
+      <%= content_tag(:p, "No Projects Need This Skill Now", :class => "alert alert-success") if @projects_needing.blank? %>
     </div>
     
   </div>
@@ -51,7 +51,7 @@
   <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="profile-tab">
     
     <div class="list-group">
-      <% resource.users.each do |user| %>
+      <% @users_having.each do |user| %>
         <div class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1"><%= link_to "Recruit this User", dashboard_volunteerings_new_recruit_path(:temporary_token => user.secure_token) %></h5>
@@ -59,7 +59,7 @@
           <p class="mb-1"><%= "Skills: #{user.skill_names_for_display}" %></p>
         </div>
       <% end %>
-      <%= content_tag(:p, "No Users in our Anonymized Directory Possess this Skill Now", :class => "alert alert-success") if resource.users.blank? %>
+      <%= content_tag(:p, "No Users in our Anonymized Directory Possess this Skill Now", :class => "alert alert-success") if @users_having.blank? %>
     </div>
     
   </div>

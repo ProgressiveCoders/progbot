@@ -8,9 +8,6 @@ module ImportUsersTask
   class Syncer
     def sync
       AirtableUser.all.each do |airtable_user|
-        # Have we already imported this user?
-        # I'll assume all names are last, first middle, so we
-        # don't have to convert
       if User.where(airtable_id: airtable_user.id).present?
         user = User.find_by(airtable_id: airtable_user.id)
       else
@@ -31,8 +28,7 @@ module ImportUsersTask
           user.airtable_id = airtable_user.id
         end
       end
-
-        user.sync_with_airtable(airtable_user, 'prog apps')
+        user.sync_with_airtable(airtable_user)
       end
     end
 
