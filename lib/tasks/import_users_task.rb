@@ -28,7 +28,6 @@ module ImportUsersTask
           user.airtable_id = airtable_user.id
         end
       end
-
         user.sync_with_airtable(airtable_user)
       end
     end

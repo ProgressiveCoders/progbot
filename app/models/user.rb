@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :skills
 
   # validates_presence_of :name, :email, :location, :hear_about_us, :join_reason
-  validates_acceptance_of :read_code_of_conduct
+  # validates_acceptance_of :read_code_of_conduct
 
   has_many :volunteerings, dependent: :destroy
   has_many :active_volunteerings, -> { where state: 'active' }, class_name: 'Volunteering'
@@ -63,9 +63,9 @@ class User < ApplicationRecord
     {
       # "Anonymous" => :anonymous,
       # "Read Manifesto" => :read_manifesto,
-      "Read Code of Conduct" => :read_code_of_conduct,
-      "Optin" => :optin,
-      "Is Approved" => :is_approved
+      # "Read Code of Conduct" => :read_code_of_conduct,
+      # "Optin" => :optin,
+      # "Is Approved" => :is_approved
     }  
   end
 
@@ -202,7 +202,7 @@ class User < ApplicationRecord
       email: airtable_user["Contact E-Mail"],
       slack_username: airtable_user["Member Handle"],
       slack_userid: airtable_user["slack_id"],
-      optin: airtable_user["Optin"]
+      # optin: airtable_user["Optin"]
       # join_reason: airtable_user["Join Reason"],
       # overview: airtable_user["Overview"],
       # location: airtable_user["Location"],

@@ -1,20 +1,20 @@
 <div class="container">
 
-  <div class="row justify-content-center">
-    <div class="col-6">
+  <%# <div class="row justify-content-center">
+    <div class="col-6"> %>
 
-  <% if !current_user.valid? %>
-      <h1 class="text-center">User Profile</h1>
+  <%# if !current_user.valid? %>
+      <%# <h1 class="text-center">User Profile</h1>
 
       <p class="lead text-danger text-center">
         Some of the required elements of your profile have not yet been filled out. Please fill them out in order to continue to use ProgBot.
-      </p>
+      </p> %>
 
-  <% else %>
-      <h1 class="text-center">Edit your Profile</h1>
-  <% end %>
-    </div>
-  </div>
+  <%# else %>
+      <%# <h1 class="text-center">Edit your Profile</h1> %>
+  <%# end %>
+    <%# </div>
+  </div> %>
 
 <%= simple_form_for current_user, :url => dashboard_user_path, :method => :patch do |f| %>
   <%= f.error_notification %>
@@ -45,9 +45,9 @@
 
   <%# <%= f.input :location,  :hint => "Be as general or as specific as you'd like, but please include a timezone or the country you reside in."  %>
 
-  <%= f.input :tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:value  => format_tokens(resource.tech_skills), :data => {:typeahead_source => format_skills(@tech_skills) }}    %>
+  <%= f.input :tech_skill_names, :as => :string, :placeholder => "Type something...", :label => "Your Tech Skills", :input_html => {:value  => format_tokens(resource.tech_skills), :data => {:typeahead_source => format_skills(@tech_skills) }}    %>
 
-  <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :input_html => {:value => format_tokens(resource.non_tech_skills), :data => {:typeahead_source => format_skills(@non_tech_skills) }}    %>
+  <%= f.input :non_tech_skill_names, :as => :string, :placeholder => "Type something...", :label => "Your Other Skills", :input_html => {:value => format_tokens(resource.non_tech_skills), :data => {:typeahead_source => format_skills(@non_tech_skills) }}    %>
 
   <%# <%= f.input :phone, :hint => "If you'd like to be part of future texting programs, or get beta invites. Totally optional!"  %>
 
@@ -55,7 +55,7 @@
   
   <%= f.input :optin, :label => "All members of ProgCode are automatically added to our anonymized member skills directory, to facilitate participation and collaboration. Uncheck this checkbox if you would like to opt out. If you have previously opted out, check this box to opt back in!" %>
   
-  <%= f.input :read_code_of_conduct, :required => true, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
+  <%# <%= f.input :read_code_of_conduct, :required => true, :label => "Have you read our Code of Conduct?",  :hint => "By checking this and submitting your registration, you are agreeing to abide to our Community Guidelines and Code of Conduct once you are part of the community. <br/> </br> #{link_to("http://progco.de/Guidelines")}".html_safe  %>
 
 
   <hr />
