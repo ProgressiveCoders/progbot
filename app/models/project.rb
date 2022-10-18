@@ -23,7 +23,7 @@ class Project < ApplicationRecord
 
   before_save :push_changes_to_airtable, unless: :skip_push_to_airtable
 
-  # after_create :send_new_project_slack_notification, unless: :skip_new_project_slack_notification
+  after_create :send_new_project_slack_notification, unless: :skip_new_project_slack_notification
 
   after_create :send_new_project_notification_emails, unless: :skip_new_project_notification_email
 
