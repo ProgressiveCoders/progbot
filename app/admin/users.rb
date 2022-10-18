@@ -6,15 +6,12 @@ ActiveAdmin.register User do
 #
 # or
 #
-# permit_params do
-#   permitted = [:permitted, :attributes]
-#   permitted << :other if params[:action] == 'create' && current_user.admin?
-#   permitted
+# "welcome_email_sent", "attended_onboarding", "slack_invite_sent", "requested_additional_verification", "decline_membership", "irs_email_sent", "internal_notes", "contributor", "referrer_name", "skills_and_experience"
 # end
 
 permit_params :referer_id, :name, :email, :join_reason, :overview, :location,
 :anonymous, :phone, :slack_username, :read_manifesto,
-:read_code_of_conduct, :optin, :hear_about_us, :verification_urls, :is_approved, :additional_info, :gender_pronouns, tech_skill_ids: [], non_tech_skill_ids: [], flags: []
+:read_code_of_conduct, :optin, :hear_about_us, :verification_urls, :is_approved, :additional_info, :welcome_email_sent, :attended_onboarding, :slack_invite_sent, :requested_additional_verification, :decline_membership, :irs_email_sent, :internal_notes, :contributor, :referrer_name, :skills_and_experience, :gender_pronouns, tech_skill_ids: [], non_tech_skill_ids: [], flags: [] 
 
 action_item :bulk_import do
   link_to "Bulk Import From Airtable", admin_users_upload_csv_path
@@ -81,6 +78,14 @@ end
       # row :read_manifesto
       # row :read_code_of_conduct
       row :is_approved
+      row :welcome_email_sent
+      row :attended_onboarding
+      row :slack_invite_sent
+      row :requested_additional_verification
+      row :decline_membership
+      row :irs_email_sent
+      row :contributor
+      row :internal_notes
       row :flags do
         span user.flags.try(:join, "<br>").try(:html_safe)
       end
@@ -111,16 +116,22 @@ end
       @users = []
       @attributes = UserConstants::COLUMN_NAMES_FOR_DISPLAY
       CSV.foreach(params[:file].path, headers: true) do |row|
+        table_type = params["airtable_type"]
+        airtable_id = row["Record ID"]
         if row[0].present?
-          airtable_id = row["Record ID"]
-          airtable_user = AirtableUser.find(airtable_id)
-          if User.where(airtable_id: airtable_id).present?
-            user = User.find_by(airtable_id: airtable_id)
-          else
+        
+          if table_type == "admin"
+            airtable_user = AirtableUserFromAdmin.find(airtable_id)
             user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
+          elsif table_type == "prog_apps"
+            airtable_user = AirtableUser.find(airtable_id)
+            user = User.where(airtable_id: airtable_id).first
+            if user.blank?
+              user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
+            end
             user.airtable_id = airtable_id
           end
-          user.sync_with_airtable(airtable_user)
+          user.sync_with_airtable(airtable_user, table_type)
           @users << user
         end
       end
@@ -135,6 +146,7 @@ end
       # f.input :name
       f.input :email
       f.input :slack_username
+
       # f.input :location
       # f.input :phone
       # f.input :referer
@@ -166,7 +178,9 @@ end
 
     f.inputs "Admin Approval" do
       f.input :is_approved, label: "Is This An Approved Progcode Member?"
+
       # f.input :verification_urls
+
     end
 
     f.actions
