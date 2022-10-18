@@ -12,6 +12,10 @@ namespace :progbot do
   task :import_users do
     ImportUsersTask::Syncer.new.sync
   end
+  desc "Update users from Admin Airtable Table"
+  task :import_alternate_users do
+    ImportUsersTask::Syncer.new.admin_sync
+  end
 end
 
 namespace :progbot do
