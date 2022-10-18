@@ -15,7 +15,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     if @project.valid?
       @project.project_created = Time.current
       @project.save
-      redirect_to edit_dashboard_project_path(@project)
+      redirect_to dashboard_projects_path
     else
       render :edit
     end
@@ -45,7 +45,7 @@ class Dashboard::ProjectsController < Dashboard::BaseController
     resource.get_ids_from_names(project_params[:tech_stack_names].split(", "), project_params[:non_tech_stack_names].split(", "), project_params[:needs_category_names].split(", "))
 
     if resource.save
-      redirect_to edit_dashboard_project_path(resource)
+      redirect_to dashboard_projects_path
     else
       render :edit
     end

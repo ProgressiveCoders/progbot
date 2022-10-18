@@ -170,7 +170,7 @@ ActiveAdmin.register Project do
       resource.save(:validate => false)
         if mission_aligned_changed == true && resource.leads.any?
           resource.send_mission_aligned_changed_notification_email(mission_aligned_was)
-          resource.send_mission_aligned_changed_slack_notifications(mission_aligned_was)
+          # resource.send_mission_aligned_changed_slack_notifications(mission_aligned_was)
         end
       redirect_to admin_project_path(resource)
     end
