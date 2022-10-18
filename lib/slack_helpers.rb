@@ -8,13 +8,13 @@ module SlackHelpers
 
     def self.get_slack_channels
       channels = Rails.cache.fetch('get_slack_channels', expires_in: 12.hours) do
-        client.channels_list.channels
+        client.conversations_list.channels
       end
       channels
     end
 
     def self.get_channel_info(id)
-      client.channels_info(channel: id)
+      client.conversations_info(channel: id)
     end
 
     def self.lookup_by_email(email)

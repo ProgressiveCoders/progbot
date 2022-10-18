@@ -3,7 +3,7 @@ class Project < ApplicationRecord
   include Syncable
   include Rails.application.routes.url_helpers
 
-  attr_accessor :tech_stack_names, :non_tech_stack_names, :needs_category_names, :skip_new_project_notification_email, :skip_new_project_slack_notification, :skip_push_to_airtable
+  attr_accessor :tech_stack_names, :needs_category_names, :skip_new_project_notification_email, :skip_new_project_slack_notification, :skip_push_to_airtable, :non_tech_stack_names
 
   has_and_belongs_to_many :needs_categories, class_name: "Skill", join_table: "needs_categories"
 
@@ -70,8 +70,8 @@ class Project < ApplicationRecord
       "OSS License Type" => :oss_license_types,
       "Project Applications" => :project_applications,
       "Needs Categories" => :needs_category_names,
-      "Tech Stack" => :tech_stack_names,
-      "Non-Tech Stack" => :non_tech_stack_names
+      "Tech Stack" => :tech_stack_names
+      # "Non-Tech Stack" => :non_tech_stack_names
     }
   end
 
@@ -107,7 +107,7 @@ class Project < ApplicationRecord
     self.lead_ids = users.map(&:id)
   end
 
-  def tech_tack_names=(stack_names)
+  def tech_stack_names=(stack_names)
     self.tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
   end
 
@@ -118,7 +118,6 @@ class Project < ApplicationRecord
       self.tech_stack.map { |stack| stack.name }
     end
   end
-
 
   def non_tech_stack_names=(stack_names)
     self.non_tech_stack_ids = Skill.where(name: stack_names.split(", ")).pluck(:id)
@@ -216,7 +215,7 @@ class Project < ApplicationRecord
 
   def get_slack_channel_name(channel_id)
     channel_info = SlackHelpers.get_channel_info(channel_id)
-
+    
     unless channel_info.blank?
       self.slack_channel = channel_info.channel.name
     end
@@ -409,11 +408,11 @@ class Project < ApplicationRecord
       self.tech_stack_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Tech Stack"], tech: true)
     end
 
-    if airtable_project["Non-Tech Stack"].blank?
-      self.non_tech_stack_ids = []
-    else
-      self.non_tech_stack_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Non-Tech Stack"], tech: false)
-    end
+    # if airtable_project["Non-Tech Stack"].blank?
+    #   self.non_tech_stack_ids = []
+    # else
+    #   self.non_tech_stack_ids = Skill.match_with_airtable(airtable_skills: airtable_project["Non-Tech Stack"], tech: false)
+    # end
 
     if airtable_project.slack_channel.present?
       if airtable_project.slack_channel["Channel ID"].present?
