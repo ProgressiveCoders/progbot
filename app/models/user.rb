@@ -199,24 +199,25 @@ class User < ApplicationRecord
       self.non_tech_skill_ids = Skill.match_with_airtable(airtable_skills: airtable_user[ENV['AIRTABLE_NON_TECH_SKILLS_COLUMN']], tech: false)
     end
 
-    self.assign_attributes({
-      # name: airtable_user["Name"],
-      email: airtable_user["Contact E-Mail"],
-      slack_username: airtable_user["Member Handle"],
-      slack_userid: airtable_user["slack_id"],
-      # optin: airtable_user["Optin"]
-      # join_reason: airtable_user["Join Reason"],
-      # overview: airtable_user["Overview"],
-      # location: airtable_user["Location"],
-      # phone: airtable_user["Phone"],
-      # hear_about_us: airtable_user["Hear About Us"],
-      # verification_urls: airtable_user["Verification URLs"],
-      # gender_pronouns: airtable_user["Gender Pronouns"],
-      # additional_info: airtable_user["Additional Info"],
-      # anonymous: airtable_user["Anonymous"],
-      # read_manifesto: airtable_user["Read Manifesto"],
-      # read_code_of_conduct: airtable_user["Read Code of Conduct"]
-    })
+    if airtable_table == "prog apps"
+      self.assign_attributes({
+        # name: airtable_user["Name"],
+        email: airtable_user["Contact E-Mail"],
+        slack_username: airtable_user["Member Handle"],
+        slack_userid: airtable_user["slack_id"],
+        # optin: airtable_user["Optin"]
+        # join_reason: airtable_user["Join Reason"],
+        # overview: airtable_user["Overview"],
+        # location: airtable_user["Location"],
+        # phone: airtable_user["Phone"],
+        # hear_about_us: airtable_user["Hear About Us"],
+        # verification_urls: airtable_user["Verification URLs"],
+        # gender_pronouns: airtable_user["Gender Pronouns"],
+        # additional_info: airtable_user["Additional Info"],
+        # anonymous: airtable_user["Anonymous"],
+        # read_manifesto: airtable_user["Read Manifesto"],
+        # read_code_of_conduct: airtable_user["Read Code of Conduct"]
+      })
 
       self.is_approved = true
 
