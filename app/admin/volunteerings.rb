@@ -28,15 +28,17 @@ ActiveAdmin.register Volunteering do
         end
 
     end
+    begin
+        filter :user, :label => "Volunteer", :collection => User.where(id: Volunteering.pluck(:user_id)).uniq.reject{|u| !u.admin_label || u.admin_label == ''}.sort_by{|u| u.admin_label.downcase}.map{ |u| u.admin_label }, :input_html => {multiple: true}
 
-    filter :user, :label => "Volunteer", :collection => User.where(id: Volunteering.pluck(:user_id)).uniq.reject{|u| !u.admin_label || u.admin_label == ''}.sort_by{|u| u.admin_label.downcase}.map{ |u| u.admin_label }, :input_html => {multiple: true}
+        filter :project, :collection => Project.where(id: Volunteering.pluck(:project_id)).uniq.sort_by{|p| p.name.downcase}, :input_html => {multiple: true}
 
-    filter :project, :collection => Project.where(id: Volunteering.pluck(:project_id)).uniq.sort_by{|p| p.name.downcase}, :input_html => {multiple: true}
+        filter :state, as: :select, :collection => Volunteering.aasm.states.map(&:name).sort, :input_html => {multiple: true}
 
-    filter :state, as: :select, :collection => Volunteering.aasm.states.map(&:name).sort, :input_html => {multiple: true}
-
-    filter :created_at
-    filter :updated_at
+        filter :created_at
+        filter :updated_at
+    rescue ActiveAdmin::DatabaseHitDuringLoad
+    end
 
 
     form do |f|
