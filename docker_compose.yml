@@ -14,8 +14,8 @@ services:
     volumes:
       - .:/myapp
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - db
     environment:
-      - DB_URL=postgresql://db/
+      - DATABASE_URL=postgresql://172.17.0.2:5432/progbot-dev
