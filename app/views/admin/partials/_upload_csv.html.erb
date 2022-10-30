@@ -1,12 +1,13 @@
 <h1>Import <%= controller_name.singularize.titleize %> Data from Airtable</h1>
 <%= form_tag({:controller => controller_path, :action => 'import_data'}, multipart: true) do %>
     <div class="row"><%= file_field_tag :file, :class => "btn" %></div>
-    <div class="row"><%= label_tag 'airtable_type_prog_apps', 'From Prog Apps Table' %>
-    <%= radio_button_tag 'airtable_type', 'prog_apps', true %>
-    </div>
+    <%# <div class="row"><%= label_tag 'airtable_type_prog_apps', 'From Prog Apps Table' %>
+    <%# <%= radio_button_tag 'airtable_type', 'prog_apps', true %>
+    <%# </div> %>
     <div class="row">
-    <%= label_tag 'airtable_type_admin', 'From Admin Table' %>
-    <%= radio_button_tag 'airtable_type', 'admin' %></div>
+    <%# <%= label_tag 'airtable_type_admin', 'From Admin Table' %>
+    <%# <%= radio_button_tag 'airtable_type', 'admin' %>
+    <%# </div> %>
     <div class="row"><%= hidden_field_tag :confirmation, "pending" %>
     <%= submit_tag "Import", :class => "btn", :disabled => true %></div>
 <% end %>

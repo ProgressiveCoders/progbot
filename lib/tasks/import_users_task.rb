@@ -32,18 +32,19 @@ module ImportUsersTask
       end
     end
 
-    def admin_sync
-      AirtableUserFromAdmin.all.each do |airtable_user|
-        if airtable_user["Contact E-Mail"].blank?
-          puts "Email not in record: #{airtable_user.inspect}"
-          next
-        else
-          user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
+    #not going to import users from here for now
+    # def admin_sync
+    #   AirtableUserFromAdmin.all.each do |airtable_user|
+    #     if airtable_user["Contact E-Mail"].blank?
+    #       puts "Email not in record: #{airtable_user.inspect}"
+    #       next
+    #     else
+    #       user = User.find_or_initialize_by email: airtable_user["Contact E-Mail"]
 
-          user.sync_with_airtable(airtable_user, 'admin')
-        end
-      end
-    end
+    #       user.sync_with_airtable(airtable_user, 'admin')
+    #     end
+    #   end
+    # end
 
   end
 end

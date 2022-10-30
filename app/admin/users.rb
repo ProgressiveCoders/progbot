@@ -116,22 +116,24 @@ end
       @users = []
       @attributes = UserConstants::COLUMN_NAMES_FOR_DISPLAY
       CSV.foreach(params[:file].path, headers: true) do |row|
-        table_type = params["airtable_type"]
+        # table_type = params["airtable_type"]
         airtable_id = row["Record ID"]
         if row[0].present?
         
-          if table_type == "admin"
-            airtable_user = AirtableUserFromAdmin.find(airtable_id)
-            user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
-          elsif table_type == "prog_apps"
+          # if table_type == "admin"
+          #   airtable_user = AirtableUserFromAdmin.find(airtable_id)
+          #   user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
+          # elsif table_type == "prog_apps"
             airtable_user = AirtableUser.find(airtable_id)
             user = User.where(airtable_id: airtable_id).first
             if user.blank?
               user = User.find_or_initialize_by(email: airtable_user["Contact E-Mail"])
             end
             user.airtable_id = airtable_id
-          end
-          user.sync_with_airtable(airtable_user, table_type)
+          # end
+          user.sync_with_airtable(airtable_user
+            # , table_type
+          )
           @users << user
         end
       end
