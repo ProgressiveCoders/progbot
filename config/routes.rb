@@ -62,9 +62,10 @@ Rails.application.routes.draw do
 
   post 'admin/users/bulk_post', to: 'admin/users#bulk_post', as: :admin_users_bulk_post
 
-  devise_for :admin_users, ActiveAdmin::Devise.config
+  # uncomment these lines after rake db:create is finished
+  #devise_for :admin_users, ActiveAdmin::Devise.config
 
-  ActiveAdmin.routes(self)
+  #ActiveAdmin.routes(self)
 
 
 
