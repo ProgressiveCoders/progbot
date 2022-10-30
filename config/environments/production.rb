@@ -67,12 +67,12 @@ Rails.application.configure do
   # config.action_cable.raise_delivery_errors = false
 
   # Setup the mailer config
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: "progressive-coders-bot.herokuapp.com" }
-  config.action_mailer.smtp_settings = {
-    :domain => 'progressive-coders-bot.herokuapp.com'
-  }
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.perform_deliveries = true
+  # config.action_mailer.default_url_options = { host: "progressive-coders-bot.herokuapp.com" }
+  # config.action_mailer.smtp_settings = {
+  #   :domain => 'progressive-coders-bot.herokuapp.com'
+  # }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -98,4 +98,4 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 end
 
-Rails.application.routes.default_url_options[:host] = "progressive-coders-bot.herokuapp.com"
+# Rails.application.routes.default_url_options[:host] = "progressive-coders-bot.herokuapp.com"
