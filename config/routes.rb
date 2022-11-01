@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  root :to => 'dashboard/base#index'
+  
   namespace :dashboard do
     root :to => 'base#index'
     get 'base/index'
@@ -26,14 +28,6 @@ Rails.application.routes.draw do
   get 'users/new/confirmation' => 'users#confirmation'
   put 'users/update' => 'users#update'
   get '/welcome/home' => 'welcome#home'
-
-  unauthenticated do
-    root :to => 'welcome#home'
-  end
-
-  authenticated do
-   root :to => 'dashboard/base#index'
-  end
 
   devise_for :users, except: [:index], controllers: {
     sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks', users: 'users'

@@ -2,6 +2,7 @@ class WelcomeController < ApplicationController
   before_action :authenticate_user!, except: [:home]
 
   def home
+    byebug
     if user_signed_in?
       redirect_to dashboard_base_index_path
     end
