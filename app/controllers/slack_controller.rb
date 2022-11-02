@@ -1,6 +1,6 @@
 require 'slack_results'
 
-class SlackController < APIController
+class SlackController < ApiController
 
   def search
     if params[:text].empty?
