@@ -30,7 +30,9 @@ gem 'rails', '~> 6.1'
 gem 'activesupport', '~> 6.1'
 gem 'actionpack', '~> 6.1'
 
-gem 'net-smtp'
+gem 'net-smtp', require: false
+gem 'net-imap', require: false
+gem 'net-pop', require: false
 # Use postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
