@@ -474,7 +474,7 @@ class Project < ApplicationRecord
         "Project Lead Slack ID", "Slack Channel", "Needs Categories", "Master Channel List", "Needs / Pain Points - Narrative", "Legal structure", "Active Contributors (full time equivalent)", "Business model", "OSS License Type"]
       extracted_fields.each do |key|
         downcased_key = key.downcase.gsub(" ", "_")
-        next if Project.column_for_attribute(downcased_key).table_name.blank?
+        next unless Project.column_names.include?(downcased_key)
         if airtable_project[key].is_a?(Array) && (!Project.column_for_attribute(downcased_key).array)
           h[downcased_key] = airtable_project[key].first
         else
