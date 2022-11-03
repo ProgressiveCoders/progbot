@@ -287,7 +287,9 @@ class Project < ApplicationRecord
     super do |airtable_project|
       all_slack_channels = AirtableChannelList.all
 
-      airtable_project.project_leads = self.leads.map {|l| l.airtable_twin}.compact
+      airtable_leads_column_name =  ENV['AIRTABLE_PROJECT_LEADS_COLUMN']
+
+      airtable_project[airtable_leads_column_name] = self.leads.map {|l| l.slack_userid}.compact
 
       airtable_project.members = self.active_volunteers.map {|v| v.airtable_twin }.compact
 
@@ -330,15 +332,16 @@ class Project < ApplicationRecord
       self.flags << "this project lacks a status"
     end
 
-    if !airtable_project.project_leads.present?
+    airtable_leads_column_name =  ENV['AIRTABLE_PROJECT_LEADS_COLUMN']
+
+    if !airtable_project[airtable_leads_column_name].present?
       self.flags << "this project lacks a lead"
       lead_ids = []
     else
-      lead_ids = airtable_project.project_leads.map do |project_lead|
-        airtable_id = project_lead["Record ID"]
-        lead = User.find_by(:airtable_id => airtable_id)
+      lead_ids = airtable_project[airtable_leads_column_name].map do |lead_slack_id|
+        lead = User.find_by(:slack_userid => lead_slack_id)
         if lead == nil
-          self.flags << "project lead airtable id #{airtable_id} has no corresponding user"
+          self.flags << "project lead slack id #{lead_slack_id} has no corresponding user"
           nil
         else
           lead.id
@@ -349,8 +352,7 @@ class Project < ApplicationRecord
 
     if airtable_project.members.present?
       airtable_ids = airtable_project.members.pluck("Record ID")
-      volunteer_airtable_ids = airtable_ids.reject {|x| airtable_project.project_leads.pluck("Record ID").include?(x)}
-      volunteers = User.where(:airtable_id => volunteer_airtable_ids)
+      volunteers = User.where(:airtable_id => volunteer_airtable_ids).where.not(:id => lead_ids)
       new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
       volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
       volunteerings.each do |v|
