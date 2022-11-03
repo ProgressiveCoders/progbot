@@ -470,7 +470,7 @@ class Project < ApplicationRecord
   def extract_fields(airtable_project)
     hsh = {}.tap do |h|
       extracted_fields = airtable_project.fields.keys - ["Project Name", "Project Summary Text",
-        "Progcode Coordinator IDs", "Tech Stack", "Project Status", "Team Member IDs",
+        "Progcode Coordinator IDs", "Tech Stack", "Project Status", "Team Member", "Team Member IDs",
         "Project Lead Slack ID", "Slack Channel", "Needs Categories", "Master Channel List", "Needs / Pain Points - Narrative", "Legal structure", "Active Contributors (full time equivalent)", "Business model", "OSS License Type"]
       extracted_fields.each do |key|
         downcased_key = key.downcase.gsub(" ", "_")
