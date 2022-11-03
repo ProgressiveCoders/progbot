@@ -352,7 +352,9 @@ class Project < ApplicationRecord
 
     if airtable_project.members.present?
       airtable_ids = airtable_project.members.pluck("Record ID")
-      volunteers = User.where(:airtable_id => airtable_ids).where.not(:id => lead_ids)
+      lead_airtable_ids = leads.map{|x| x.airtable_id}
+      volunteer_airtable_ids = airtable_ids - lead_airtable_ids
+      volunteers = User.where(:airtable_id => volunteer_airtable_ids)
       new_volunteers = volunteers.reject{|v| self.active_volunteer_ids.include?(v.id)}
       volunteerings = new_volunteers.map{|v| self.volunteerings.build(user_id: v.id)}
       volunteerings.each do |v|
