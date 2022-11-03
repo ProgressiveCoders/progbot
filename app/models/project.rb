@@ -77,7 +77,7 @@ class Project < ApplicationRecord
 
   def self.matching_airtable_boolean_attributes
     {
-      "Mission Aligned" => :mission_aligned
+      # "Mission Aligned" => :mission_aligned
     }
   end
 
