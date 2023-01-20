@@ -21,14 +21,14 @@ gem 'devise'
 gem 'cancan' # or cancancan
 gem 'draper'
 gem 'pundit'
-gem 'audited', '~> 4.7'
+gem 'audited', '~> 5.1'
 gem 'aasm'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1'
-gem 'activesupport', '~> 6.1'
-gem 'actionpack', '~> 6.1'
+gem 'rails', '~> 7.0'
+gem 'activesupport', '~> 7.0'
+gem 'actionpack', '~> 7.0'
 
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
